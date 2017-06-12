@@ -15,7 +15,7 @@ navbar:
       href: license.html
   right:
     - icon: fa-github
-      href: https://github.com/erinfry6/BADGER
+      href: https://github.com/erinfry6/BADGER 
 output:
   html_document:
     toc: true 
