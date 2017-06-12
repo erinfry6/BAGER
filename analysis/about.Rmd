@@ -1,0 +1,12 @@
+---
+title: "About Bayesian Ancestral Differential Gene Expression Reconstruction (BADGER)"
+output:
+  html_document:
+    toc: false
+    theme: cerulean
+    highlight: espresso
+---
+
+BADGER is a novel method of reconstructing ancestral gene expression levels. We are employing BADGER to identify expression shifts in the human lineage, or since our common ancestor with chimpanzees, but this approach could theoretically be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.
+
+The RNA-sequencing data analyzed on this website is from [Brawand et al 2011](http://www.ncbi.nlm.nih.gov/pubmed/22012392). The raw sequencing files were reanalyzed by [Erin Fry](mailto:efry@uchicago.edu) with [a pipeline](https://github.com/erinfry6/RNASeqRealignAcrossPrimates) in part written by Anamaria Necsulea. Erin Fry is a graduate student in the [Lynch Laboratory](https://lynchlab.uchicago.edu/), Department of Human Genetics, University of Chicago.
