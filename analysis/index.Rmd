@@ -13,7 +13,7 @@ BADGER, Bayesian Ancestral Differential Gene Expression Reconstruction, is a nov
 
  1) Collect and map RNA-sequencing reads to orthologous exon files.
  
- 2) [Assess quality of samples, eliminate samples that are of poor quality or that fail to cluster by tissue and/or species, and generate the files need for BAGER.](PrepDataforBAGER.html)
+ 2) [Assess quality of samples, eliminate samples that are of poor quality or that fail to cluster by tissue and/or species, and generate the files need for BADGER.](PrepDataforBAGER.html)
 
  3) BADGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances.
 

@@ -665,7 +665,7 @@ nrow(Sample_Info_Second_Elim)==ncol(TPM_noMT_expressed_log_processed)
 ``` 
 
 
-## Save as tissue expression files for BAGER
+## Save as tissue expression files for BADGER
 ```{r save data files}
 ## first save all processed data
 write.table(TPM_noMT_expressed_log_processed, file= paste("../data/forBAGER/",Sys.Date(),"ProcessedExpData.txt"), sep='\t')
