@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Erin Fry" />
+
+<meta name="date" content="2017-06-12" />
+
+<title>Quality Control and Processing of Brawand et al RNA Seq data in preparation for BAGER</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #2a211c; color: #bdae9d; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #2a211c; color: #bdae9d; border-right: 1px solid #bdae9d; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #bdae9d; background-color: #2a211c; }
+code > span.kw { color: #43a8ed; font-weight: bold; } /* Keyword */
+code > span.dt { text-decoration: underline; } /* DataType */
+code > span.dv { color: #44aa43; } /* DecVal */
+code > span.bn { color: #44aa43; } /* BaseN */
+code > span.fl { color: #44aa43; } /* Float */
+code > span.ch { color: #049b0a; } /* Char */
+code > span.st { color: #049b0a; } /* String */
+code > span.co { color: #0066ff; font-style: italic; } /* Comment */
+code > span.al { color: #ffff00; } /* Alert */
+code > span.fu { color: #ff9358; font-weight: bold; } /* Function */
+code > span.er { color: #ffff00; font-weight: bold; } /* Error */
+code > span.wa { color: #ffff00; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #049b0a; } /* SpecialChar */
+code > span.vs { color: #049b0a; } /* VerbatimString */
+code > span.ss { color: #049b0a; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #43a8ed; font-weight: bold; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #0066ff; font-style: italic; } /* Documentation */
+code > span.an { color: #0066ff; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.co { color: #0066ff; font-weight: bold; font-style: italic; } /* Comment */
+code > span.in { color: #0066ff; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BADGER</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="PrepDataforBAGER.html">Sample Processing</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/jdblischak/workflowr">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Quality Control and Processing of Brawand et al RNA Seq data in preparation for BAGER</h1>
+<h4 class="author"><em>Erin Fry</em></h4>
+<h4 class="date"><em>2017-06-12</em></h4>
+
+</div>
+
+
+<!-- The file analysis/chunks.R contains chunks that define default settings
+shared across the workflowr files. -->
+<!-- Update knitr chunk options -->
+<!-- Insert the date the file was last updated -->
+<p><strong>Last updated:</strong> 2017-06-12</p>
+<!-- Insert the code version (Git commit SHA1) if Git repository exists and R
+ package git2r is installed -->
+<p><strong>Code version:</strong> d98ef4b</p>
+<!-- Add your analysis here -->
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p><strong>This R markdown file will create RNA_seq log transformed gene expression files for Bayesian Ancestral Gene Expression Reconstruction (BAGER) for six primate species and six tissues.</strong></p>
+<ul>
+<li><p>First, the samples will be examined for successful pseudo-alignment, compared to GtEX expression data in human tissues, and scrutinized for correct density distributions.</p></li>
+<li><p>All mitochondrial genes and genes that are not expressed will then be removed before initial clustering analysis on log transformed expression values.</p></li>
+<li><p>Samples that fail these criterion are then removed before initial regression analysis.</p></li>
+<li><p>Covariates are examined for correlation with PCs and then regressed out before clustering.</p></li>
+<li><p>A last round of sample elimination takes place before the final log-transformed processed expression files are created for each tissue.</p></li>
+</ul>
+<p><em>Special thanks Lauren Blake and <a href="http://lauren-blake.github.io/Reg_Evo_Primates/analysis/">her pipeline</a>.</em></p>
+<div id="before-following-this-pipeline" class="section level2">
+<h2>Before following this pipeline</h2>
+<ol style="list-style-type: decimal">
+<li><p>Generate transcript abundance file using alignment and quantification pipeline <a href="https://github.com/erinfry6/RNASeqRealignAcrossPrimates">found here</a></p></li>
+<li><p>Obtain EnsemblID, associated gene name, and chromosomal location for genes in analysis. @ <a href="http://www.ensembl.org/biomart/martview/57d2c215b1d6b6e5cbf4662826e0d8b4">Biomart</a>: filter with gene IDs, attributes gene ID, associated gene name and chromosome, click results. Add this information into the Transcripts.txt file in path/results/qualitycontrol directory. Save as ‘Transcripts.txt’</p></li>
+<li><p>Obtain <a href="https://www.gtexportal.org/home/">GTEX</a> tissue expression data and save it to the results/qualitycontrol directory</p></li>
+</ol>
+</div>
+</div>
+<div id="sample-information-and-record-of-technical-variables" class="section level1">
+<h1>Sample Information and Record of Technical Variables</h1>
+<p>The following sample information was obtained directly from the authors of Brawand et al.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## read in raw expression data
+TPM_raw&lt;-<span class="kw">read.table</span>(<span class="st">&quot;../data/Transcript_Abundances31.txt&quot;</span>, <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">na.strings=</span><span class="st">&#39;NA&#39;</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) 
+
+## upload gene information
+geneinfo&lt;-<span class="kw">read.table</span>(<span class="st">&quot;../data/mart_export.txt&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>,<span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>,<span class="dt">na.strings=</span><span class="st">&#39;NA&#39;</span>,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+
+## load and view the sample information
+SampleInfo&lt;-<span class="kw">read.table</span>(<span class="st">&quot;../data/SampleInformation.txt&quot;</span>,<span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+<span class="kw">head</span>(SampleInfo)</code></pre></div>
+<pre><code>    SampleID Species     Tissue G Age_Quant Extraction RIN Raw_reads
+1 ggo_br_F_1 Gorilla        PFC F    Fourth     RNeasy 9.1  35257547
+2 ggo_br_M_1 Gorilla        PFC M    Fourth     RNeasy 7.9  16254814
+3 ggo_cb_F_1 Gorilla Cerebellum F    Fourth     RNeasy 8.7  28305051
+4 ggo_cb_M_1 Gorilla Cerebellum M    Fourth     RNeasy 6.6  20661901
+5 ggo_ht_F_1 Gorilla      Heart F    Fourth     RNeasy 7.7  28286878
+6 ggo_ht_M_1 Gorilla      Heart M    Fourth     RNeasy 6.4  30588563
+  PairedEnd                 Source Cause_of_death DOReception LoExtraction
+1        no    Zoo_Berlin,_Germany                                 Leipzig
+2        PE Zoo_Frankfurt,_Germany                                 Leipzig
+3        no    Zoo_Berlin,_Germany                                 Leipzig
+4        no Zoo_Frankfurt,_Germany                                 Leipzig
+5        no    Zoo_Berlin,_Germany                                 Leipzig
+6        no Zoo_Frankfurt,_Germany                                 Leipzig
+  RNA_conc             LoLibrary Library_prepared_in DOLibrary
+1       NA mRNA_classic_for_GAII             Leipzig          
+2       NA mRNA_classic_for_GAII             Leipzig          
+3       NA mRNA_classic_for_GAII             Leipzig          
+4       NA mRNA_classic_for_GAII             Leipzig          
+5       NA mRNA_classic_for_GAII             Leipzig          
+6       NA mRNA_classic_for_GAII             Leipzig          
+  Library_prep_performed_by Lib_conc   LoSeq DOSeq Comments Machine Run
+1                                 NA Leipzig                           
+2                                 NA Leipzig                           
+3                                 NA Leipzig                           
+4                                 NA Leipzig                           
+5                                 NA Leipzig                           
+6                                 NA Leipzig                           
+  Lane Two_Machine_Runs
+1                      
+2                      
+3                      
+4                      
+5                      
+6                      </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## check that sample info file has the same number of samples at the TPM_raw file
+<span class="kw">nrow</span>(SampleInfo)==<span class="kw">ncol</span>(TPM_raw)-<span class="dv">1</span></code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## if there are any EnsemblIDs without a match in biomart, find their chromosomal location and gene name online
+TPM_raw$Human_Ortho_EnsemblID[<span class="kw">which</span>(!TPM_raw$Human_Ortho_EnsemblID %in%<span class="st"> </span>geneinfo$Ensembl.Gene.ID)]</code></pre></div>
+<pre><code>character(0)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## combine Ensembl gene info with gene expression file
+TPM_raw&lt;-<span class="kw">cbind</span>(TPM_raw[,<span class="dv">1</span>],geneinfo[,<span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">3</span>)],TPM_raw[,-<span class="dv">1</span>])
+<span class="kw">colnames</span>(TPM_raw)&lt;-<span class="kw">c</span>(<span class="st">&#39;EnsemblID&#39;</span>,<span class="kw">colnames</span>(TPM_raw)[-<span class="dv">1</span>])</code></pre></div>
+</div>
+<div id="pre-processing-of-rna-seq-data" class="section level1">
+<h1>Pre-processing of RNA-seq Data</h1>
+<div id="expression-unmapped-and-mapped" class="section level2">
+<h2>Expression unmapped and mapped</h2>
+<p><strong>Quantify the number of raw reads that mapped to genes during psuedo-alignement.</strong></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## create list of kallisto output files
+<span class="kw">setwd</span>(<span class="st">&quot;../data/KallistoOutput/&quot;</span>)
+listcsv&lt;-<span class="kw">as.character</span>(<span class="kw">dir</span>(<span class="dt">pattern=</span><span class="st">&quot;*&quot;</span>))<span class="co"># creates the list of all the csv files in the directory in true (not computer) numerical order</span>
+## check that matches sample info
+<span class="kw">length</span>(listcsv)==<span class="kw">nrow</span>(SampleInfo)</code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## make sure samples in the correct order
+SampleInfo&lt;-SampleInfo[<span class="kw">order</span>(SampleInfo$SampleID),]
+SampleInfo$SampleID==listcsv</code></pre></div>
+<pre><code> [1] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[15] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[29] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[43] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[57] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE
+[71] TRUE TRUE TRUE TRUE TRUE TRUE TRUE TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## sum mapped reads and add to SampleInfo
+<span class="co">#n equals the number of columns in SampleInfo</span>
+n=<span class="kw">ncol</span>(SampleInfo)
+
+for (k in <span class="dv">1</span>:<span class="kw">nrow</span>(SampleInfo)){ 
+  SampleInfo[k,(n<span class="dv">+1</span>)]&lt;-<span class="kw">as.numeric</span>(<span class="kw">sum</span>((<span class="kw">read.delim</span>(<span class="kw">paste</span>(listcsv[k],<span class="st">&quot;/abundance.tsv&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>)))$est_counts))
+}
+<span class="kw">colnames</span>(SampleInfo)&lt;-<span class="kw">c</span>(<span class="kw">colnames</span>(SampleInfo)[-n],<span class="st">&quot;Mapped_Reads&quot;</span>)
+
+## caclulate other mapped reads stats and add to SampleInfo
+SampleInfo$Proportion_mapped_reads&lt;-SampleInfo$Mapped_Reads/SampleInfo$Raw_reads
+SampleInfo$Unmapped_reads&lt;-SampleInfo$Raw_reads-SampleInfo$Mapped_Reads
+SampleInfo$Proportion_unmapped_reads&lt;-SampleInfo$Unmapped_reads/SampleInfo$Raw_reads
+<span class="kw">setwd</span>(<span class="st">&quot;/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/analysis&quot;</span>)</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/plot%20mapped%20reads-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/plot%20mapped%20reads-2.png" width="768" style="display: block; margin: auto;" /></p>
+<p><strong>Samples will be eliminated based on the following criteria:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>if the sample fails three or more tests for quality samples it will be eliminated</p></li>
+<li><p>if the sample expression density curve mean is more than two standard deviations away from the mean of the other samples of that tissue’s mean expression, it will be eliminated</p></li>
+<li><p>if sample fails to eventually cluster by species and tissue, it will be eliminated</p></li>
+</ol>
+<p>First two tests of quality: samples that have fewer that 5 million reads or less than 20% mapped reads</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## set original number of failures to 0 for each sample
+SampleInfo$Failures&lt;-<span class="dv">0</span>
+
+## if does not have enough mapped reads or a low proportion, add a count
+SampleInfo$Failures[<span class="kw">which</span>(SampleInfo$Mapped_Reads&lt;<span class="dv">5000000</span>)]&lt;-SampleInfo$Failures[<span class="kw">which</span>(SampleInfo$Mapped_Reads&lt;<span class="dv">5000000</span>)]+<span class="dv">1</span>
+
+SampleInfo$Failures[<span class="kw">which</span>(SampleInfo$Proportion_mapped_reads&lt;<span class="fl">0.2</span>)]&lt;-SampleInfo$Failures[<span class="kw">which</span>(SampleInfo$Proportion_mapped_reads&lt;<span class="fl">0.2</span>)]+<span class="dv">1</span></code></pre></div>
+</div>
+<div id="gtex-expression-comparison" class="section level2">
+<h2>GTEX Expression Comparison</h2>
+<p>To ensure our samples are from the correct tissue, check the human gene expression rank against gene expression rank in GtEX samples. Then, check non-human samples against human sample rank.</p>
+<div id="compare-gene-expression-ranks-between-human-samples-and-gtex" class="section level3">
+<h3>Compare Gene Expression Ranks between human samples and GTEX</h3>
+<p><img src="figure/PrepDataforBAGER.Rmd/Examine%20Gene%20Expression%20Rank%20compared%20to%20GTEX-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Examine%20Gene%20Expression%20Rank%20compared%20to%20GTEX-2.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Examine%20Gene%20Expression%20Rank%20compared%20to%20GTEX-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Examine%20Gene%20Expression%20Rank%20compared%20to%20GTEX-4.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Examine%20Gene%20Expression%20Rank%20compared%20to%20GTEX-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Examine%20Gene%20Expression%20Rank%20compared%20to%20GTEX-6.png" width="768" style="display: block; margin: auto;" /></p>
+<p><strong>The correlation between human samples and GtEX is very high. This is not true when comparing two different tissue types (not shown).</strong></p>
+</div>
+<div id="examine-the-top-100-most-expressed-genes-in-gtex-present-in-our-dataset" class="section level3">
+<h3>Examine the top 100 most expressed genes in GTEX present in our dataset</h3>
+<p><img src="figure/PrepDataforBAGER.Rmd/Top%20100%20expressed%20genes%20in%20my%20DS%20defined%20by%20GTEX-1.png" width="768" style="display: block; margin: auto;" /></p>
+<p><strong>Representative expression distribution of all genes and top 100 genes expressed in GtEX (blue):</strong> All tissues tested followed this pattern, indicating the top most expressed in GtEX are highly expressed in our samples as well.</p>
+</div>
+<div id="human-v-non-human-primates-correlation-in-rank-in-gtex" class="section level3">
+<h3>Human v Non-Human Primates correlation in rank in GTEX</h3>
+<p><img src="figure/PrepDataforBAGER.Rmd/human%20to%20non%20human-1.png" width="768" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## keep track of failures - samples that have abnormally low correlation with humans
+SampleInfo$Failures[<span class="kw">which</span>(correlationstohuman$correlationstohuman&lt;.<span class="dv">7</span>)]&lt;-SampleInfo$Failures[<span class="kw">which</span>(correlationstohuman$correlationstohuman&lt;.<span class="dv">7</span>)]+<span class="dv">1</span></code></pre></div>
+</div>
+</div>
+</div>
+<div id="processing-rna-seq-data" class="section level1">
+<h1>Processing RNA-seq data</h1>
+<div id="eliminate-mitochondrial-genes-and-lowly-expressed-genes-log-transform-the-data" class="section level2">
+<h2>Eliminate mitochondrial genes and lowly expressed genes, log transform the data</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># eliminate all Mitochondrial genes</span>
+TPM_noMT&lt;-<span class="kw">filter</span>(TPM_raw, Chromosome.Name !=<span class="st">&quot;MT&quot;</span>)
+
+## eliminate lowly expressed genes (with TPM&lt;2 in all samples)
+TPM_noMT_expressed&lt;-TPM_noMT[<span class="kw">rowSums</span>(TPM_noMT[,<span class="dv">4</span>:<span class="kw">ncol</span>(TPM_noMT)])&gt;<span class="dv">2</span>*<span class="kw">nrow</span>(SampleInfo),]
+
+## log the data and prepare for PCA and regression analysis
+TPM_noMT_expressed_log&lt;-<span class="kw">log2</span>(TPM_noMT_expressed[,<span class="dv">4</span>:<span class="kw">ncol</span>(TPM_noMT_expressed)]+<span class="fl">0.0000001</span>)
+<span class="kw">rownames</span>(TPM_noMT_expressed_log)&lt;-TPM_noMT_expressed$EnsemblID</code></pre></div>
+</div>
+<div id="examine-expression-density-curves-by-tissue" class="section level2">
+<h2>Examine Expression Density Curves by Tissue</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### load colors
+pal &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Set1&quot;</span>), <span class="kw">brewer.pal</span>(<span class="dv">8</span>, <span class="st">&quot;Dark2&quot;</span>))
+
+## view expression density curves one tissue at a time
+for (t in <span class="dv">1</span>:<span class="kw">length</span>(tissue)){
+<span class="kw">plotDensities</span>(TPM_noMT_expressed_log[,<span class="kw">grep</span>(tissue[t], <span class="kw">colnames</span>(TPM_noMT_expressed_log))],<span class="dt">main=</span><span class="kw">paste</span>(<span class="st">&quot;log(TPM) Expression Density Curves for&quot;</span>, tissue[t], <span class="dt">sep=</span><span class="st">&quot; &quot;</span>), <span class="dt">col =</span> pal)
+  <span class="kw">abline</span>(<span class="dt">v=</span><span class="kw">log</span>(<span class="dv">2</span>))
+}</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/density%20curves-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/density%20curves-2.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/density%20curves-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/density%20curves-4.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/density%20curves-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/density%20curves-6.png" width="768" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## identify samples with abnormal expression density curves
+## these are samples with expression means that differ by more than two standard deviations from the other samples from those tissues
+
+distsumm_noMT_expressed_log&lt;-<span class="kw">cbind</span>(<span class="kw">apply</span>(TPM_noMT_expressed_log,<span class="dv">2</span>, mean),<span class="kw">apply</span>(TPM_noMT_expressed_log,<span class="dv">2</span>, sd))  ## caluclate the mean and sds of the curves
+<span class="kw">colnames</span>(distsumm_noMT_expressed_log)&lt;-<span class="kw">c</span>(<span class="st">&quot;mean&quot;</span>, <span class="st">&quot;sd&quot;</span>)
+
+abnorm&lt;-<span class="kw">vector</span>() ## set vectors
+for (t in tissue){
+  mean.not&lt;-<span class="kw">vector</span>()
+  sd.not&lt;-<span class="kw">vector</span>()
+  abnormQ&lt;-<span class="kw">vector</span>()
+  for (i in <span class="dv">1</span>:<span class="kw">length</span>(<span class="kw">grep</span>(t, <span class="kw">colnames</span>(TPM_noMT_expressed_log)))){
+    mean.not[i]&lt;-<span class="kw">mean</span>(distsumm_noMT_expressed_log[<span class="kw">grep</span>(t, <span class="kw">colnames</span>(TPM_noMT_expressed_log))[-i],<span class="dv">1</span>]) ## calculate the average mean and standard deviation expression in all tissues except the one being examined
+    sd.not[i]&lt;-<span class="kw">sd</span>(distsumm_noMT_expressed_log[<span class="kw">grep</span>(t, <span class="kw">colnames</span>(TPM_noMT_expressed_log))[-i],<span class="dv">1</span>])
+    abnormQ[i]&lt;-<span class="kw">pnorm</span>(<span class="dt">q =</span>distsumm_noMT_expressed_log[<span class="kw">grep</span>(t, <span class="kw">colnames</span>(TPM_noMT_expressed_log))[i],<span class="dv">1</span>] , <span class="dt">mean =</span> mean.not[i],<span class="dt">sd =</span> sd.not[i]) ## calculate the probability of seeing the mean of the one being examined
+  }
+  abnorm&lt;-<span class="kw">cbind</span>(abnorm,<span class="kw">colnames</span>(TPM_noMT_expressed_log)[<span class="kw">grep</span>(t, <span class="kw">colnames</span>(TPM_noMT_expressed_log))][<span class="kw">which</span>(abnormQ&lt;<span class="fl">0.023</span> |<span class="st"> </span>abnormQ&gt;<span class="fl">0.977</span>)]) ## identify samples that have mean expression more than two standard deviations away from the others
+}
+
+## which samples have bad expression density curves?
+abnorm[<span class="dv">1</span>,]</code></pre></div>
+<pre><code>[1] &quot;hsa_br_M_5&quot; &quot;ppy_ht_M_1&quot; &quot;hsa_lv_M_1&quot; &quot;mml_ts_M_2&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## samples that have very abnormal distributions will be eliminated
+## hsa_br_M_5 is also labeled &#39;temporal&#39; instead of frontal cortex
+SampleInfo$Failures[<span class="kw">c</span>(<span class="dv">17</span>,<span class="dv">59</span>,<span class="dv">21</span>,<span class="dv">42</span>)]&lt;-SampleInfo$Failures[<span class="kw">c</span>(<span class="dv">17</span>,<span class="dv">59</span>,<span class="dv">21</span>,<span class="dv">42</span>)]+<span class="dv">3</span></code></pre></div>
+</div>
+<div id="examine-pcs-and-heatmaps-to-identify-samples-that-cluster-poorly-by-tissue-andor-species" class="section level2">
+<h2>Examine PCs and Heatmaps to identify samples that cluster poorly by tissue and/or species</h2>
+<p><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-2.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-4.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-6.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-7.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-8.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-9.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-10.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-11.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-12.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-13.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/Plot%20the%20PCs%20before%20batch%20correction-14.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="eliminate-samples-before-regression-analysis" class="section level2">
+<h2>Eliminate samples before regression analysis</h2>
+<p><strong>Samples will be eliminated based on the following criteria:</strong></p>
+<ol style="list-style-type: decimal">
+<li><p>if the sample fails three or more tests for quality samples it will be eliminated</p></li>
+<li><p>if the sample expression density curve mean is more than two standard deviations away from the mean of the other samples of that tissue’s mean expression, it will be eliminated</p></li>
+<li><p>if sample fails to eventually cluster by species and tissue, it will be eliminated</p></li>
+</ol>
+<p>First two tests of quality: samples that have fewer that 5 million reads or less than 20% mapped reads</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## samples which failed to cluster properly in either PCA or heatmap
+fails&lt;-<span class="kw">c</span>(<span class="dv">24</span>,<span class="dv">49</span>,<span class="dv">4</span>,<span class="dv">16</span>,<span class="dv">17</span>)
+SampleInfo$Failures[fails]&lt;-SampleInfo$Failures[fails]+<span class="dv">1</span>
+
+## clustering with the wrong tissue
+fails&lt;-<span class="kw">c</span>(<span class="dv">53</span>)
+SampleInfo$Failures[fails]&lt;-SampleInfo$Failures[fails]+<span class="dv">3</span>
+
+## Eliminate samples from Sample Info / Covariates File
+Sample_Info_First_Elim&lt;-<span class="kw">filter</span>(SampleInfo, Failures&lt;<span class="dv">3</span>)
+
+## eliminate samples from RNA_seq file
+TPM_noMT_expressed_log_First_Pass&lt;-TPM_noMT_expressed_log[,<span class="kw">which</span>(SampleInfo$Failures&lt;<span class="dv">3</span>)]
+
+## be sure correctly eliminated by checking for the same number of samples in each file
+<span class="kw">nrow</span>(Sample_Info_First_Elim)==<span class="kw">ncol</span>(TPM_noMT_expressed_log_First_Pass)</code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div id="covariate-analysis-and-regression" class="section level2">
+<h2>Covariate analysis and Regression</h2>
+<div id="choose-covariates-to-include-in-analysis" class="section level3">
+<h3>Choose covariates to include in analysis</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## find correlations between covariates and tissue or species to be sure to NOT include
+SampleInfo_test&lt;-SampleInfo[,-<span class="dv">15</span>]
+corrwithTissue&lt;-<span class="kw">vector</span>()
+corrwithSpecies&lt;-<span class="kw">vector</span>()
+for (i in <span class="dv">1</span>:<span class="kw">ncol</span>(SampleInfo_test)){
+  corrwithTissue[i]&lt;-<span class="kw">suppressWarnings</span>(<span class="kw">chisq.test</span>(SampleInfo$Tissue,SampleInfo_test[,i])$p.val)
+  corrwithSpecies[i]&lt;-<span class="kw">suppressWarnings</span>(<span class="kw">chisq.test</span>(SampleInfo$Species,SampleInfo_test[,i])$p.val)
+}
+
+## which are correlated with Tissue
+<span class="kw">colnames</span>(SampleInfo_test[<span class="kw">which</span>(corrwithTissue&lt;<span class="fl">0.05</span>/<span class="kw">ncol</span>(SampleInfo_test))])</code></pre></div>
+<pre><code>[1] &quot;Tissue&quot;      &quot;PairedEnd&quot;   &quot;DOReception&quot; &quot;DOSeq&quot;       &quot;Comments&quot;   
+[6] &quot;Run&quot;         &quot;Lane&quot;        &quot;Failures&quot;   </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## which with Species?
+<span class="kw">colnames</span>(SampleInfo_test[<span class="kw">which</span>(corrwithSpecies&lt;<span class="fl">0.05</span>/<span class="kw">ncol</span>(SampleInfo_test))])</code></pre></div>
+<pre><code> [1] &quot;Species&quot;                   &quot;Age_Quant&quot;                
+ [3] &quot;Extraction&quot;                &quot;Source&quot;                   
+ [5] &quot;Cause_of_death&quot;            &quot;DOReception&quot;              
+ [7] &quot;LoExtraction&quot;              &quot;Library_prepared_in&quot;      
+ [9] &quot;DOLibrary&quot;                 &quot;Library_prep_performed_by&quot;
+[11] &quot;LoSeq&quot;                     &quot;Machine&quot;                  
+[13] &quot;V27&quot;                      </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## select covariates that should be included in regression analysis, either because they are informative, not correlated with tissue and species, or because we need to know if they are significant (and there were enough samples with the information)
+Sample_Info_First_Pass&lt;-<span class="kw">select</span>(Sample_Info_First_Elim, G, RIN, Raw_reads, Library_prepared_in)</code></pre></div>
+</div>
+<div id="define-regression-functions" class="section level3">
+<h3>Define regression functions</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Regression Analysis Function to calculate correlation between covariates and PCs
+RegressionAnalysis&lt;-function(RNA_DATA, covariates){
+  <span class="co"># Calculate PCs: </span>
+  sum.PC &lt;-<span class="st"> </span><span class="kw">prcomp</span>(<span class="kw">t</span>(RNA_DATA), <span class="dt">scale=</span><span class="ot">FALSE</span>, <span class="dt">center=</span><span class="ot">TRUE</span>)
+  sum.PC_frame =<span class="st"> </span>sum.PC$x[,<span class="dv">1</span>:<span class="dv">10</span>]
+  ## plot PC contribution
+  <span class="kw">plot</span>(<span class="kw">summary</span>(sum.PC)$importance[<span class="dv">1</span>:<span class="dv">3</span>,<span class="dv">1</span>:<span class="kw">min</span>(<span class="dv">20</span>,<span class="kw">ncol</span>(<span class="kw">summary</span>(sum.PC)$importance))] [<span class="dv">2</span>,], <span class="dt">main=</span><span class="st">&quot;Proportion Explained by Each PC&quot;</span>, <span class="dt">xlab=</span><span class="st">&quot;PC&quot;</span>, <span class="dt">ylab=</span><span class="st">&quot;Prop Variance Explained&quot;</span>, <span class="dt">type =</span> <span class="st">&quot;l&quot;</span>)
+
+  ## To see if covariates are correlated with a PC (looking at PC1-50)
+  pval.pca1=<span class="kw">matrix</span>(<span class="dt">ncol=</span><span class="kw">ncol</span>(covariates), <span class="dt">nrow=</span><span class="kw">ncol</span>(sum.PC_frame))
+  <span class="kw">rownames</span>(pval.pca1)=<span class="kw">colnames</span>(sum.PC_frame)
+  <span class="kw">colnames</span>(pval.pca1)=<span class="kw">colnames</span>(covariates)
+  ## for each covariate, check for correlation with PCs
+  for(j in <span class="dv">1</span>:<span class="kw">ncol</span>(covariates)){
+    for(i in <span class="dv">1</span>:<span class="dv">10</span>){
+      data1=<span class="st"> </span><span class="kw">lm</span>(sum.PC$x[,i]~covariates[,j])
+      pval.pca1[i,j]=<span class="kw">anova</span>(data1)$<span class="st">&#39;Pr(&gt;F)&#39;</span>[<span class="dv">1</span>]
+    }
+  }
+
+  <span class="kw">return</span>(pval.pca1)
+}
+
+## Function to regress out a specifed covariate
+Regress_out&lt;-function(RNA_DATA, covariates, ColumntoRegress){
+    Regress_SOMETHING =<span class="st"> </span><span class="kw">matrix</span>(<span class="dt">nrow=</span> <span class="kw">nrow</span>(RNA_DATA), <span class="dt">ncol =</span> <span class="kw">ncol</span>(RNA_DATA))
+    <span class="kw">rownames</span>(Regress_SOMETHING) =<span class="st"> </span><span class="kw">rownames</span>(RNA_DATA)
+    <span class="kw">colnames</span>(Regress_SOMETHING) =<span class="st"> </span><span class="kw">colnames</span>(RNA_DATA)
+    ## create model for covariate and regress out its contribution
+    for (i in <span class="dv">1</span>:<span class="kw">nrow</span>(Regress_SOMETHING)) {
+      model.i=<span class="st"> </span><span class="kw">lm</span>(<span class="kw">as.numeric</span>(RNA_DATA[i,]) ~<span class="st"> </span>covariates[,ColumntoRegress])
+      Regress_SOMETHING[i,] =<span class="st"> </span><span class="kw">resid</span>(model.i) +<span class="st"> </span>model.i$coefficients[<span class="dv">1</span>]
+    }
+    
+    <span class="kw">return</span>(Regress_SOMETHING)
+}</code></pre></div>
+</div>
+<div id="initial-regression" class="section level3">
+<h3>Initial regression</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### Initial Regression Analysis ####
+First_Pass&lt;-<span class="kw">RegressionAnalysis</span>(TPM_noMT_expressed_log_First_Pass, Sample_Info_First_Pass)</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/regression-1.png" width="768" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(First_Pass,<span class="dv">5</span>)</code></pre></div>
+<pre><code>             G       RIN  Raw_reads Library_prepared_in
+PC1 0.33134802 0.2448465 0.02999027        8.989438e-01
+PC2 0.09709003 0.3754979 0.19408447        3.433904e-01
+PC3 0.76685716 0.5790392 0.57323321        8.450874e-01
+PC4 0.32959229 0.2032645 0.80913066        5.112347e-01
+PC5 0.60105392 0.7729747 0.44415014        5.057374e-08</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Define signifcance cutoff
+sigcorr&lt;-<span class="fl">0.05</span>/<span class="kw">ncol</span>(Sample_Info_First_Pass)
+
+#### Second Pass ####
+
+## Which covariates are the most correlated with top PCs?
+<span class="kw">which</span>(<span class="kw">head</span>(First_Pass,<span class="dv">5</span>)&lt;sigcorr)</code></pre></div>
+<pre><code>[1] 20</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## First regress out Library_prepared_in
+TPM_noMT_expressed_log_Second_Pass&lt;-<span class="kw">Regress_out</span>(TPM_noMT_expressed_log_First_Pass, Sample_Info_First_Pass, <span class="kw">which</span>(<span class="kw">colnames</span>(Sample_Info_First_Pass)==<span class="st">&quot;Library_prepared_in&quot;</span>))
+
+## Perform Second Regression Analysis
+Second_Pass&lt;-<span class="kw">RegressionAnalysis</span>(TPM_noMT_expressed_log_Second_Pass, Sample_Info_First_Pass)</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/regression-2.png" width="768" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(Second_Pass,<span class="dv">6</span>)</code></pre></div>
+<pre><code>             G       RIN  Raw_reads Library_prepared_in
+PC1 0.33245781 0.2415235 0.03075111                   1
+PC2 0.09810048 0.3459989 0.22039910                   1
+PC3 0.77151753 0.5870490 0.57999754                   1
+PC4 0.32113561 0.1914277 0.85036155                   1
+PC5 0.29074448 0.3651518 0.06739578                   1
+PC6 0.40477203 0.5368968 0.25759119                   1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### Third Pass ####
+
+## Which covariate are still correlated?
+<span class="kw">which</span>(<span class="kw">head</span>(Second_Pass,<span class="dv">6</span>)&lt;sigcorr)</code></pre></div>
+<pre><code>integer(0)</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### Examine Clustering ####
+
+## Check PCs and Heatmap
+<span class="kw">plotPCandHeatmap</span>(TPM_noMT_expressed_log_Second_Pass, Sample_Info_First_Elim)</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/regression-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-4.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-6.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-7.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-8.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-9.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-10.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-11.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-12.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-13.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-14.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-15.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/regression-16.png" width="768" style="display: block; margin: auto;" /></p>
+</div>
+<div id="remove-samples-that-still-do-not-cluster-with-species-or-tissue-and-reregress" class="section level3">
+<h3>Remove samples that still do not cluster with species or tissue and reregress</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## samples which failed to cluster properly in the PCA
+## eliminating hsa_br_M_4 and hsa_br_M_1
+fails&lt;-<span class="kw">c</span>(<span class="dv">13</span>,<span class="dv">16</span>)
+SampleInfo$Failures[fails]&lt;-SampleInfo$Failures[fails]+<span class="dv">3</span>
+## Remove from covariates file
+Sample_Info_Second_Elim&lt;-<span class="kw">filter</span>(SampleInfo, Failures&lt;<span class="dv">3</span>)
+
+## eliminate samples from RNA_seq file
+TPM_noMT_expressed_log_First_Pass&lt;-TPM_noMT_expressed_log[,<span class="kw">which</span>(SampleInfo$Failures&lt;<span class="dv">3</span>)]
+
+## be sure correctly eliminated by checking for the same number of samples in each file
+<span class="kw">nrow</span>(Sample_Info_Second_Elim)==<span class="kw">ncol</span>(TPM_noMT_expressed_log_First_Pass)</code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## select samples that should be included in analysis, either because they are informative, not correlated with tissue and species, or because we need to know if they are significant (and there were enough samples with the information)
+Sample_Info_Second_Pass&lt;-<span class="kw">select</span>(Sample_Info_Second_Elim, G, RIN, Raw_reads, Library_prepared_in)
+
+#### Second Regression Analysis ####
+First_Pass&lt;-<span class="kw">RegressionAnalysis</span>(TPM_noMT_expressed_log_First_Pass, Sample_Info_Second_Pass)</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-1.png" width="768" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(First_Pass,<span class="dv">5</span>)</code></pre></div>
+<pre><code>             G       RIN  Raw_reads Library_prepared_in
+PC1 0.42156447 0.2463134 0.04274208        7.888795e-01
+PC2 0.08365802 0.4111733 0.16972390        3.744110e-01
+PC3 0.71626121 0.5859393 0.60509589        8.193629e-01
+PC4 0.34281614 0.2023375 0.82806359        5.110335e-01
+PC5 0.71325554 0.8041369 0.36609642        4.424058e-08</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Define signifcance cutoff
+sigcorr&lt;-<span class="fl">0.05</span>/<span class="kw">ncol</span>(Sample_Info_First_Pass)
+
+#### Second Pass ####
+
+## Which covariates are the most correlated with top PCs?
+<span class="kw">which</span>(<span class="kw">head</span>(First_Pass,<span class="dv">5</span>)&lt;sigcorr)</code></pre></div>
+<pre><code>[1] 20</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## First regress out Library_prepared_in
+## Regress out first covariate
+TPM_noMT_expressed_log_Second_Pass&lt;-<span class="kw">Regress_out</span>(TPM_noMT_expressed_log_First_Pass, Sample_Info_Second_Pass, <span class="kw">which</span>(<span class="kw">colnames</span>(Sample_Info_Second_Pass)==<span class="st">&quot;Library_prepared_in&quot;</span>))
+
+## Perform Second Regression Analysis
+Second_Pass&lt;-<span class="kw">RegressionAnalysis</span>(TPM_noMT_expressed_log_Second_Pass, Sample_Info_Second_Pass)</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-2.png" width="768" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(Second_Pass,<span class="dv">6</span>)</code></pre></div>
+<pre><code>             G       RIN  Raw_reads Library_prepared_in
+PC1 0.42654949 0.2390530 0.04533775                   1
+PC2 0.08635199 0.3801095 0.19469673                   1
+PC3 0.71961880 0.5952430 0.61431064                   1
+PC4 0.33852141 0.1903328 0.87361743                   1
+PC5 0.44302359 0.4262535 0.04575210                   1
+PC6 0.39355340 0.4641133 0.38221564                   1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### Third Pass ####
+
+## Which covariate are still correlated?
+<span class="kw">which</span>(<span class="kw">head</span>(Second_Pass,<span class="dv">6</span>)&lt;sigcorr)</code></pre></div>
+<pre><code>integer(0)</code></pre>
+</div>
+</div>
+</div>
+<div id="final-processing-complete" class="section level1">
+<h1>Final: processing complete</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### Examine Clustering ####
+
+## Check PCs and Heatmap
+<span class="kw">plotPCandHeatmap</span>(TPM_noMT_expressed_log_Second_Pass, Sample_Info_Second_Elim)</code></pre></div>
+<p><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-2.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-4.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-6.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-7.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-8.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-9.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-10.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-11.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-12.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-13.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/unnamed-chunk-1-14.png" width="768" style="display: block; margin: auto;" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## define this processed matrix as the processed RNA-seq data
+TPM_noMT_expressed_log_processed&lt;-TPM_noMT_expressed_log_Second_Pass
+
+## be sure correctly eliminated by checking for the same number of samples in each file
+<span class="kw">nrow</span>(Sample_Info_Second_Elim)==<span class="kw">ncol</span>(TPM_noMT_expressed_log_processed)</code></pre></div>
+<pre><code>[1] TRUE</code></pre>
+<div id="save-as-tissue-expression-files-for-bager" class="section level2">
+<h2>Save as tissue expression files for BAGER</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## first save all processed data
+<span class="kw">write.table</span>(TPM_noMT_expressed_log_processed, <span class="dt">file=</span> <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,<span class="kw">Sys.Date</span>(),<span class="st">&quot;ProcessedExpData.txt&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>)
+
+## save list of samples to be included in analysis
+<span class="kw">write.table</span>(Sample_Info_Second_Elim, <span class="dt">file =</span> <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,<span class="kw">Sys.Date</span>(),<span class="st">&quot;IncludedSamples.txt&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>)
+
+## save expression files by tissue
+for (t in tissue){
+  <span class="kw">write.table</span>(<span class="kw">t</span>(TPM_noMT_expressed_log_processed[,<span class="kw">grep</span>(t,<span class="kw">colnames</span>(TPM_noMT_expressed_log_processed))]) , <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,t,<span class="st">&quot;_exp&quot;</span>,<span class="st">&quot;.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">col.names =</span> <span class="ot">FALSE</span>)
+}</code></pre></div>
+<p><strong>by Erin Fry, 2017-06-12</strong></p>
+<div id="session-information" class="section level4">
+<h4>Session information</h4>
+<!-- Insert the session information into the document -->
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
+<pre><code>R version 3.3.2 (2016-10-31)
+Platform: x86_64-apple-darwin15.6.0 (64-bit)
+Running under: OS X El Capitan 10.11.6
+
+locale:
+[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+
+attached base packages:
+[1] stats     graphics  grDevices utils     datasets  methods   base     
+
+other attached packages:
+ [1] ape_4.1            statmod_1.4.29     plyr_1.8.4        
+ [4] R.utils_2.5.0      R.oo_1.21.0        R.methodsS3_1.7.1 
+ [7] edgeR_3.14.0       scales_0.4.1       RColorBrewer_1.1-2
+[10] gplots_3.0.1       ggplot2_2.2.1      limma_3.28.21     
+[13] dplyr_0.5.0        workflowr_0.4.0    rmarkdown_1.5     
+
+loaded via a namespace (and not attached):
+ [1] Rcpp_0.12.10       git2r_0.18.0       bitops_1.0-6      
+ [4] tools_3.3.2        digest_0.6.12      evaluate_0.10     
+ [7] tibble_1.3.0       gtable_0.2.0       nlme_3.1-131      
+[10] lattice_0.20-35    DBI_0.6-1          parallel_3.3.2    
+[13] yaml_2.1.14        stringr_1.2.0      knitr_1.15.1      
+[16] gtools_3.5.0       caTools_1.17.1     rprojroot_1.2     
+[19] grid_3.3.2         R6_2.2.0           gdata_2.17.0      
+[22] magrittr_1.5       backports_1.0.5    htmltools_0.3.5   
+[25] assertthat_0.2.0   colorspace_1.3-2   labeling_0.3      
+[28] KernSmooth_2.23-15 stringi_1.1.5      lazyeval_0.2.0    
+[31] munsell_0.4.3     </code></pre>
+</div>
+</div>
+</div>
+
+<hr>
+<p>
+    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
