@@ -347,7 +347,7 @@ shared across the workflowr files. -->
 <p><strong>Last updated:</strong> 2017-06-12</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> bdeaa5b</p>
+<p><strong>Code version:</strong> bafb22c</p>
 <!-- Add your analysis here -->
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -764,8 +764,8 @@ TPM_noMT_expressed_log_processed&lt;-TPM_noMT_expressed_log_Second_Pass
 ## be sure correctly eliminated by checking for the same number of samples in each file
 <span class="kw">nrow</span>(Sample_Info_Second_Elim)==<span class="kw">ncol</span>(TPM_noMT_expressed_log_processed)</code></pre></div>
 <pre><code>[1] TRUE</code></pre>
-<div id="save-as-tissue-expression-files-for-bager" class="section level2">
-<h2>Save as tissue expression files for BAGER</h2>
+<div id="save-as-tissue-expression-files-for-badger" class="section level2">
+<h2>Save as tissue expression files for BADGER</h2>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## first save all processed data
 <span class="kw">write.table</span>(TPM_noMT_expressed_log_processed, <span class="dt">file=</span> <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,<span class="kw">Sys.Date</span>(),<span class="st">&quot;ProcessedExpData.txt&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>)
 
