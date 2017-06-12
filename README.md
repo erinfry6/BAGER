@@ -1,4 +1,4 @@
-# AGER
+# BADGER
 
 A [workflowr][] project.
 
