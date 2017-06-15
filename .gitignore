@@ -6,3 +6,6 @@
 analysis/figure
 analysis/*html
 analysis/*_cache
+output/
+data/
+BayesTraits/
