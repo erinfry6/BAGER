@@ -19,4 +19,4 @@ BADGER, Bayesian Ancestral Differential Gene Expression Reconstruction, is a nov
 
  4) Identify genes with expression shifts in the lineage of interest by comparing the posterior probability distributions of the ancestral reconstructions. [Preliminary results](BADGERAnalysis.html)
 
-![image soure: https://www.liverpool.ac.uk/infection-and-global-health/research/zoonotic-infections/badger-survey/](https://www.liverpool.ac.uk/media/livacuk/infectionandglobalhealth/badger.jpg)
+![image source: https://www.liverpool.ac.uk/infection-and-global-health/research/zoonotic-infections/badger-survey/](https://www.liverpool.ac.uk/media/livacuk/infectionandglobalhealth/badger.jpg)
