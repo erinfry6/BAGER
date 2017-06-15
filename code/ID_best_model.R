@@ -1,14 +1,16 @@
+## read in tissue argument
+
+tissue<-commandArgs()
+
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
-path="/Users/lynchlab/Desktop/ErinFry/ReconAncNeoTranscriptomes/BrainConstitiutive/BTReconstruct/"
-pathData=paste(path,"data/",sep="")
-pathResults=paste(path,"resultsFour/",sep="")
+path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
+pathData=paste(path,"data/forBAGER/",sep="")
+pathResults=paste(path,"data/BAGERresults/",tissue,"/",sep="")
 pathSSS=paste(pathResults,"SSS/",sep="")
 pathKappa=paste(pathSSS,"kappa/",sep="")
 pathDelta=paste(pathSSS,"delta/",sep="")
 pathNone=paste(pathSSS,"none/",sep="")
 pathKD=paste(pathSSS,"kd/",sep="")
-
-library(dplyr)
 
 ######################################################################
 #### define the genes to find the best model for
@@ -62,7 +64,7 @@ KDLML<-findLML(numgenes)
 ## choice of 1=Kappa, 2= KD, 3=Delta, 4=none
 choice=vector()
 for (i in 1:numgenes){
-choice[i]<-which.max(c(KappaLML[i],KDLML[i],DeltaLML[i]))
+choice[i]<-which.max(c(KappaLML[i],KDLML[i],DeltaLML[i], NoneLML[i]))
 }
 
 

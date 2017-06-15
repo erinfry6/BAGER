@@ -116,25 +116,25 @@ Iterations 1010000
 Burnin 10000
 stones 100 10000' > ${commandfile}  									## general commands
 
-	if [[ $c == none ]]; then
-   	echo creating 'none' model files for ${tissue} 						## model-specific commands
+if [[ $c == none ]]; then
+echo creating 'none' model files for ${tissue} 						## model-specific commands
 
-	elif [[ $c == kappa ]]; then
-	echo creating kappa model files for ${tissue}
-	echo kappa >> ${commandfile}
+elif [[ $c == kappa ]]; then
+echo creating kappa model files for ${tissue}
+echo kappa >> ${commandfile}
 
-	elif [[ $c == kd ]]; then
-	echo creating kappa and delta model files for ${tissue}
-	echo 'kappa
-	delta' >> ${commandfile}
+elif [[ $c == kd ]]; then
+echo creating kappa and delta model files for ${tissue}
+echo 'kappa
+delta' >> ${commandfile}
 	
-	else 
-	echo creating delta model files for ${tissue}
-	echo delta >> ${commandfile}
-	fi
+else 
+echo creating delta model files for ${tissue}
+echo delta >> ${commandfile}
+fi
 
-	echo SaveModels $model >> ${commandfile} 							## second general commands
-	echo run >> ${commandfile}
+echo SaveModels $model >> ${commandfile} 							## second general commands
+echo run >> ${commandfile}
 
 		
 
@@ -142,9 +142,9 @@ stones 100 10000' > ${commandfile}  									## general commands
 		do
 		awk -v a="$a" '{print $1,$a}' ${Expressiondata} > ${singleexpression}
 
-		./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} > ${pathTemp}/MCMC.txt
-		cp ${singleexpression}.Stones.txt ${pathSSSResults}/${c}/gene$a.txt
-		cp ${model} ${pathModelResults}/${c}/gene$a.bin
+		./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} > ${pathTemp}/MCMC.txt || exit 1
+		cp ${singleexpression}.Stones.txt ${pathSSSResults}/${c}/gene$a.txt || exit 1
+		cp ${model} ${pathModelResults}/${c}/gene$a.bin || exit 1
 
 		done		
 

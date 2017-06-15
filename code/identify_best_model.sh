@@ -5,17 +5,19 @@
 
 ###########################################################
 
-export path=/Users/lynchlab/Desktop/ErinFry/ReconAncNeoTranscriptomes/BrainConstitiutive/BTReconstruct ##full absolute path to main directory
+export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path to main directory
 	
-	export pathData=${path}/data
-	export pathScripts=${path}/scripts
-	export pathResults=${path}/resultsFour
+	export pathData=${path}/data/forBAGER
+	export pathScripts=${path}/code
+	export pathResults=${path}/data/BAGERresults/${tissue}
 	export pathTemporary=${pathResults}/temporary
+	export pathModelResults=${pathResults}/Models
+	export pathSSSResults=${pathResults}/SSS
 	export pathCommands=${pathScripts}/commands
 
 ###########################################################
 
-	## for the following code to work, you must have a gene 1. for me this is a duplicate of gene #2
+	## for the following code to work, you must have a gene 1. duplicate gene #2
 
 	if [ -e ${pathResults}/SSS/kappa/gene1.txt ]; then
    	echo 'already here'
@@ -24,7 +26,7 @@ export path=/Users/lynchlab/Desktop/ErinFry/ReconAncNeoTranscriptomes/BrainConst
     fi
 
 
-if [ -e ${pathResults}/SSS/delta/gene1.txt ]; then
+	if [ -e ${pathResults}/SSS/delta/gene1.txt ]; then
    	echo 'already here'
     else
     cp -r ${pathResults}/SSS/delta/gene2.txt ${pathResults}/SSS/delta/gene1.txt
@@ -49,7 +51,7 @@ if [ -e ${pathResults}/SSS/delta/gene1.txt ]; then
 
 	## Extract reconstruction information using 'Create.AGER.Summary.File.R'
 	
-	R --vanilla <ID_best_model.R
+	R --vanilla <ID_best_model.R $tissue
 	
 	
-echo created model choice file in ${pathResults} directory
+echo created model choice file for $tissue in ${pathResults} directory

@@ -5,11 +5,11 @@
 
 ###########################################################
 
-export path=/Users/lynchlab/Desktop/ErinFry/ReconAncNeoTranscriptomes/BrainConstitiutive/BTReconstruct ##full absolute path to main directory
+export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path to main directory
 	
-	export pathData=${path}/data
-	export pathScripts=${path}/scripts
-	export pathResults=${path}/resultsFour
+	export pathData=${path}/data/forBAGER
+	export pathScripts=${path}/code
+	export pathResults=${path}/data/BAGERresults/${tissue}
 	export pathTemporary=${pathResults}/temporary
 	export pathCommands=${pathScripts}/commands
 
@@ -28,6 +28,6 @@ export path=/Users/lynchlab/Desktop/ErinFry/ReconAncNeoTranscriptomes/BrainConst
 
 	## Extract reconstruction information using 'Create.AGER.Summary.File.R'
 	
-	R --vanilla <Create.AGER.Summary.File.R 
+	R --vanilla <Create.AGER.Summary.File.R $tissue
 
 
