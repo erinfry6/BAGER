@@ -32,19 +32,20 @@ Place the contents of this repository in the code folder, except for the BayesTr
 
 The following input files are required for this analysis:
 
- - Expression_Data.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. Be sure to keep another document that notes the gene in each column, as well as gene numbers, beginning at 2.
+ - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. Be sure to keep another document that notes the gene in each column, as well as gene numbers, beginning at 2.
 
- - Tree.tree: Tree.tree is an ultrametric nexus formatted phylogeny formatted according to the BayesTraits Manual.
+ - tissuecode_tree.tree: Tree.tree is an ultrametric nexus formatted phylogeny formatted according to the BayesTraits Manual.
 
+* tissuecode is the name of the tissue you are analyzing that will be an input for the scripts below *
 
 
 ## Modify the scripts
 
  - The top of each script (all .sh and .R files) must be modified to contain the proper home directory path
 
- - The numbering will begin at 2, not 1. For steps 1 and 3, modify the .sh file for loops at the end of the script to run the analysis on the desired number of genes.
+ - The gene numbering will begin at 2, not 1. 
 
- - If you would like to modify the commands given to BayesTraits, you will need to manually change the command file writing scripts in the 'CREATING COMMAND FILES' section of `run_MCMC.sh` and `ancestral_reconstruction.sh`. 
+ - If you would like to modify the models ran in BayesTraits, you will need to manually change the command sections of `create_model_files.sh` and `ancestral_reconstruction.sh`. 
 
  - To specify which ancestral nodes are reconstructed, modify `ancestral_reconstruction.sh`'s command section, which is at the bottom in the for loop. Follow the instructions in AGERinstructions.txt
 
@@ -55,10 +56,8 @@ The following input files are required for this analysis:
 In our experience, incorporating both Kappa and Delta (see BayesTraits manual) decreases the variance of reconstructions and increases the log likelihood of the chain.
 
 ```
-./create_model_files.sh Expression_Data.txt SampleTree.tree 4 2
+./create_model_files.sh tissuecode
 ```
-   
-4 (continuous walk) and 2 (MCMC) are the two commands necessary to run BayesTraits random walk MCMC algorithm
 
 
 #### 2) identify_best_model.sh - Identify the model with the largest log marginal likelihood. Saves model choice in the results as modelchoice.txt

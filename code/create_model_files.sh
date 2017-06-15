@@ -96,7 +96,8 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	## be sure that a directory was created for each of the models (of the same name) in ${pathModelResults}
 	
 	## general commands: you may modify these general commands referring to the properties of the MCMC, see the BayesTraits manual for more details
-	## It is not recommended to remove or modify the general commands that are written here.
+	## It is not recommended to remove or modify the general commands that are written here. '4' and '2' indicated a continuous trait random walk model.
+	## using the stepping stone sampler is strongly recommended (stones command)
 	## Any additional commands you add to each of the models tested should be added here
 	
 	## model-specific commands: these commands are the lines necessary to run each of the models you wish to test
