@@ -1,0 +1,7 @@
+4
+2
+Iterations 1010000
+Burnin 10000
+stones 100 10000
+SaveModels /Users/lynchlab/Desktop/ErinFry/workflowr/AGER/data/BADGERresults/br/temporary/Model_br.bin
+run
