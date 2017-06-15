@@ -35,7 +35,7 @@ knitr::read_chunk("chunks.R")
 
 # Introduction
 
-**This R markdown file will create RNA_seq log transformed gene expression files for Bayesian Ancestral Gene Expression Reconstruction (BAGER) for six primate species and six tissues.**
+**This R markdown file will create RNA_seq log transformed gene expression files for Bayesian Ancestral Differential Gene Expression Reconstruction (BADGER) for six primate species and six tissues.**
 
  - First, the samples will be examined for successful pseudo-alignment, compared to GtEX expression data in human tissues, and scrutinized for correct density distributions. 
 
@@ -53,7 +53,7 @@ knitr::read_chunk("chunks.R")
 
  1) Generate transcript abundance file using alignment and quantification pipeline [found here](https://github.com/erinfry6/RNASeqRealignAcrossPrimates)
 
- 2) Obtain EnsemblID, associated gene name, and chromosomal location for genes in analysis. @ [Biomart](http://www.ensembl.org/biomart/martview/57d2c215b1d6b6e5cbf4662826e0d8b4): filter with gene IDs, attributes gene ID, associated gene name and chromosome, click results. Add this information into the Transcripts.txt file in path/results/qualitycontrol directory. Save as 'Transcripts.txt'
+ 2) Obtain EnsemblID, associated gene name, and chromosomal location for genes in analysis from [Biomart](http://www.ensembl.org/biomart/martview/57d2c215b1d6b6e5cbf4662826e0d8b4): filter with gene IDs, attributes gene ID, associated gene name and chromosome, click results. Add this information into the Transcripts.txt file in path/results/qualitycontrol directory. Save as 'Transcripts.txt'
 
  3) Obtain [GTEX](https://www.gtexportal.org/home/) tissue expression data and save it to the results/qualitycontrol directory
 
@@ -651,7 +651,7 @@ which(head(Second_Pass,6)<sigcorr)
 ```
 
 # Final: processing complete
-```{r}
+```{r final heatmap and PC}
 #### Examine Clustering ####
 
 ## Check PCs and Heatmap
@@ -668,15 +668,20 @@ nrow(Sample_Info_Second_Elim)==ncol(TPM_noMT_expressed_log_processed)
 ## Save as tissue expression files for BADGER
 ```{r save data files}
 ## first save all processed data
-write.table(TPM_noMT_expressed_log_processed, file= paste("../data/forBAGER/",Sys.Date(),"ProcessedExpData.txt"), sep='\t')
+write.table(TPM_noMT_expressed_log_processed, file= paste("../data/forBADGER/",Sys.Date(),"ProcessedExpData.txt", sep=""), sep='\t', quote = FALSE)
 
 ## save list of samples to be included in analysis
-write.table(Sample_Info_Second_Elim, file = paste("../data/forBAGER/",Sys.Date(),"IncludedSamples.txt"), sep='\t')
+write.table(Sample_Info_Second_Elim, file = paste("../data/forBADGER/",Sys.Date(),"IncludedSamples.txt", sep=""), sep='\t', quote=FALSE)
 
-## save expression files by tissue
+## save expression files by tissue, remove genes that are not expressed and keep record of which genes are included in the analysis
 for (t in tissue){
-  write.table(t(TPM_noMT_expressed_log_processed[,grep(t,colnames(TPM_noMT_expressed_log_processed))]) , paste("../data/forBAGER/",t,"_exp",".txt", sep=""), sep='\t', col.names = FALSE)
+  temp<-TPM_noMT_expressed_log_processed[,grep(t,colnames(TPM_noMT_expressed_log_processed))]
+  temp_rm<-temp[rowSums(temp)>(log2(2)*ncol(temp)),]
+  write.table(t(temp_rm) , paste("../data/forBADGER/",t,"_exp",".txt", sep=""), sep='\t', col.names = FALSE, quote=FALSE)
+  write.table(temp_rm, paste("../data/forBADGER/",t,"_genesincluded",".txt", sep=""), quote=FALSE, sep='\t')
+  
 }
+
 ```
 
 
