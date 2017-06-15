@@ -13,9 +13,9 @@
 
 export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path to main directory
 
-	export pathData=${path}/data/forBADGER
+	export pathData=${path}/data/forBAGER
 	export pathScripts=${path}/code
-	export pathResults=${path}/data/BADGERresults/${tissue}
+	export pathResults=${path}/data/BAGERresults/${tissue}
 	export pathTemp=${pathResults}/temporary
 	export pathModelResults=${pathResults}/Models
 	export pathSSSResults=${pathResults}/SSS

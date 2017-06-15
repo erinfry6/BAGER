@@ -14,9 +14,9 @@ Before beginning, create a home directory for the pipeline that contains the fol
 
 				home/data/
 					
-							forBADGER
+							forBAGER
 							
-							BADGERresults
+							BAGERresults
 				
 				home/code
 				
@@ -80,7 +80,7 @@ _All four inputs following the bash script should be the exact same as in step 1
 #### 4) Extract.AGER.SummaryStats.sh - Collect Summary statistics for the AGERs into one Summary file using Create.AGER.Summary.File.R .
 
 ```
-./Extract.BADGER.SummaryStat.sh
+./Extract.BAGER.SummaryStat.sh
 ```
 
 #### 5) AGERAnalysis.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts. Best used in R studio.

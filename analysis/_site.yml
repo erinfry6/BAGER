@@ -1,9 +1,9 @@
-name: BADGER
+name: BAGER
 output_dir: "../docs"
 include: [".nojekyll"]
 exclude: ["include"]
 navbar:
-  title: BADGER
+  title: BAGER
   left:
     - text: "Home"
       href: index.html

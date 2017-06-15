@@ -7,16 +7,16 @@ output:
     highlight: espresso
 ---
 
-BADGER, Bayesian Ancestral Differential Gene Expression Reconstruction, is a novel method of reconstructing ancestral gene expression levels. We are employing BADGER to identify expression shifts in the human lineage, or since our common ancestor with chimpanzees. However, BADGER can be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.
+BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of reconstructing ancestral gene expression levels. We are employing BAGER to identify expression shifts in the human lineage, or since our common ancestor with chimpanzees. However, BAGER can be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.
 
 ## Steps:
 
  1) Collect and map RNA-sequencing reads to orthologous exon files. ([see for scripts](https://github.com/erinfry6/RNASeqRealignAcrossPrimates))
  
- 2) [Assess quality of samples, eliminate samples that are of poor quality or that fail to cluster by tissue and/or species, and generate the files need for BADGER.](PrepDataforBAGER.html)
+ 2) [Assess quality of samples, eliminate samples that are of poor quality or that fail to cluster by tissue and/or species, and generate the files need for BAGER.](PrepDataforBAGER.html)
 
- 3) BADGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. ([see for preliminary scripts](https://github.com/erinfry6/AncGeneExpReconstructionBT))
+ 3) BAGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. ([see for preliminary scripts](https://github.com/erinfry6/AncGeneExpReconstructionBT))
 
- 4) Identify genes with expression shifts in the lineage of interest by comparing the posterior probability distributions of the ancestral reconstructions. [Preliminary results](BADGERAnalysis.html)
+ 4) Identify genes with expression shifts in the lineage of interest by comparing the posterior probability distributions of the ancestral reconstructions. [Preliminary results](BAGERAnalysis.html)
 
-![image source: https://www.liverpool.ac.uk/infection-and-global-health/research/zoonotic-infections/badger-survey/](https://www.liverpool.ac.uk/media/livacuk/infectionandglobalhealth/badger.jpg)
+![image source: https://www.liverpool.ac.uk/infection-and-global-health/research/zoonotic-infections/BADGER-survey/](https://www.liverpool.ac.uk/media/livacuk/infectionandglobalhealth/BADGER.jpg)

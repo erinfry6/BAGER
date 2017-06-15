@@ -35,7 +35,7 @@ knitr::read_chunk("chunks.R")
 
 # Introduction
 
-**This R markdown file will create RNA_seq log transformed gene expression files for Bayesian Ancestral Differential Gene Expression Reconstruction (BADGER) for six primate species and six tissues.**
+**This R markdown file will create RNA_seq log transformed gene expression files for Bayesian Ancestral Gene Expression Reconstruction (BAGER) for six primate species and six tissues.**
 
  - First, the samples will be examined for successful pseudo-alignment, compared to GtEX expression data in human tissues, and scrutinized for correct density distributions. 
 
@@ -665,20 +665,20 @@ nrow(Sample_Info_Second_Elim)==ncol(TPM_noMT_expressed_log_processed)
 ``` 
 
 
-## Save as tissue expression files for BADGER
+## Save as tissue expression files for BAGER
 ```{r save data files}
 ## first save all processed data
-write.table(TPM_noMT_expressed_log_processed, file= paste("../data/forBADGER/",Sys.Date(),"ProcessedExpData.txt", sep=""), sep='\t', quote = FALSE)
+write.table(TPM_noMT_expressed_log_processed, file= paste("../data/forBAGER/",Sys.Date(),"ProcessedExpData.txt", sep=""), sep='\t', quote = FALSE)
 
 ## save list of samples to be included in analysis
-write.table(Sample_Info_Second_Elim, file = paste("../data/forBADGER/",Sys.Date(),"IncludedSamples.txt", sep=""), sep='\t', quote=FALSE)
+write.table(Sample_Info_Second_Elim, file = paste("../data/forBAGER/",Sys.Date(),"IncludedSamples.txt", sep=""), sep='\t', quote=FALSE)
 
 ## save expression files by tissue, remove genes that are not expressed and keep record of which genes are included in the analysis
 for (t in tissue){
   temp<-TPM_noMT_expressed_log_processed[,grep(t,colnames(TPM_noMT_expressed_log_processed))]
   temp_rm<-temp[rowSums(temp)>(log2(2)*ncol(temp)),]
-  write.table(t(temp_rm) , paste("../data/forBADGER/",t,"_exp",".txt", sep=""), sep='\t', col.names = FALSE, quote=FALSE)
-  write.table(temp_rm, paste("../data/forBADGER/",t,"_genesincluded",".txt", sep=""), quote=FALSE, sep='\t')
+  write.table(t(temp_rm) , paste("../data/forBAGER/",t,"_exp",".txt", sep=""), sep='\t', col.names = FALSE, quote=FALSE)
+  write.table(temp_rm, paste("../data/forBAGER/",t,"_genesincluded",".txt", sep=""), quote=FALSE, sep='\t')
   
 }
 
