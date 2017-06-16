@@ -9,4 +9,4 @@ analysis/*_cache
 output/
 data/
 BayesTraits/
-code/commands
+code/commands/*
