@@ -114,7 +114,7 @@ head(Summary)
 ```
 
 ## Select reconstructed and expressed genes
-Genes that succesfully reconstructed will have similar posterior variations between the two ancestral node reconstructions. Each reconstructions difference in standard deviation between the two ancestral nodes has been calculated. Only genes with a foldSD less than 4 will be included, as they have successfully reconstructed.
+Genes that successfully reconstructed will have similar posterior variations between the two ancestral node reconstructions. Each reconstructions difference in standard deviation between the two ancestral nodes has been calculated. Only genes with a foldSD less than 4 will be included, as they have successfully reconstructed.
 
 ```{r reconstruction success, warnings=FALSE, echo =TRUE}
 ## the HC ancestral reconstruction generally has a higher standard deviation. If it is too much larger than the ancHuman the chain failed to reconstruct
@@ -211,7 +211,7 @@ ggplotly(p)
 
 # Examine the ancestral gene expression reconstructions
 
-To visiualize expression shifts, one can view the posterior probability divergences of the ancHuman (teal) and ancHC (gray).
+To visualize expression shifts, one can view the posterior probability divergences of the ancHuman (teal) and ancHC (gray).
 
 ## ...of genes identified to have an expression shift in Brawand et al
 
@@ -261,7 +261,7 @@ viewPPDs(shiftgenes$gene_number[1:10])
 
 ## Heatmap of expressed genes compared to all
 
-These heatmaps are generated using the expression data in all sampled primate frontal cortices. The first, of all reconstructed genes, does not elucidate any obvious patterns. The second, of all genes with expression shifts, shows clusters of genes with specific patterns. The most notable of which is either increased or decreased expression in humans compared to all other species.
+These heat maps are generated using the expression data in all sampled primate frontal cortices. The first, of all reconstructed genes, does not elucidate any obvious patterns. The second, of all genes with expression shifts, shows clusters of genes with specific patterns. The most notable of which is either increased or decreased expression in humans compared to all other species.
 
 ```{r examine qualities of genes identified to have shifts in the original data, echo=FALSE}
 ## load expression data used to run scripts
