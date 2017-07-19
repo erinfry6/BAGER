@@ -38,6 +38,7 @@ library(dplyr)
 library("ggplot2")
 library(gplots)
 library(plotly)
+library(WebGestaltR)
 ```
 
 ```{r Load AGERs list and gene information, echo=FALSE, cache=TRUE}
@@ -332,13 +333,15 @@ converged_expression<-prepforheatmap(TPM_log[(which(Summary$hgnc_symbol %in% rec
 #categoricalData=c("hsa.br.F.1"="blue", "hsa.br.M.1"="blue", "hsa.br.M.2"="blue", "hsa.br.M.3"="blue", "hsa.br.M.4"="blue", "ptr.br.F.1"="#56B4E9","ptr.br.M.1"="#56B4E9", "ptr.br.M.2"="#56B4E9", "ptr.br.M.3"="#56B4E9", "ptr.br.M.4"="#56B4E9", "ptr.br.M.5"="#56B4E9","ppa.br.F.1"="#999999", "ppa.br.F.2"="#999999","ppa.br.M.1"="#999999","ggo.br.F.1"="#0072B2", "ggo.br.M.1"="#0072B2","ppy.br.F.1"="orange", "ppy.br.M.1"="orange","mml.br.M.2"="red")
 
 
+colnames(TPM_log)
+
 heatmap.2(converged_expression, col=bluered(75),
           density.info="none", trace="none", symm=FALSE,
           dendrogram="row", scale="row",
           Rowv=T, Colv=F,colsep = 1:74, 
           sepcolor="black", 
           sepwidth=c(0.0000000001,0.000000001),
-          labRow="", labCol="", main="Expression of Reconstructed Genes \n Human    Chimp    Bonobo    Gorilla   Orang   Mac")
+          labRow="", labCol="", main="Expression of Reconstructed Genes")
 
 
 
@@ -353,7 +356,7 @@ heatmap.2(shift_expression, col=bluered(75),
           Rowv=T, Colv=F,colsep = 1:74, 
           sepcolor="black", 
           sepwidth=c(0.0000000001,0.000000001),
-          labRow="", labCol="", main="Expression of all Genes with Expression Shifts \n Human    Chimp    Bonobo    Gorilla   Orang   Mac")
+          labRow="", labCol="", main="Expression of all Genes with Expression Shifts")
 
 ```
 
@@ -465,3 +468,28 @@ ggplot(data=temp, mapping=aes(x=(human_mean),y=(chimp_mean), text=hgnc_symbol)) 
   geom_vline(xintercept=expcut, alpha=1) + geom_hline(yintercept=expcut, alpha=1) 
 
 ```
+
+
+
+## Enrichment Analyses
+
+```{r enrichment analysis}
+
+## webgestalt R for GO enrichment analysis, see manual https://cran.r-project.org/web/packages/WebGestaltR/WebGestaltR.pdf 
+
+for (enrichdb in c("geneontology_Biological_Process", "geneontology_Cellular_Component","pathway_Panther","pathway_KEGG", "pathway_Wikipathway", "phenotype_Human_Phenotype_Ontology")){
+
+WebGestaltR(enrichMethod = "ORA", organism = "hsapiens", enrichDatabase = enrichdb,
+            enrichDatabaseFile=NULL, enrichDatabaseType=NULL,
+            interestGene=shiftgenes$ensembl_gene_id,interestGeneType="ensembl_gene_id",
+            collapseMethod="mean",
+            referenceGene=reconsgenes$ensembl_gene_id,referenceGeneType="ensembl_gene_id",
+            minNum=10, maxNum=500,
+            fdrMethod="BH",sigMethod="fdr",fdrThr=0.05,
+            topThr=10,dNum=20,perNum=1000,
+            lNum=20,is.output=TRUE,
+            outputDirectory=paste(pathResults,sep=""),projectName=paste(Sys.Date(),enrichdb, sep="-"),
+            keepGSEAFolder=FALSE, methodType="R",dagColor="binary",hostName="http://www.webgestalt.org/")
+}
+```
+
