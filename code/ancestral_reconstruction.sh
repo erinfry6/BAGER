@@ -94,13 +94,14 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 for ((a=2; a<=$NumGenes; a++))													## genes to test
 	do
 	
-echo '4
+echo '7
 2
-Iterations 1010000
-Burnin 10000
+VarRates
+Iterations 110000000
+Burnin 10000000
 stones 100 10000
-AddTag Tag-PointA hsa_br_M_1 hsa_br_M_2 hsa_br_M_3 hsa_br_M_4 hsa_br_F_1 
-AddTag Tag-PointB hsa_br_M_1 hsa_br_M_2 hsa_br_M_3 hsa_br_M_4 hsa_br_F_1 ptr_br_M_3 ptr_br_M_2 ptr_br_M_5 ptr_br_M_1 ptr_br_M_4 ptr_br_F_1 ppa_br_M_1 ppa_br_F_1 ppa_br_F_2 
+AddTag Tag-PointA hsa_br_M_2 hsa_br_M_3 hsa_br_F_1 
+AddTag Tag-PointB hsa_br_M_2 hsa_br_M_3 hsa_br_F_1 ptr_br_M_3 ptr_br_M_2 ptr_br_M_5 ptr_br_M_1 ptr_br_M_4 ptr_br_F_1 ppa_br_M_1 ppa_br_F_1 ppa_br_F_2 
 AddNode AncHomo Tag-PointA
 AddNode AncHominini Tag-PointB' >> ${commandfile}
 echo LoadModels ${pathTemp}/model$scriptversion.bin >> ${commandfile} 			## general commands and ancestral nodes
@@ -114,7 +115,7 @@ if [[ $choice == 4 ]]; then
 echo run >> ${commandfile}														## model-specific commands and reconstruction
 	
 cp ${pathModelResults}/none/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraitsV2/BayesTraitsV2 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=91' > ${pathRecon}/gene$a.txt || exit 1
+./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=91' > ${pathRecon}/gene$a.txt || exit 1
 	
 
 elif [[ $choice == 3 ]]; then
@@ -123,7 +124,7 @@ echo 'delta'																	## model-specific commands and reconstruction
 run' >> ${commandfile}
 	
 cp ${pathModelResults}/delta/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraitsV2/BayesTraitsV2 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=92' > ${pathRecon}/gene$a.txt || exit 1
+./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=92' > ${pathRecon}/gene$a.txt || exit 1
 
 elif [[ $choice == 2 ]]; then
 
@@ -132,7 +133,7 @@ delta
 run' >> ${commandfile}															## model-specific commands and reconstruction
 	
 cp ${pathModelResults}/kd/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraitsV2/BayesTraitsV2 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=93' > ${pathRecon}/gene$a.txt || exit 1
+./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=93' > ${pathRecon}/gene$a.txt || exit 1
 	
 else 
 
@@ -140,7 +141,7 @@ echo 'kappa
 run' >> ${commandfile}															## model-specific commands and reconstruction
 	
 cp ${pathModelResults}/kappa/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraitsV2/BayesTraitsV2 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=92' > ${pathRecon}/gene$a.txt || exit 1
+./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=92' > ${pathRecon}/gene$a.txt || exit 1
 	
 	fi
 	

@@ -6,6 +6,8 @@
 	## read in which tissue
 
 	tissue=$1
+	begingene=$2
+	endgene=$3
 
 ###########################################################
 
@@ -44,7 +46,7 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 
 	
 	## define the models to be tested
-	models="VarRates Lambda"
+	models="Lambda"
 	
 	## make a list of .txt files to be created from the model, these should blank in the *.txt______.txt
 	## if using VarRates with stepping stone sampler these will be the files created
@@ -77,7 +79,7 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 ###########################################################
 	
 	## define pathways of files to be created and utilized during analysis
-	export scriptversion=$tissue  ## be sure to save files for their tissue as to not confuse, or this can be used to run multiple create_model_files at once
+	export scriptversion=$begingene  ## be sure to save files for their tissue as to not confuse, or this can be used to run multiple create_model_files at once
 	export singleexpression=${pathResults}/temporary/singlegene_$scriptversion.txt
 	export commandfile=${pathCommands}/step1command_$scriptversion.txt
 	
@@ -139,24 +141,20 @@ echo run >> ${commandfile} 										## second general commands
 
 		
 
-	for ((a=2; a<=$NumGenes; a++))										## run model for each gene
+	for ((a=$begingene; a<=$endgene; a++))										## run model for each gene
 		do
 		awk -v a="$a" '{print $1,$a}' ${Expressiondata} > ${singleexpression}
 
-		./../BayesTraits/BP3.1 ${tree} ${singleexpression} <${commandfile} > ${pathTemp}/MCMC.txt
+		./../BayesTraits/BP3.1 ${tree} ${singleexpression} <${commandfile} > ${pathTemp}/MCMC$scriptversion.txt
 		
 for f in $filestomake 
 do
 cp ${singleexpression}.$f.txt ${pathResults}/$f/$m/gene$a.txt
 done
 		
-cp ${pathTemp}/MCMC.txt ${pathResults}/MCMC/$m/gene$a.txt
+cp ${pathTemp}/MCMC$scriptversion.txt ${pathResults}/MCMC/$m/gene$a.txt
 cp ${singleexpression}.Output.trees ${pathResults}/Output_trees/$m/gene$a.trees 
 	
-	
-	
-		
-		# || exit 1
 
 done		
 

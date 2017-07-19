@@ -41,8 +41,8 @@ read.tcsv = function(file, header=TRUE, sep=",", ...) {
 }
 
 ## set function for importing the ancestral expression reconstructions, excluding the header
-read.AncRecon=function(file, firstrow, lastrow,header=F, sep='\t'){
-  temp<-t(read.tcsv(file, sep='\t', header=F)[,firstrow:lastrow])
+read.AncRecon=function(file, firstcol,header=F, sep='\t'){
+  temp<-t(read.tcsv(file, sep='\t', header=F)[,firstcol:ncol(read.tcsv(listcsv[1], sep='\t', header=F))])
   colnames(temp)<-temp[1,]
   temp<-temp[-1,]
   return(temp)
@@ -125,15 +125,20 @@ modelchoice<-t(read.csv(paste(pathResults,"modelchoice.txt", sep=""),header=F, s
 colnames(modelchoice)<-modelchoice[1,]
 modelchoice<-as.data.frame(modelchoice[-1,])
 
-listcsv<-modelchoice$gene.number
+## for each model tested
+for (i in 1:nrow(modelchoice)){
+
+choice<-modelchoice$model.choice[i]
+  
+## read in list of reconstructed genes
+listcsv<-paste("gene",as.character((order(dir(pattern = "*.txt")))),".txt", sep="")
 
 ## find which row the iteration information begins on for this tissue's tree
-finding.information.about.file<-(read.tcsv(paste(pathAncRecon,models[length(models)],"/",listcsv[1],sep=""), sep='\t'))
+finding.information.about.file<-(read.tcsv(listcsv[1], sep='\t'))
 it.begin<-which(colnames(finding.information.about.file)=="Itter")
 
 ## set the total number of rows you expect to have in each file so the code will warn you if reconstructions failed
-expectedrows=ncol(finding.information.about.file)-it.begin
-
+expectedrows=ncol(read.tcsv(listcsv[1], sep='\t', header=F))-it.begin
 
 ## set empty vectors to contain statistics
 foldSD<-vector()
@@ -142,41 +147,35 @@ BayesianPostProbofDivergence<-vector()
 MedianAncHomo<-vector() # the median reconstructed value of human
 MedianAncHominini<-vector() # the median reconstructed value of HC
 
-
-## for each gene
-for (i in 1:nrow(modelchoice)){
-
-  ## load the model choice
-choice<-modelchoice$model.choice[i]
-
 ## for each gene in the list
-  gene<-read.AncRecon(paste(pathAncRecon,choice,"/",listcsv[i],sep=""), firstrow = it.begin,lastrow=(it.begin+expectedrows), sep='\t') # read in the output of BayesTraits
+for (k in 1:length(listcsv)){ 
+  gene<-read.AncRecon(listcsv[[k]], firstcol = it.begin, sep='\t') # read in the output of BayesTraits
   if (nrow(gene)!=expectedrows){
-    warning(paste("The reconstruction of gene number", i, "failed. Check file"))
+    warning(paste("The reconstruction of gene number", k, "failed. Check file"))
   }
   
   ## calculate the fold difference increase in the hominini reconstruction
-  foldSD[i]<-sd(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])/sd(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])
+  foldSD[k]<-sd(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])/sd(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])
 
   ## caclculate the percent divergence of the two distributions; this is not the preffered method for identifying shifts
-  percent.divergent[i]<-DistDiv(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))], gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])
+  percent.divergent[k]<-DistDiv(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))], gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])
   
   ## the preferred method is the Bayesian Posterior Probability of Divergence
   diff<-as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])-as.numeric(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])
-  BayesianPostProbofDivergence[i]<-abs(max(1-(length(which(diff>0))/(expectedrows-1)), (length(which(diff>0))/(expectedrows-1))))
+  BayesianPostProbofDivergence[k]<-abs(max(1-(length(which(diff>0))/(expectedrows-1)), (length(which(diff>0))/(expectedrows-1))))
   
   ## find the median reconstructed values
-  MedianAncHominini[i]<-median(as.numeric(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))]))
-  MedianAncHomo[i]<-median(as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))]))
+  MedianAncHominini[k]<-median(as.numeric(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))]))
+  MedianAncHomo[k]<-median(as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))]))
   
   }
 
 
 ## combine gene information, divergence data, convergence data, and means and confidence intervals into one dataframe
-Summary<-as.data.frame(cbind(listcsv,modelchoice$model.choice,G_list[1:length(BayesianPostProbofDivergence),], BayesianPostProbofDivergence,foldSD,MedianAncHominini,MedianAncHomo,percent.divergent))
+Summary<-as.data.frame(cbind(listcsv,G_list[1:length(BayesianPostProbofDivergence),], BayesianPostProbofDivergence,foldSD,MedianAncHominini,MedianAncHomo,percent.divergent))
 
 ## save data
-write.table(Summary,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')
+write.table(Summary,paste(pathResults,m,"_BAGERSummary.txt", sep=""),sep='\t')
 
 head(Summary)
 }

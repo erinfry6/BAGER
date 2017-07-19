@@ -15,14 +15,20 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 
 ###########################################################
 
-	## for the following code to work, you must have a gene 1. for me this is a duplicate of gene #2
+	## for the following code to work, you must have a gene 1. duplicate gene #2
+	## define the models to be tested
+	models="VarRates Lambda"
 
-	if [ -e ${pathResults}/AncRecon/gene1.txt ]; then
-   	echo 'already here'
+	for m in $models
+	do
+
+	if [ -e ${pathSSSResults}/$m/gene1.txt ]; then
+   	echo gene 1 already duplicated
     else
-    cp -r ${pathResults}/AncRecon/gene2.txt ${pathResults}/AncRecon/gene1.txt
+	cp -r ${pathSSSResults}/$m/gene2.txt ${pathSSSResults}/$m/gene1.txt
     fi
 
+	done
 
 ###########################################################
 

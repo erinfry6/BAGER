@@ -11,6 +11,8 @@ navbar:
       href: about.html
     - text: "Sample Processing"
       href: PrepDataforBAGER.html
+    - text: "Brain Expression Shifts"
+      href: NewBAGERAnalysis.html
     - text: "License"
       href: license.html
   right:

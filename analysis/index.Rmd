@@ -17,6 +17,6 @@ BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of r
 
  3) BAGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. ([see for preliminary scripts](https://github.com/erinfry6/AncGeneExpReconstructionBT))
 
- 4) Identify genes with expression shifts in the lineage of interest by comparing the posterior probability distributions of the ancestral reconstructions. [Preliminary results](BAGERAnalysis.html)
+ 4) [Identify genes with expression shifts in the lineage of interest by comparing the posterior probability distributions of the ancestral reconstructions. (Preliminary results)](NewBAGERAnalysis.html)
 
 ![image source: https://www.liverpool.ac.uk/infection-and-global-health/research/zoonotic-infections/BADGER-survey/](https://www.liverpool.ac.uk/media/livacuk/infectionandglobalhealth/BADGER.jpg)

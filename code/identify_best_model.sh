@@ -5,53 +5,55 @@
 
 ###########################################################
 
+	tissue=$1
+
+###########################################################
+
 export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path to main directory
-	
+
 	export pathData=${path}/data/forBAGER
 	export pathScripts=${path}/code
 	export pathResults=${path}/data/BAGERresults/${tissue}
-	export pathTemporary=${pathResults}/temporary
-	export pathModelResults=${pathResults}/Models
-	export pathSSSResults=${pathResults}/SSS
+	export pathCommands=${pathScripts}/commands
+	export pathTemp=${pathResults}/temporary
+	export pathSSSResults=${pathResults}/Stones
 	export pathCommands=${pathScripts}/commands
 
 ###########################################################
 
 	## for the following code to work, you must have a gene 1. duplicate gene #2
+	## define the models to be tested
+	models="VarRates Lambda"
 
-	if [ -e ${pathResults}/SSS/kappa/gene1.txt ]; then
-   	echo 'already here'
+	for m in $models
+	do
+
+	if [ -e ${pathSSSResults}/$m/gene1.txt ]; then
+   	echo gene 1 already duplicated
     else
-    cp -r ${pathResults}/SSS/kappa/gene2.txt ${pathResults}/SSS/kappa/gene1.txt
+	cp -r ${pathSSSResults}/$m/gene2.txt ${pathSSSResults}/$m/gene1.txt
     fi
 
-
-	if [ -e ${pathResults}/SSS/delta/gene1.txt ]; then
-   	echo 'already here'
-    else
-    cp -r ${pathResults}/SSS/delta/gene2.txt ${pathResults}/SSS/delta/gene1.txt
-    fi
-    
-    
-    if [ -e ${pathResults}/SSS/kd/gene1.txt ]; then
-   	echo 'already here'
-    else
-    cp -r ${pathResults}/SSS/kd/gene2.txt ${pathResults}/SSS/kd/gene1.txt
-    fi
-    
-    
-    if [ -e ${pathResults}/SSS/none/gene1.txt ]; then
-   	echo 'already here'
-    else
-    cp -r ${pathResults}/SSS/none/gene2.txt ${pathResults}/SSS/none/gene1.txt
-    fi
-
+	done
 
 ###########################################################
 
+
+
+#echo #!/usr/bin/env Rscript > modelarg$tissue.txt
+#echo args = commandArgs($tissue=TRUE) >> modelarg$tissue.txt
+
 	## Extract reconstruction information using 'Create.AGER.Summary.File.R'
 	
-	R --vanilla <ID_best_model.R $tissue
+	R --vanilla <ID_best_model.R
+	
+	if [ -e ${pathResults}/modelchoice.txt ]; then
+   	echo created model choice file for $tissue in ${pathResults} directory
+    else
+	echo '
 	
 	
-echo created model choice file for $tissue in ${pathResults} directory
+	!!!failed to create model choice file!!!
+	
+	'
+    fi

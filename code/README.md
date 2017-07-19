@@ -63,7 +63,7 @@ In our experience, incorporating both Kappa and Delta (see BayesTraits manual) d
 #### 2) identify_best_model.sh - Identify the model with the largest log marginal likelihood. Saves model choice in the results as modelchoice.txt
 
 ```
-./identify_best_model.sh 
+./identify_best_model.sh tissuecode
 ```
 
 
