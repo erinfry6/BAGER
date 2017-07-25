@@ -11,8 +11,10 @@ navbar:
       href: about.html
     - text: "Sample Processing"
       href: PrepDataforBAGER.html
-    - text: "Brain Expression Shifts"
-      href: NewBAGERAnalysis.html
+    - text: "Frontal Cortex Expression Shifts"
+      href: BrainBAGERAnalysis.html
+    - text: "Testis Expression Shifts"
+      href: TestisBAGERAnalysis.html
     - text: "License"
       href: license.html
   right:
