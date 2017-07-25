@@ -3,14 +3,18 @@
 ## User should have R installed
 ## Non-indented lines should be evaluated for modification speficic to user's purpose
 
+	tissue=$1
+
 ###########################################################
 
 export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path to main directory
-	
+
 	export pathData=${path}/data/forBAGER
 	export pathScripts=${path}/code
 	export pathResults=${path}/data/BAGERresults/${tissue}
-	export pathTemporary=${pathResults}/temporary
+	export pathCommands=${pathScripts}/commands
+	export pathTemp=${pathResults}/temporary
+	export pathAncReconResults=${pathResults}/AncStates
 	export pathCommands=${pathScripts}/commands
 
 ###########################################################
@@ -22,18 +26,19 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	for m in $models
 	do
 
-	if [ -e ${pathSSSResults}/$m/gene1.txt ]; then
+	if [ -e ${pathAncReconResults}/$m/gene1.txt ]; then
    	echo gene 1 already duplicated
     else
-	cp -r ${pathSSSResults}/$m/gene2.txt ${pathSSSResults}/$m/gene1.txt
+	cp -r ${pathAncReconResults}/$m/gene2.txt ${pathAncReconResults}/$m/gene1.txt
     fi
 
 	done
+
 
 ###########################################################
 
 	## Extract reconstruction information using 'Create.AGER.Summary.File.R'
 	
-	R --vanilla <Create.AGER.Summary.File.R $tissue
+	#R --vanilla <Create.BAGER.Summary.File.R $tissue
 
 

@@ -33,6 +33,8 @@ tissuename<-"testis"
 
 tissue<-"ts"
 
+dup.ensembl<-c(4032,5933)
+
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
 pathData=paste(path,"data/forBAGER/",sep="")
@@ -120,7 +122,7 @@ return(matrix.or.df)
 
 ## view the BAGERs for each gene in a list of genes, lastit (last iteration) is the number of iterations sampled in the chain
 
-viewPPDs<-function(genelist, m=Summary$modelchoice.model.choice,nbins=100){
+viewPPDs<-function(genelist, m=Summary$modelchoice,nbins=100){
   for (i in genelist){  #for each of these genes
   gene<- read.AncRecon(paste(pathAncRecon,m[i],"/",listcsv[i], sep=""), firstrow = it.begin, lastrow = (expectedrows+it.begin), sep='\t') # read reconstruction
     
@@ -144,7 +146,7 @@ viewPPDs<-function(genelist, m=Summary$modelchoice.model.choice,nbins=100){
 
 ## view the BAGERs for each gene in a list of genes, lastit (last iteration) is the number of iterations sampled in the chain
 
-viewDifference<-function(genelist,m=Summary$modelchoice.model.choice, lastit=1000,nbins=100){
+viewDifference<-function(genelist,m=Summary$modelchoice, lastit=1000,nbins=100){
   for (i in genelist){  #for each of these genes
   gene<- read.AncRecon(paste(pathAncRecon,m[i],"/",listcsv[i], sep=""), firstrow = it.begin, lastrow = (expectedrows+it.begin), sep='\t')# read reconstruction
   anc1<-as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])
@@ -165,7 +167,7 @@ viewDifference<-function(genelist,m=Summary$modelchoice.model.choice, lastit=100
 ```{r Load summary file, echo=FALSE, tidy=TRUE, cache=TRUE}
 
 ## uploaded saved file 
-Summary<-read.table(paste(pathResults,"2017-07-18BAGERSummary.txt", sep=""),sep='\t', header=T)
+Summary<-read.table(paste(pathResults,"2017-07-25BAGERSummary.txt", sep=""),sep='\t', header=T)
 
 head(Summary)
 
@@ -319,6 +321,9 @@ TPM_log<-t(as.matrix(read.table(paste(pathData,tissue,"_exp.txt", sep=""),header
 colnames(TPM_log)<-TPM_log[1,]
 TPM_log<-TPM_log[-1,]
 
+## remove rows from original data that were repeat ensemblids
+TPM_log<-TPM_log[-(dup.ensembl-1),]
+
 ## select only converged genes to create heatmap
 converged_expression<-prepforheatmap(TPM_log[(which(Summary$hgnc_symbol %in% reconsgenes$hgnc_symbol)-1),])
 
@@ -365,7 +370,7 @@ HC_mean<-apply(converged_expression[,c(grep(pattern = "hsa", colnames(TPM_log)),
 
 non_human_mean<-apply(converged_expression[,-grep(pattern = "hsa", colnames(TPM_log))], 1, mean)
 
-temp<-cbind(reconsgenes,human_mean, chimp_mean, HC_mean, non_human_mean)
+temp<-cbind(reconsgenes[-1,],human_mean, chimp_mean, HC_mean, non_human_mean)
 
 
 df_layer_90 <- temp[ temp$labels =="90-95%",]

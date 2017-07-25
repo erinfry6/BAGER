@@ -1,6 +1,6 @@
 ## read in tissue argument
 
-tissue<-"br"
+tissue<-"ts"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -171,9 +171,13 @@ choice<-modelchoice$model.choice[i]
   
   }
 
+## sometimes there are multiple ensembl id's per gene name, and this will misalign gene labels with the reconstruction information
+dup.ensembl<-which(rownames(genenames) %in% G_list$ensembl_gene_id ==FALSE)
+
 
 ## combine gene information, divergence data, convergence data, and means and confidence intervals into one dataframe
-Summary<-as.data.frame(cbind(listcsv,modelchoice$model.choice,G_list[1:length(BayesianPostProbofDivergence),], BayesianPostProbofDivergence,foldSD,MedianAncHominini,MedianAncHomo,percent.divergent))
+Summary<-as.data.frame(cbind(listcsv[-dup.ensembl],modelchoice$model.choice[-dup.ensembl],G_list, BayesianPostProbofDivergence[-dup.ensembl],foldSD[-dup.ensembl],MedianAncHominini[-dup.ensembl],MedianAncHomo[-dup.ensembl],percent.divergent[-dup.ensembl]))
+colnames(Summary)<-c("listcsv","modelchoice","hgnc_symbol", "ensembl_gene_id", "chromosome_name", "BayesianPostProbofDivergence", "foldSD", "MedianAncHominini", "MedianAncHomo", "percent.divergent")
 
 ## save data
 write.table(Summary,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')

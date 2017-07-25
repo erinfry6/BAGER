@@ -46,7 +46,7 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 
 	
 	## define the models to be tested
-	models="Lambda"
+	models="VarRates"
 	
 	## make a list of .txt files to be created from the model, these should blank in the *.txt______.txt
 	## if using VarRates with stepping stone sampler these will be the files created
@@ -143,9 +143,17 @@ echo run >> ${commandfile} 										## second general commands
 
 	for ((a=$begingene; a<=$endgene; a++))										## run model for each gene
 		do
+		
+		if [ -e ${pathResults}/AncStates/$m/gene$a.txt ]; then
+   		echo already created $m model file for gene $a
+    	else
+    	
 		awk -v a="$a" '{print $1,$a}' ${Expressiondata} > ${singleexpression}
 
 		./../BayesTraits/BP3.1 ${tree} ${singleexpression} <${commandfile} > ${pathTemp}/MCMC$scriptversion.txt
+		
+		
+		fi
 		
 for f in $filestomake 
 do
