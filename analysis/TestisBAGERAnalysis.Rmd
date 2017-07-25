@@ -470,7 +470,6 @@ ggplot(data=temp, mapping=aes(x=(human_mean),y=(chimp_mean), text=hgnc_symbol)) 
 
 
 ```{r enrichment analysis, include=FALSE}
-
 ## webgestalt R for GO enrichment analysis, see manual https://cran.r-project.org/web/packages/WebGestaltR/WebGestaltR.pdf 
 
 #for (enrichdb in c("geneontology_Biological_Process", "geneontology_Cellular_Component","pathway_Panther","pathway_KEGG", "pathway_Wikipathway", "phenotype_Human_Phenotype_Ontology")){
