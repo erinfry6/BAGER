@@ -17,23 +17,6 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	export pathAncReconResults=${pathResults}/AncStates
 	export pathCommands=${pathScripts}/commands
 
-###########################################################
-
-	## for the following code to work, you must have a gene 1. duplicate gene #2
-	## define the models to be tested
-	models="VarRates Lambda"
-
-	for m in $models
-	do
-
-	if [ -e ${pathAncReconResults}/$m/gene1.txt ]; then
-   	echo gene 1 already duplicated
-    else
-	cp -r ${pathAncReconResults}/$m/gene2.txt ${pathAncReconResults}/$m/gene1.txt
-    fi
-
-	done
-
 
 ###########################################################
 
