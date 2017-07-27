@@ -43,20 +43,16 @@ The following input files are required for this analysis:
 
  - The top of each script (all .sh and .R files) must be modified to contain the proper home directory path
 
- - The gene numbering will begin at 2, not 1. 
-
- - If you would like to modify the models ran in BayesTraits, you will need to manually change the command sections of `create_model_files.sh` and `ancestral_reconstruction.sh`. 
-
- - To specify which ancestral nodes are reconstructed, modify `ancestral_reconstruction.sh`'s command section, which is at the bottom in the for loop. Follow the instructions in AGERinstructions.txt
+ - If you would like to modify the models ran in BayesTraits, you will need to manually change the command sections of `create_model_files.sh`.
 
 ## Run the Bayesian Ancestral Transcriptome Reconstruction Scripts
 
 
-#### 1) create_model_files.sh - Run the MCMC chain under 4 models (without tree transformation parameters, with kappa, with delta, and with both kappa and delta).
-In our experience, incorporating both Kappa and Delta (see BayesTraits manual) decreases the variance of reconstructions and increases the log likelihood of the chain.
+#### 1) create_model_files.sh - Run the MCMC chain under desired models. The default recommended models are coded in, but if you would like to change or add models, you will have to do so.
+I typically run the code one tissue at a time, broken into 4 or 5 chunks specified by begingene and endgene to decrease run time per tissue.
 
 ```
-./create_model_files.sh tissuecode
+./create_model_files.sh tissuecode begingene endgene
 ```
 
 
@@ -67,23 +63,13 @@ In our experience, incorporating both Kappa and Delta (see BayesTraits manual) d
 ```
 
 
-#### 3) ancestral_reconstruction.sh - Reconstructs the posterior probability distribution of ancestral states at specified internal nodes using the best model for the gene's evolution. 
-   These nodes must be specified in the CREATING COMMAND FILES section. See BayesTraits Manual for instructions.
-
-```
-./ancestral_reconstruction.sh Expression_Data.txt SampleTree.tree 4 2
-```
-   
-_All four inputs following the bash script should be the exact same as in step 1._
-
-
-#### 4) Extract.AGER.SummaryStats.sh - Collect Summary statistics for the AGERs into one Summary file using Create.AGER.Summary.File.R .
+#### 3) Extract.AGER.SummaryStats.sh - Collect Summary statistics for the BAGERs into one Summary file using Create.AGER.Summary.File.R .
 
 ```
 ./Extract.BAGER.SummaryStat.sh
 ```
 
-#### 5) AGERAnalysis.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts. Best used in R studio.
+#### 5) BAGERAnalysis.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts. Best used in R studio.
 
 
 
