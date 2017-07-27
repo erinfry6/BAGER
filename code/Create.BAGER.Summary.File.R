@@ -1,6 +1,6 @@
-## read in tissue argument
+## SET PATHS, ARGUMENTS AND LIBRARIES
 
-tissue<-"ts"
+tissue<-"br"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -10,6 +10,89 @@ pathAncRecon=paste(pathResults,"AncStates/",sep="")
 
 ## set the models tested
 models<-c("VarRates", "Lambda")
+
+## set the nodes of interest
+if (tissue=="br"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00016"
+  node.ancGorilla="Node-00020"
+  node.ancOrang="Node-00023"
+  node.ancMacaque="Node-00026"
+  
+  
+} else if (tissue=="cb"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00016"
+  node.ancGorilla="Node-00020"
+  node.ancOrang="Node-00023"
+  node.ancMacaque="Node-00026"
+  
+} else if (tissue=="lv"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00016"
+  node.ancGorilla="Node-00020"
+  node.ancOrang="Node-00023"
+  node.ancMacaque="Node-00026"
+  
+} else if (tissue=="kd"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00016"
+  node.ancGorilla="Node-00020"
+  node.ancOrang="Node-00023"
+  node.ancMacaque="Node-00026"
+  
+} else if (tissue=="ts"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00016"
+  node.ancGorilla="Node-00020"
+  node.ancOrang="Node-00023"
+  node.ancMacaque="Node-00026"
+  
+} else if (tissue=="ht"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00016"
+  node.ancGorilla="Node-00020"
+  node.ancOrang="Node-00023"
+  node.ancMacaque="Node-00026"
+  
+} else {
+  print("this tissue is not known") }
 
 ## load libraries
 library(dplyr)
@@ -40,7 +123,7 @@ read.tcsv = function(file, header=TRUE, sep=",", ...) {
   
 }
 
-## set function for importing the ancestral expression reconstructions, excluding the header
+## Import the ancestral expression reconstructions, excluding the header created by BayesTraits run with '12 VarRates'
 read.AncRecon=function(file, firstrow, lastrow,header=F, sep='\t'){
   temp<-t(read.tcsv(file, sep='\t', header=F)[,firstrow:lastrow])
   colnames(temp)<-temp[1,]
@@ -48,35 +131,37 @@ read.AncRecon=function(file, firstrow, lastrow,header=F, sep='\t'){
   return(temp)
 }
 
-#The function DistDiv finds the frequency at which two distributions are different from one another
-#the first two arguments are the distributions of interest
-#the second is the number of bins you would like to divide the data into, default 10
+## Calculate the Bayesian Posterior Probability of Divergnce (BPPD)
+## first, find the difference between the two reconstructions
+## then, take the maximum proportion of the iterations that are greater than or less than 0
+calc.BPPD=function(file, recon1, recon2){
+  diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(file[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])
+  BPPD<-max(1-(length(which(diff>0))/(expectedrows-1)), (length(which(diff>0))/(expectedrows-1)))  ## to do
+  return(BPPD)
+}
 
-DistDiv<-function(dist1,dist2,nbin=100) {
-  dist2<-as.numeric(dist2)
-  dist1<-as.numeric(dist1)
-  #first, define the bins each distribution will be broken up into
-  minimum=(min(dist1, dist2)) #minimum value of both distributions
-  maximum=(max(dist1, dist2)) #maximum value of both distributions
-  bins <- seq(minimum, maximum, by =(maximum-minimum)/nbin )  #create nbins from the minimum to maximum observed values
+
+## COLLECT STATS FUNCTION
+
+collect.stats.for.one.gene<-function(gene, reconAnc, reconDesc){
   
-  #Create a data frame to contain the number of counts from each distribution in each bin
-  #the hist(plot=FALSE) function creates a list containing count information in each bin, speficied above
-  counts<-as.data.frame(cbind(hist(dist1, plot=FALSE, breaks=bins)$counts,hist(dist2, plot=FALSE, breaks=bins)$counts))
-  colnames(counts)<- c("Dist1Counts", "Dist2Counts") #set the column names
+  ## calculate the fold difference increase in the ancestral node compared to the descendent node
+  foldSD<-sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))])/sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))])
   
-  #find the number of overlapping counts across all bins
-  ##create new column containing the minimum count of the two distributions
-  ##this minimum count is equal to half of the overlap between the two in that bin
-  counts$overlap<-apply(counts[,1:2],1,min)  #Take the minimum count for each bin
+  ## calculate bppd
+  BPPD<-calc.BPPD(gene, reconAnc, reconDesc)
   
-  #multiple the overlap by two to equal the percent overlap between the two distributions
-  #then divide by the total number of observations to get the proportion overlap between the two distributions
-  return(1-(2*sum(counts$overlap))/sum(counts$Dist1Counts,counts$Dist2Counts))    }
+  ## find the median reconstructed values for both nodes
+  MedianAnc<-median(as.numeric(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]))
+  MedianDesc<-median(as.numeric(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))]))
+  
+  ## return all stats for that gene and the pair of ancestral reconstructions
+  return(c(foldSD,BPPD,MedianAnc,MedianDesc))
+}
 
 
 ######################################################################
-
+## IMPORT GENE DATA
 ## import the gene information to we can include them in our analysis
 genenames<-read.csv(paste(pathData,tissue,"_genesincluded.txt",sep=""),header=T, sep='\t')
 
@@ -89,43 +174,26 @@ G_list <- getBM(filters= "ensembl_gene_id", attributes= c("hgnc_symbol","ensembl
 ## because the first gene is duplicated, duplicate the first gene in G_list to stay consistant
 G_list<-rbind(G_list[1,],G_list)
 
-## set the nodes of interest
-if (tissue=="br"){
-  ancHominini="Node-00003"
-  ancHomo="Node-00004"
-  
-} else if (tissue=="cb"){
-  ancHominini="Node-00003"
-  ancHomo="Node-00004"
-  
-} else if (tissue=="lv"){
-  ancHominini="Node-00003"
-  ancHomo="Node-00004"
-  
-} else if (tissue=="kd"){
-  ancHominini="Node-00003"
-  ancHomo="Node-00004"
-  
-} else if (tissue=="ts"){
-  ancHominini="Node-00002"
-  ancHomo="Node-00003"
-  
-} else if (tissue=="ht"){
-  ancHominini="Node-00003"
-  ancHomo="Node-00004"
-  
-} else {
-  print("this tissue is not known") }
-
-######################################################################
-## calculate statistics for the AGERs at the ancHomo and ancHomonini nodes
-
-
+## load model choice information
 modelchoice<-t(read.csv(paste(pathResults,"modelchoice.txt", sep=""),header=F, sep="\t"))
 colnames(modelchoice)<-modelchoice[1,]
 modelchoice<-as.data.frame(modelchoice[-1,])
 
+######################################################################
+## SAVE DETAILS ABOUT BAYESTRAITS RESULTS FILES
+
+## define the genes to be summarized
 listcsv<-modelchoice$gene.number
+
+## sometimes there are multiple ensembl id's per gene name, and this will misalign gene labels with the reconstruction information
+dup.ensembl<-which(rownames(genenames) %in% G_list$ensembl_gene_id ==FALSE)
+
+if (length(dup.ensembl)>0 ){
+  warning(paste(length(dup.ensembl), "genes are duplicated v ensembl"))
+  ## eliminate those genes from the list (it should be very few genes)
+  listgenes<-listcsv[-dup.ensembl]
+}
+
 
 ## find which row the iteration information begins on for this tissue's tree
 finding.information.about.file<-(read.tcsv(paste(pathAncRecon,models[length(models)],"/",listcsv[1],sep=""), sep='\t'))
@@ -135,54 +203,69 @@ it.begin<-which(colnames(finding.information.about.file)=="Itter")
 expectedrows=ncol(finding.information.about.file)-it.begin
 
 
-## set empty vectors to contain statistics
-foldSD<-vector()
-percent.divergent<-vector()
-BayesianPostProbofDivergence<-vector()
-MedianAncHomo<-vector() # the median reconstructed value of human
-MedianAncHominini<-vector() # the median reconstructed value of HC
+######################################################################
+## PREPARE SUMMARY DATA FRAME
+## create the summary dataframe, first with gene information
+summary.df<-as.data.frame(cbind(listgenes, modelchoice$model.choice[1:length(listgenes)], G_list[1:length(listgenes),]))
+colnames(summary.df)<-c("listcsv","modelchoice","hgnc_symbol", "ensembl_gene_id", "chromosome_name")
 
+## define the statistics to be collected 
+stats.to.collect<-c("foldSD","BPPD","reconAnc","reconDesc")
 
+## and each lineage in the tree
+lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
+                                                     "ancPrimates", "ancHaplorhini",
+                                                     "ancHaplorhini", "ancOrang",
+                                                     "ancHaplorhini","ancApes",
+                                                     "ancApes","ancGorilla",
+                                                     "ancApes", "ancHominini",
+                                                     "ancHominini","ancPan",
+                                                     "ancHominini", "ancHomo",
+                                                     "ancPan", "ancPtr",
+                                                     "ancPan", "ancPpa"))
+
+## define column numbers for completing the dataframe with statistics
+basecol<-ncol(summary.df)
+statcol<-length(stats.to.collect)
+
+## create the columns for each lineage's statistics
+for (l in 1:nrow(lineages.to.test)){
+  for (x in stats.to.collect){
+    newcolname<-paste(lineages.to.test[l,1],lineages.to.test[l,2],x,sep="_")
+    summary.df[[newcolname]]<-"na"
+  }
+}
+
+######################################################################
+## COMPLETE THE SUMMARY DATA FRAME BY COLLECTING STATISTICS FOR EACH GENE AND EACH LINEAGE
 ## for each gene
-for (i in 1:nrow(modelchoice)){
-
+for (i in 1:length(listgenes)){
+  
   ## load the model choice
-choice<-modelchoice$model.choice[i]
-
-## for each gene in the list
+  choice<-modelchoice$model.choice[i]
+  
+  ## import reconstruction information
   gene<-read.AncRecon(paste(pathAncRecon,choice,"/",listcsv[i],sep=""), firstrow = it.begin,lastrow=(it.begin+expectedrows), sep='\t') # read in the output of BayesTraits
   if (nrow(gene)!=expectedrows){
     warning(paste("The reconstruction of gene number", i, "failed. Check file"))
   }
   
-  ## calculate the fold difference increase in the hominini reconstruction
-  foldSD[i]<-sd(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])/sd(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])
-
-  ## caclculate the percent divergence of the two distributions; this is not the preffered method for identifying shifts
-  percent.divergent[i]<-DistDiv(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))], gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])
-  
-  ## the preferred method is the Bayesian Posterior Probability of Divergence
-  diff<-as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])-as.numeric(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])
-  BayesianPostProbofDivergence[i]<-abs(max(1-(length(which(diff>0))/(expectedrows-1)), (length(which(diff>0))/(expectedrows-1))))
-  
-  ## find the median reconstructed values
-  MedianAncHominini[i]<-median(as.numeric(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))]))
-  MedianAncHomo[i]<-median(as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))]))
-  
+  ## for each lineage
+  for (l in 1:nrow(lineages.to.test)){
+    ## find the BAGER statistics
+    summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, reconAnc = eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
+    
   }
 
-## sometimes there are multiple ensembl id's per gene name, and this will misalign gene labels with the reconstruction information
-dup.ensembl<-which(rownames(genenames) %in% G_list$ensembl_gene_id ==FALSE)
 
+}
 
-## combine gene information, divergence data, convergence data, and means and confidence intervals into one dataframe
-Summary<-as.data.frame(cbind(listcsv[-dup.ensembl],modelchoice$model.choice[-dup.ensembl],G_list, BayesianPostProbofDivergence[-dup.ensembl],foldSD[-dup.ensembl],MedianAncHominini[-dup.ensembl],MedianAncHomo[-dup.ensembl],percent.divergent[-dup.ensembl]))
-colnames(Summary)<-c("listcsv","modelchoice","hgnc_symbol", "ensembl_gene_id", "chromosome_name", "BayesianPostProbofDivergence", "foldSD", "MedianAncHominini", "MedianAncHomo", "percent.divergent")
+## view summary stats
+head(summary.df)
 
-## save data
+######################################################################
+## SAVE BAGER SUMMER STATS
 write.table(Summary,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')
 
-head(Summary)
-}
 
 
