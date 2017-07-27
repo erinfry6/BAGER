@@ -46,7 +46,7 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 
 	
 	## define the models to be tested
-	models="VarRates"
+	models="Lambda"
 	
 	## make a list of .txt files to be created from the model, these should blank in the *.txt______.txt
 	## if using VarRates with stepping stone sampler these will be the files created
@@ -89,9 +89,8 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	Expressiondata=${pathData}/${tissue}_exp.txt
 	
 	## number of genes evaluating
-	NumGenes=$(awk '{print NF}' $Expressiondata | tail -n 1)
-	#NumGenes=10
-	echo Evaluating ${NumGenes} genes in ${tissue}
+	NumGenes=$(($(awk '{print NF}' $Expressiondata | tail -n 1) - 1))
+	echo Evaluating $(($endgene - $begingene)) of ${NumGenes} genes in ${tissue}
 
 	## define tree input file
 	tree=${pathData}/${tissue}_tree.tree
@@ -148,7 +147,9 @@ echo run >> ${commandfile} 										## second general commands
    		echo already created $m model file for gene $a
     	else
     	
-		awk -v a="$a" '{print $1,$a}' ${Expressiondata} > ${singleexpression}
+    	b=$((a + 1))
+    	
+		awk -v b="$b" '{print $1,$b}' ${Expressiondata} > ${singleexpression}
 
 		./../BayesTraits/BP3.1 ${tree} ${singleexpression} <${commandfile} > ${pathTemp}/MCMC$scriptversion.txt
 		

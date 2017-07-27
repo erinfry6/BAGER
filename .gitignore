@@ -8,5 +8,11 @@ analysis/*html
 analysis/*_cache
 output/
 data/
-BayesTraits/
 code/commands/*
+BayesTraits/M*
+BayesTraits/P*
+BayesTraits/Bi*
+BayesTraits/BayesTraitsV3
+BayesTraits/A*
+BayesTraits/N*
+BayesTraits/H*
