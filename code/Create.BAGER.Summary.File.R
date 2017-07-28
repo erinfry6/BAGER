@@ -1,3 +1,19 @@
+
+## Erin Fry
+## July 28 2017
+
+## this script identifies the best model for each gene's evolution
+
+## MODIFICATION INSTRUCTIONS:
+## all required or recommended changes are in the first section of the script
+## change the variable tissue to the tissue code you are evaluating
+## change the variable path to home directory for the project
+## if testing other models, modify model vector to include all models
+## you must modify the nodes of interest 'if then' section. Change the names of the nodes to the clade name 
+## and the "Node ..." to the column names in the files created by BayesTraits for the .tree for that tissue
+
+######################################################################
+
 ## SET PATHS, ARGUMENTS AND LIBRARIES
 
 tissue<-"br"
@@ -192,6 +208,8 @@ if (length(dup.ensembl)>0 ){
   warning(paste(length(dup.ensembl), "genes are duplicated v ensembl"))
   ## eliminate those genes from the list (it should be very few genes)
   listgenes<-listcsv[-dup.ensembl]
+} else {
+  listgenes<-listcsv
 }
 
 
@@ -265,7 +283,7 @@ head(summary.df)
 
 ######################################################################
 ## SAVE BAGER SUMMER STATS
-write.table(Summary,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')
+write.table(summary.df,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')
 
 
 

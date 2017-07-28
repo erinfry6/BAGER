@@ -41,10 +41,11 @@ The following input files are required for this analysis:
 
 ## Modify the scripts
 
- - The top of each script (all .sh and .R files) must be modified to contain the proper home directory path
+ -  Please see the instructions at the top of each individual script for modification requirements.
 
- - If you would like to modify the models ran in BayesTraits, you will need to manually change the command sections of `create_model_files.sh`.
+ - If you would like to modify the models ran in BayesTraits from the default models in this pipeline, you will need to specific which models in`create_model_files.sh` , `identify_best_model.sh` , `ID_best_model.R`, and `Create.BAGER.Summary.File.R`.
 
+ 
 ## Run the Bayesian Ancestral Transcriptome Reconstruction Scripts
 
 
@@ -56,20 +57,20 @@ I typically run the code one tissue at a time, broken into 4 or 5 chunks specifi
 ```
 
 
-#### 2) identify_best_model.sh - Identify the model with the largest log marginal likelihood. Saves model choice in the results as modelchoice.txt
+#### 2) ID_best_model.R - Identify the model with the largest log marginal likelihood. Saves model choice in the results as modelchoice.txt in the BAGERresults/$tissuecode directory
 
 ```
-./identify_best_model.sh tissuecode
+R --vanilla <ID_best_model.R
 ```
 
 
-#### 3) Extract.AGER.SummaryStats.sh - Collect Summary statistics for the BAGERs into one Summary file using Create.AGER.Summary.File.R .
+#### 3) Create.BAGER.Summary.File.R - Collect Summary statistics for the BAGERs into one Summary file.
 
 ```
-./Extract.BAGER.SummaryStat.sh
+.R --vanilla <Create.BAGER.Summary.File.R tissuecode
 ```
 
-#### 5) BAGERAnalysis.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts. Best used in R studio.
+#### 4) BAGERAnalysis.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts. Best used in R studio.
 
 
 

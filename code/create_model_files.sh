@@ -1,9 +1,17 @@
+
+
+## Erin Fry
+## July 28 2017
+
 ## this script runs the BayesTraits program given a set of commands for the genes indicated in the for loop
-## created by Erin Fry (efry@uchicago.edu)
 ## Non-indented lines should be evaluated for modification specific to the user's purpose
+## User MUST modify the base path
+## The other basic options to change might be the models to evaluate if different than the recommended models
+
 
 ###########################################################
-	## read in which tissue
+
+	## read in tissue code and start and end gene numbers
 
 	tissue=$1
 	begingene=$2
@@ -45,8 +53,8 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 ###########################################################
 
 	
-	## define the models to be tested
-	models="Lambda"
+## define the models to be tested
+models="Lambda"
 	
 	## make a list of .txt files to be created from the model, these should blank in the *.txt______.txt
 	## if using VarRates with stepping stone sampler these will be the files created
@@ -116,8 +124,8 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	## run model for each gene: for each gene in 2 through the number of genes in the expression data file (unless otherwise noted above), run BayesTraits and save output files
 	## each gene will be modeled under each model specified in models to test, and saved accordingly
 
-for m in $models 
-do
+	for m in $models 
+	do
 
 echo '12
 VarRates
@@ -131,12 +139,12 @@ echo creating variable rates and lambda model files for ${tissue}
 echo lambda >> ${commandfile}
 
 
-else 
-echo bad model call
-fi
+	else 
+	echo bad model call
+	fi
 
 
-echo run >> ${commandfile} 										## second general commands
+	echo run >> ${commandfile} 										## second general commands
 
 		
 
@@ -156,17 +164,17 @@ echo run >> ${commandfile} 										## second general commands
 		
 		fi
 		
-for f in $filestomake 
-do
-cp ${singleexpression}.$f.txt ${pathResults}/$f/$m/gene$a.txt
-done
+	for f in $filestomake 
+	do
+	cp ${singleexpression}.$f.txt ${pathResults}/$f/$m/gene$a.txt
+	done
 		
-cp ${pathTemp}/MCMC$scriptversion.txt ${pathResults}/MCMC/$m/gene$a.txt
-cp ${singleexpression}.Output.trees ${pathResults}/Output_trees/$m/gene$a.trees 
+	cp ${pathTemp}/MCMC$scriptversion.txt ${pathResults}/MCMC/$m/gene$a.txt
+	cp ${singleexpression}.Output.trees ${pathResults}/Output_trees/$m/gene$a.trees 
 	
 
-done		
+	done		
 
 
-done
+	done
 		

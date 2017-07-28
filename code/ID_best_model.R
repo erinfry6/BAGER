@@ -1,3 +1,19 @@
+
+## Erin Fry
+## July 28 2017
+
+## this script identifies the best model for each gene's evolution
+
+## MODIFICATION INSTRUCTIONS:
+## all required or recommended changes are in the first section of the script
+## change the variable tissue to the tissue code you are evaluating
+## change the variable path to home directory for the project
+## if testing other models, modify model vector to include all models
+
+
+######################################################################
+## SET PATHS, ARGUMENTS AND LIBRARIES
+
 tissue="br"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
