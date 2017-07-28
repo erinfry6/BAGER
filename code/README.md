@@ -60,14 +60,14 @@ I typically run the code one tissue at a time, broken into 4 or 5 chunks specifi
 #### 2) ID_best_model.R - Identify the model with the largest log marginal likelihood. Saves model choice in the results as modelchoice.txt in the BAGERresults/$tissuecode directory
 
 ```
-R --vanilla <ID_best_model.R
+R --vanilla < ID_best_model.R
 ```
 
 
-#### 3) Create.BAGER.Summary.File.R - Collect Summary statistics for the BAGERs into one Summary file.
+#### 3) Create.BAGER.Summary.File.R - Collect BAGER summary statistics for every branch into one Summary file.
 
 ```
-.R --vanilla <Create.BAGER.Summary.File.R tissuecode
+.R --vanilla < Create.BAGER.Summary.File.R tissuecode
 ```
 
 #### 4) BAGERAnalysis.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts. Best used in R studio.
