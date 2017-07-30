@@ -2,7 +2,11 @@
 ## Erin Fry
 ## July 28 2017
 
-## this script identifies the best model for each gene's evolution
+## this script generates and stores the BAGER summary statistics for each primate lineage.
+## it collects the fold standard deviation between the ancestral and descdant node at each lineage,
+## the Bayesian Posterior Probability of Divergence (or BPPD), which is the proportion of MCMC iterations in which there was an increase or decrease in expression in the lineage,
+## and the median reconstructed value of the ancestral and descendent node for each lineage.
+## The BPPD is used to identify expression shifts in downstream analysis.
 
 ## MODIFICATION INSTRUCTIONS:
 ## all required or recommended changes are in the first section of the script
@@ -11,12 +15,13 @@
 ## if testing other models, modify model vector to include all models
 ## you must modify the nodes of interest 'if then' section. Change the names of the nodes to the clade name 
 ## and the "Node ..." to the column names in the files created by BayesTraits for the .tree for that tissue
+## similarly, define the lineages to test
 
 ######################################################################
 
 ## SET PATHS, ARGUMENTS AND LIBRARIES
 
-tissue<-"br"
+tissue<-"cb"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -48,12 +53,12 @@ if (tissue=="br"){
   node.ancApes="Node-00002"
   node.ancHominini="Node-00003"
   node.ancHomo="Node-00004"
-  node.ancPan="Node-00008"
-  node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00014"
+  node.ancOrang="Node-00017"
+  node.ancMacaque="Node-00018"
   
 } else if (tissue=="lv"){
   node.ancPrimates="Node-00000"
@@ -83,16 +88,14 @@ if (tissue=="br"){
   
 } else if (tissue=="ts"){
   node.ancPrimates="Node-00000"
-  node.ancHaplorhini="Node-00001"
-  node.ancApes="Node-00002"
-  node.ancHominini="Node-00003"
-  node.ancHomo="Node-00004"
-  node.ancPan="Node-00008"
-  node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancApes="Node-00001"
+  node.ancHominini="Node-00002"
+  node.ancHomo="Node-00003"
+  node.ancPan="Node-00006"
+  node.ancPtr="Node-00007"
+  node.ancPpa="Node-00018"
+  node.ancGorilla="Node-00009"
+  node.ancMacaque="Node-00010"
   
 } else if (tissue=="ht"){
   node.ancPrimates="Node-00000"
@@ -110,9 +113,22 @@ if (tissue=="br"){
 } else {
   print("this tissue is not known") }
 
+## specify each lineage in the tree to test
+## formatted that the first column is the ancestral node and the second is the descendent node
+lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
+                                                     "ancPrimates", "ancHaplorhini",
+                                                     "ancHaplorhini", "ancOrang",
+                                                     "ancHaplorhini","ancApes",
+                                                     "ancApes","ancGorilla",
+                                                     "ancApes", "ancHominini",
+                                                     "ancHominini","ancPan",
+                                                     "ancHominini", "ancHomo",
+                                                     "ancPan", "ancPtr",
+                                                     "ancPan", "ancPpa"))
+
 ## load libraries
 library(dplyr)
-library(biomartr)
+library('biomaRt')
 
 ## set strings as factors to false so can read in properly
 options(stringsAsFactors = FALSE)
@@ -157,12 +173,19 @@ calc.BPPD=function(file, recon1, recon2){
 }
 
 
+
 ## COLLECT STATS FUNCTION
 
 collect.stats.for.one.gene<-function(gene, reconAnc, reconDesc){
   
   ## calculate the fold difference increase in the ancestral node compared to the descendent node
   foldSD<-sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))])/sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))])
+  
+  ## in the case where a species only has on sample, foldSD will be calculated to be infinity
+  ## for these circumstances, save the maximum standard deviation (which will be of the ancestor) to gauge if successfully reconstructed
+  if (foldSD=="Inf"){
+    foldSD=max(sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]),sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))]))
+  }
   
   ## calculate bppd
   BPPD<-calc.BPPD(gene, reconAnc, reconDesc)
@@ -182,13 +205,10 @@ collect.stats.for.one.gene<-function(gene, reconAnc, reconDesc){
 genenames<-read.csv(paste(pathData,tissue,"_genesincluded.txt",sep=""),header=T, sep='\t')
 
 ## import other infomration of those genes from biomart
-library('biomaRt')
 mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
 genes <- rownames(genenames)
 G_list <- getBM(filters= "ensembl_gene_id", attributes= c("hgnc_symbol","ensembl_gene_id","chromosome_name"),values=genes,mart= mart)
 
-## because the first gene is duplicated, duplicate the first gene in G_list to stay consistant
-G_list<-rbind(G_list[1,],G_list)
 
 ## load model choice information
 modelchoice<-t(read.csv(paste(pathResults,"modelchoice.txt", sep=""),header=F, sep="\t"))
@@ -229,18 +249,6 @@ colnames(summary.df)<-c("listcsv","modelchoice","hgnc_symbol", "ensembl_gene_id"
 
 ## define the statistics to be collected 
 stats.to.collect<-c("foldSD","BPPD","reconAnc","reconDesc")
-
-## and each lineage in the tree
-lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
-                                                     "ancPrimates", "ancHaplorhini",
-                                                     "ancHaplorhini", "ancOrang",
-                                                     "ancHaplorhini","ancApes",
-                                                     "ancApes","ancGorilla",
-                                                     "ancApes", "ancHominini",
-                                                     "ancHominini","ancPan",
-                                                     "ancHominini", "ancHomo",
-                                                     "ancPan", "ancPtr",
-                                                     "ancPan", "ancPpa"))
 
 ## define column numbers for completing the dataframe with statistics
 basecol<-ncol(summary.df)
@@ -284,6 +292,3 @@ head(summary.df)
 ######################################################################
 ## SAVE BAGER SUMMER STATS
 write.table(summary.df,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')
-
-
-

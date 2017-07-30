@@ -14,7 +14,7 @@
 ######################################################################
 ## SET PATHS, ARGUMENTS AND LIBRARIES
 
-tissue="br"
+tissue="ts"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"

@@ -67,7 +67,7 @@ R --vanilla < ID_best_model.R
 #### 3) Create.BAGER.Summary.File.R - Collect BAGER summary statistics for every branch into one Summary file.
 
 ```
-.R --vanilla < Create.BAGER.Summary.File.R tissuecode
+R --vanilla < Create.BAGER.Summary.File.R 
 ```
 
 #### 4) BAGERAnalysis.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts. Best used in R studio.
