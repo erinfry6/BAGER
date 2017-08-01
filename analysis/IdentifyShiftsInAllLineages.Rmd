@@ -82,12 +82,12 @@ if (tissue=="br"){
   node.ancApes="Node-00002"
   node.ancHominini="Node-00003"
   node.ancHomo="Node-00004"
-  node.ancPan="Node-00008"
-  node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00012"
+  node.ancOrang="Node-00015"
+  node.ancMacaque="Node-00018"
   
 } else if (tissue=="kd"){
   node.ancPrimates="Node-00000"
@@ -97,10 +97,10 @@ if (tissue=="br"){
   node.ancHomo="Node-00004"
   node.ancPan="Node-00008"
   node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancPpa="Node-00012"
+  node.ancGorilla="Node-00015"
+  node.ancOrang="Node-00018"
+  node.ancMacaque="Node-00021"
   
 } else if (tissue=="ts"){
   node.ancPrimates="Node-00000"
@@ -109,7 +109,7 @@ if (tissue=="br"){
   node.ancHomo="Node-00003"
   node.ancPan="Node-00006"
   node.ancPtr="Node-00007"
-  node.ancPpa="Node-00018"
+  node.ancPpa="Node-00008"
   node.ancGorilla="Node-00009"
   node.ancMacaque="Node-00010"
   
@@ -119,18 +119,30 @@ if (tissue=="br"){
   node.ancApes="Node-00002"
   node.ancHominini="Node-00003"
   node.ancHomo="Node-00004"
-  node.ancPan="Node-00008"
-  node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00014"
+  node.ancOrang="Node-00017"
+  node.ancMacaque="Node-00018"
   
 } else {
-  print("this tissue is not known") } 
+  print("this tissue is not known") }
 
 ## specify each lineage in the tree to test
 ## formatted that the first column is the ancestral node and the second is the descendent node
+
+if (tissue=="ts"){
+  lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
+                                                       "ancPrimates", "ancApes",
+                                                       "ancApes","ancGorilla",
+                                                       "ancApes", "ancHominini",
+                                                       "ancHominini","ancPan",
+                                                       "ancHominini", "ancHomo",
+                                                       "ancPan", "ancPtr",
+                                                       "ancPan", "ancPpa"))
+  
+} else {
 lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
                                                      "ancPrimates", "ancHaplorhini",
                                                      "ancHaplorhini", "ancOrang",
@@ -141,6 +153,7 @@ lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque"
                                                      "ancHominini", "ancHomo",
                                                      "ancPan", "ancPtr",
                                                      "ancPan", "ancPpa"))
+}
 ```
 
 ## Introduction
@@ -242,6 +255,103 @@ viewDifference<-function(genelist,m=Summary$modelchoice, lastit=1000,nbins=100){
        ylab="Number of Samples", col="#1c9099")
   } }
 
+
+## FIND THE NUMBER OF GENES WITH EXPRESSION SHIFTS GIVEN A BPPD CUTOFF
+## also create a histogram of BPPDs and save the list of genes with expression shifts and that reconstructed to the tissue directory
+## output of the function will be the total number of genes with shifts, that reconstructed, and that were tested
+shiftanalysis<-function(reconsdf, BPPDcutoff=0.9, minexpression= expcut, lineage.df, histogram=FALSE, write.results=FALSE){
+
+  ## identify all expressed, converged genes with expression shifts
+  shiftgenes<-filter(as.data.frame(reconsdf),eval(as.symbol(paste(lineage.df,"BPPD",sep="_")))>BPPDcutoff)
+
+  ## if want to write results, save both reconstructed gene list and shift gene list
+  if (write.results==TRUE){
+  write.table(reconsdf,paste(pathResults,Sys.Date(),lineage.df,"Reconstructed.txt", sep=""),sep='\t')
+  write.table(shiftgenes,paste(pathResults,Sys.Date(),lineage.df,"90Cutoff.txt", sep=""),sep='\t') }
+  
+  if (histogram==TRUE){
+  ## View the distribution of divergence of converged genes
+  hist(as.data.frame(reconsdf)[,grep(colnames(reconsdf), pattern = "BPPD")], #create histogram of percent divergence for tested genes
+       main= paste("Transcriptome Divergence for", tissuename, lineage, sep=" "), #title
+       xlab="Bayesian Posterior Probability of Divergence", 
+       ylab="Number of Genes", cex.lab=1.3,
+       col="#1c9099", breaks=100)
+  abline(v=BPPDcutoff, col="red") }
+  
+  return(c(nrow(reconsdf),nrow(shiftgenes), length(listcsv)))
+}
+
+
+## CREATE SCATTERPLOT FOR LINEAGE RECONSTRUCTED TRANSCRIPTOMES
+
+createScatterPlot<-function(reconsdf, listnumber, minexpression= expcut, lineage.df, print.BPPDs=FALSE, interactive=FALSE, save.scatter=FALSE) {
+  reconsdf<-reconsdf[[listnumber]]  # first choose the dataframe from the list of dataframes
+  reconsdf$BPPDLevel <- cut(reconsdf[,grep(colnames(reconsdf), pattern = "BPPD")], c(0,0.90,0.95,0.975,1.1)) # break BPPD into categories
+
+  if(print.BPPDs==TRUE){
+    BPPDcats<-reconsdf %>% 
+    group_by(BPPDLevel) %>%
+    summarise(no_genes=length(BPPDLevel))
+    print(BPPDcats) }  # view the number of genes in each category
+
+  ## Reverse the levels and generate some labels for the legend
+  reconsdf$labels <- factor(reconsdf$BPPDLevel, levels = rev(levels(reconsdf$BPPDLevel)),
+                           labels = c('>97.5%', '95-97.5%',
+                                       '90-95%','<90%')) 
+  ## split the data into layers
+  df_layer_1 <- reconsdf[ reconsdf$labels =="<90%",]
+  df_layer_90 <- reconsdf[ reconsdf$labels =="90-95%",]
+  df_layer_95 <- reconsdf[ reconsdf$labels =="95-97.5%",]
+  df_layer_99 <- reconsdf[ reconsdf$labels ==">97.5%",]
+
+  ## plot using ggplot
+p<-ggplot(data=reconsdf, mapping=aes(
+  x=eval(as.symbol(colnames(reconsdf)[grep(colnames(reconsdf), pattern = "reconAnc")])),
+  y=eval(as.symbol(colnames(reconsdf)[grep(colnames(reconsdf), pattern = "reconDesc")])), 
+  text=hgnc_symbol)) + 
+  theme_bw() +
+  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+  ggtitle(paste("Ancestral Transcriptomes of ", lineage.df[listnumber,1], " and ", lineage.df[listnumber,2],sep="")) +
+  labs( x=paste(lineage.df[listnumber,1]," log(TPM)", sep=""), 
+        y=paste(lineage.df[listnumber,2]," log(TPM)", sep=""), face="bold", size=20) +
+  geom_point(data=df_layer_1, colour="#ffffcc", alpha=1) +
+  geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
+  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
+  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
+  geom_abline(intercept=0,slope=1) + 
+  scale_y_log10(limits=c(1e-1,1e2)) + scale_x_log10(limits=c(1e-1,1e2)) +
+  geom_vline(xintercept=minexpression, alpha=.5) + geom_hline(yintercept=minexpression, alpha=0.5)
+  + theme (legend.text = reconsdf[,grep(colnames(reconsdf), pattern = "BPPD")])
+
+if (interactive==TRUE){
+  print(suppressWarnings(ggplotly(p)))
+} else {
+  suppressWarnings(print(p))
+}
+
+if (save.scatter==TRUE){
+  ggsave(paste(pathResults,Sys.Date(),"Scatter.pdf",sep="")) }
+}
+
+
+
+p<-ggplot(data=test, mapping=aes(
+  x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+  y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+  text=hgnc_symbol)) + 
+  theme_bw() +
+  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+  ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[listnumber,1], " and ", lineages.to.test[listnumber,2],sep="")) +
+  labs( x=paste(lineages.to.test[listnumber,1]," log(TPM)", sep=""), 
+        y=paste(lineages.to.test[listnumber,2]," log(TPM)", sep=""), face="bold", size=20) +
+  geom_point(data=df_layer_1, colour="#ffffcc", alpha=1) +
+  geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
+  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
+  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
+  geom_abline(intercept=0,slope=1) + 
+  scale_y_log10(limits=c(1e-1,1e2)) + scale_x_log10(limits=c(1e-1,1e2)) +
+  geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+  theme (legend.text = test[,grep(colnames(test), pattern = "BPPD")])
 ```
 
 ### Load and Examine the BAGER summary file
@@ -286,7 +396,7 @@ x=1
 for (l in 1:nrow(lineages.to.test)){
     lineage<-paste(lineages.to.test[l,1],lineages.to.test[l,2], sep="_")
     
-    temp<-filter(Summary, eval(as.symbol(paste(lineage,"foldSD",sep="_"))) <cutoffSD,  eval(as.symbol(paste(lineage,"reconAnc",sep="_")))>expcut | eval(as.symbol(paste(lineage,"reconDesc",sep="_")))>expcut)
+    temp<-filter(Summary, eval(as.symbol(paste(lineage,"foldSD",sep="_"))) <cutoffSD,  .data = eval(as.symbol(paste(lineage,"reconAnc",sep="_")))>expcut | eval(as.symbol(paste(lineage,"reconDesc",sep="_")))>expcut)
     
     reconsgenes[[x]]<-temp[,c(1:5,grep(pattern = lineage, x = colnames(temp)))]
     
@@ -311,41 +421,16 @@ num.recons<-sapply(reconsgenes, nrow)
 ## define the BPPD cutoff to call a gene to have an expression shift
 BPPDcutoff<-0.9
 
-
-shiftanalysis<-function(reconsdf, BPPDcutoff=0.9, minexpression= expcut, lineage.df){
-  
-  
-  write.table(reconsdf,paste(pathResults,Sys.Date(),lineage.df,"Reconstructed.txt", sep=""),sep='\t')
-
-  
-  ## identify all expressed, converged genes with expression shifts
-  shiftgenes<-filter(as.data.frame(reconsdf),eval(as.symbol(paste(lineage.df,"BPPD",sep="_")))>BPPDcutoff)
-
-  write.table(shiftgenes,paste(pathResults,Sys.Date(),lineage.df,"90Cutoff.txt", sep=""),sep='\t') 
-
-  
-  ## View the distribution of divergence of converged genes
-  hist(as.data.frame(reconsdf)[,grep(colnames(reconsdf), pattern = "BPPD")], #create histogram of percent divergence for tested genes
-       main= paste("Transcriptome Divergence for", tissuename, lineage, sep=" "), #title
-       xlab="Bayesian Posterior Probability of Divergence", 
-       ylab="Number of Genes", cex.lab=1.3,
-       col="#1c9099", breaks=100)
-  abline(v=BPPDcutoff, col="red")
-
-  
-  return(c(nrow(reconsdf),nrow(shiftgenes), length(listcsv)))
-}
-
-
-
-
 BAGERshiftsummary<-matrix(ncol=nrow(lineages.to.test), nrow=3)
 rownames(BAGERshiftsummary)<- c(paste('BPPD>',BPPDcutoff,'%',sep=""),paste('BPPD<',BPPDcutoff,'%',sep=""), "Genes Tested")
 colnames(BAGERshiftsummary)<-apply(lineages.to.test, 1, FUN = function(x){paste(x[1],x[2])})
 
 for (l in 1:nrow(lineages.to.test)){
-  
-BAGERshiftsummary[,l]<-shiftanalysis(reconsgenes[[l]], lineage.df = paste(lineages.to.test[l,1],lineages.to.test[l,2], sep="_")) }
+    BAGERshiftsummary[,l]<-shiftanalysis(reconsgenes[[l]], lineage.df = paste(lineages.to.test[l,1],lineages.to.test[l,2], sep="_"))
+    createScatterPlot(reconsgenes, listnumber = l, lineage.df = lineages.to.test, interactive = TRUE)
+}
+
+BAGERshiftsummary
 
 write.table(BAGERshiftsummary,paste(pathResults,Sys.Date(),"BAGERshiftsummary.txt", sep=""),sep='\t')
 
@@ -358,41 +443,9 @@ write.table(BAGERshiftsummary,paste(pathResults,Sys.Date(),"BAGERshiftsummary.tx
 ```{r, evaluate=FALSE}
 ## next look at scatter plot of reconstructions by the Posterior Probability of Divergence (the preferred measure of divergence)
 # define divergence cutoffs
-reconsdf$BPPDLevel <- cut(reconsdf[,grep(colnames(reconsdf), pattern = "BPPD")], c(0,0.90,0.95,0.975,1.1))
 
-BPPDcats<-reconsdf %>% 
-  group_by(BPPDLevel) %>%
-  summarise(no_genes=length(BPPDLevel))
-BPPDcats
+createScatterPlot(reconsgenes, listnumber = 8, lineage.df = lineages.to.test, interactive =TRUE, print.BPPDs = TRUE )
 
-# Reverse the levels and generate some labels for the legend
-reconsdf$labels <- factor(reconsdf$BPPDLevel, levels = rev(levels(reconsdf$BPPDLevel)),
-                           labels = c('>97.5%', '95-97.5%',
-                                       '90-95%','<90%'))
-## split the data into layers
-df_layer_1 <- reconsdf[ reconsdf$labels =="<90%",]
-df_layer_90 <- reconsdf[ reconsdf$labels =="90-95%",]
-df_layer_95 <- reconsdf[ reconsdf$labels =="95-97.5%",]
-df_layer_99 <- reconsdf[ reconsdf$labels ==">97.5%",]
-
-
-p<-ggplot(data=reconsdf, mapping=aes(x=(MedianAncHomo),y=(MedianAncHominini), text=hgnc_symbol)) + 
-  theme_bw() +
-  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
-  ggtitle("Ancestral Transcript Levels and BBPD in the Human Lineage") +
-  labs( x="Ancestral Human-Chimpanzee log(TPM)", y="Ancestral Human log(TPM)", face="bold", size=20) +
-  geom_point(data=df_layer_1, colour="#ffffcc", alpha=1) +
-  geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
-  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
-  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
-  geom_abline(intercept=0,slope=1) + 
-  scale_y_log10(limits=c(1e-1,1e2)) + scale_x_log10(limits=c(1e-1,1e2)) +
-  geom_vline(xintercept=minexpression, alpha=.5) + geom_hline(yintercept=minexpression, alpha=0.5) 
-
-ggsave(paste(pathResults,"Scatter.pdf"))
-
-ggplotly(p)
-}
 ```
 
 **`r nrow(shiftgenes)` genes were identified to have expression shifts in the human lineage with a Bayesian Posterior Probability of Divergence of 90% of greater.**
