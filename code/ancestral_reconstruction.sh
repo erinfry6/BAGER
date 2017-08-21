@@ -1,11 +1,22 @@
-## this script reconstructs the ancestral state, or transcription level, of your transcriptome
-## created by Erin Fry (efry@uchicago.edu)
+
+
+## Erin Fry
+## July 21 2017
+
+## this script reconstructs ancestral expression of each gene using a set of commands for BayesTraits
 ## Non-indented lines should be evaluated for modification specific to the user's purpose
+## User must modify the home path
+## The other basic options to change modify might be the models to evaluate if different than the recommended models
+## this script takes three commands, tissue (which should be the tissuecode), begingene and endgene. These are the numbers of genes in the expression files to evaluate.
+
 
 ###########################################################
-	## read in which tissue
+
+	## read in tissue code and start and end gene numbers
 
 	tissue=$1
+	begingene=$2
+	endgene=$3
 
 ###########################################################
 
@@ -16,135 +27,162 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	export pathData=${path}/data/forBAGER
 	export pathScripts=${path}/code
 	export pathResults=${path}/data/BAGERresults/${tissue}
-	export pathTemp=${pathResults}/temporary
-	export pathModelResults=${pathResults}/Models
-	export pathSSSResults=${pathResults}/ARSSS
 	export pathCommands=${pathScripts}/commands
-	export pathRecon=${pathResults}/AncRecon
+	export pathTemp=${pathResults}/temporary
+	export pathEnrichments=${pathResults}/Enrichments
+
+	## make directories if they do not already exist
 	
-	## define pathways of files to be created and utilized around during analysis
-	export scriptversion=$tissue  ## be sure to save files for their tissue as to not confuse
-	export singleexpression=${pathTemp}/singlegene_$scriptversion.txt
-	export model=${pathTemp}/Model_$scriptversion.bin
-	export commandfile=${pathCommands}/step2command_$scriptversion.txt
+	if [ -e ${pathResults} ]; then
+   	echo 'Results dir already here'
+    else
+    mkdir ${pathResults}
+    fi 
+	
+	
+	if [ -e ${pathCommands} ]; then
+   	echo 'Command dir already here'
+    else
+    mkdir ${pathCommands}
+    fi	
+    
+	if [ -e ${pathTemp} ]; then
+   	echo 'Command dir already here'
+    else
+    mkdir ${pathTemp}
+    fi	
+    
+    if [ -e ${pathEnrichments} ]; then
+   	echo 'Command dir already here'
+    else
+    mkdir ${pathEnrichments}
+    fi	
 
 ###########################################################
 
-	## make directory to store the reconstructions
 	
-	if [ -e ${pathRecon} ]; then
-   	echo 'AncRecon dir already here'
-    else
-    mkdir ${pathRecon}
-    fi
- 	
- 	## make directory to store the results from the stepping stone sampler
-	if [ -e ${pathSSSResults} ]; then
-   	echo 'SSS Results dir already here'
-    else
-    mkdir ${pathSSSResults}
-    fi
+## define the models to be tested
+models="Lambda VarRates"
+	
+	## make a list of .txt files to be created from the model, these should blank in the *.txt______.txt
+	## if using VarRates with stepping stone sampler these will be the files created
+	filestomake="AncStates Log Schedule Stones VarRates"
+	
+	for f in $filestomake 
+	do
+		mkdir ${pathResults}/$f
+		for m in $models
+		do
+			mkdir ${pathResults}/$f/$m
+		done
+	done
+
+	## make directories for the output tree files for each model
+	mkdir ${pathResults}/Output_trees
+	for m in $models
+		do
+			mkdir ${pathResults}/Output_trees/$m
+		done
+	
+	## make directories for the output MCMC files for each model
+	mkdir ${pathResults}/MCMC
+	for m in $models
+		do
+			mkdir ${pathResults}/MCMC/$m
+		done
 
 
+###########################################################
+	
+	## define pathways of files to be created and utilized during analysis
+	export scriptversion=$begingene  ## be sure to save files for their tissue as to not confuse, or this can be used to run multiple create_model_files at once
+	export singleexpression=${pathResults}/temporary/singlegene_$scriptversion.txt
+	export commandfile=${pathCommands}/step1command_$scriptversion.txt
+	
 ###########################################################
 
 	## Read in files for tissue of interest
 	Expressiondata=${pathData}/${tissue}_exp.txt
 	
 	## number of genes evaluating
-	#NumGenes=$(awk '{print NF}' $Expressiondata | tail -n 1)
-	NumGenes=3
-	
-	echo Evaluating ${NumGenes} genes in ${tissue}
+	NumGenes=$(($(awk '{print NF}' $Expressiondata | tail -n 1) - 1))
+	echo Evaluating $(($endgene - $begingene)) of ${NumGenes} genes in ${tissue}
 
-	## define tree file
+	## define tree input file
 	tree=${pathData}/${tissue}_tree.tree
 
 ###########################################################
 
-	## Reconstruct the ancestral gene expression of each gene in the dataset, saving the likelhhood and Bayesian Posterior Distributions of the Ancestral States
+	## Run MCMC under each model, saving all output files
 
 	## The descriptions of each section are explained in the following lines with labels to the right of the commands in the scripts, but generally:
-	## for each gene, make the appropriate command file based on the model that best fits the gene's expression
-	## run the MCMC and save the reconstructed inferred expression values
+	## for each model to be tested, make the appropriate command file, then for each of the genes in your expression data file,
+	## run BayesTraits to infer evolutionary rate parameters of the gene's expression across the tree, including ancestral states and rates along branches
 	
-	## genes to test: go through each gene
-	
-	## general commands and ancestral nodes: Any additional commands you add to each of the models tested should be added here
-	## specifies which ancestors to reconstruct: instructions in BayesTraits V3 manual
-	## You may modify these general commands referring to the properties of the MCMC, see the BayesTraits manual for more details
-	## It is not recommended to remove or modify most of the general commands that are written here. '4' and '2' indicated a continuous trait random walk model.
+	## general commands: you may modify these general commands referring to the properties of the MCMC, see the BayesTraits manual for more details
+	## 12 is **** special****
+	## VarRates tests the variable rates model, a model that breaks the Brownian Motion assumption
 	## Using the stepping stone sampler is strongly recommended (stones command)
+	## Any additional commands you add to each of the models tested should be added here
 	
-	## model-specific commands and reconstruction: these commands are the lines necessary to run each of the models you wish to test, modify them using echo >> ${commandfile}
-	## last line in each must end in 'run'
-	## each gene will be reconstructed under its best fit model, and saved
+	## model-specific commands: these commands are the lines necessary to run each of the models you wish to test
+	
+	## run the program, do not modify
+	
+	## run model for each gene: for each gene in 2 through the number of genes in the expression data file (unless otherwise noted above), run BayesTraits and save output files
+	## each gene will be modeled under each model specified in models to test, and saved accordingly
 
-
-
-###########################################################
-
-## for loop goes through each of the genes specified in { .. }
-## choice of 1=Kappa, 2= KD, 3=Delta, 4=none
-	## load in the model choice
-	## make a temporary file to contain only gene expression from the one gene
-	## copy the model file created in the first step and run BayesTraits again, informed by the model file to reconstruct ancestral transcriptional state
-	## copy the stepping stone output to save likelihood information about the chain
-
-for ((a=2; a<=$NumGenes; a++))													## genes to test
+	for m in $models 
 	do
-	
-echo '7
-2
+
+echo '12
 VarRates
-Iterations 110000000
-Burnin 10000000
-stones 100 10000
-AddTag Tag-PointA hsa_br_M_2 hsa_br_M_3 hsa_br_F_1 
-AddTag Tag-PointB hsa_br_M_2 hsa_br_M_3 hsa_br_F_1 ptr_br_M_3 ptr_br_M_2 ptr_br_M_5 ptr_br_M_1 ptr_br_M_4 ptr_br_F_1 ppa_br_M_1 ppa_br_F_1 ppa_br_F_2 
-AddNode AncHomo Tag-PointA
-AddNode AncHominini Tag-PointB' >> ${commandfile}
-echo LoadModels ${pathTemp}/model$scriptversion.bin >> ${commandfile} 			## general commands and ancestral nodes
-	
-	choice=$(awk -v a="$a" '{print $a}' ${pathResults}/modelchoice.txt) || exit 1
-	
-	awk -v a="$a" '{print $1,$a}' ${pathData}/${Expressiondata} > ${singleexpression} || exit 1
-	
-if [[ $choice == 4 ]]; then
+stones 100 10000' > ${commandfile}  								## general commands
 
-echo run >> ${commandfile}														## model-specific commands and reconstruction
+if [[ $m == VarRates ]]; then										## model-specific commands
+echo creating variable rates model files for ${tissue} 
 	
-cp ${pathModelResults}/none/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=91' > ${pathRecon}/gene$a.txt || exit 1
-	
+elif [[ $m == Lambda ]]; then
+echo creating variable rates and lambda model files for ${tissue} 
+echo lambda >> ${commandfile}
 
-elif [[ $choice == 3 ]]; then
 
-echo 'delta'																	## model-specific commands and reconstruction
-run' >> ${commandfile}
-	
-cp ${pathModelResults}/delta/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=92' > ${pathRecon}/gene$a.txt || exit 1
-
-elif [[ $choice == 2 ]]; then
-
-echo 'kappa
-delta
-run' >> ${commandfile}															## model-specific commands and reconstruction
-	
-cp ${pathModelResults}/kd/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=93' > ${pathRecon}/gene$a.txt || exit 1
-	
-else 
-
-echo 'kappa
-run' >> ${commandfile}															## model-specific commands and reconstruction
-	
-cp ${pathModelResults}/kappa/gene$a.bin ${pathTemp}/model$scriptversion.bin
-./../BayesTraits/BayesTraitsV3 ${tree} ${singleexpression} <${commandfile} | awk 'NR >=92' > ${pathRecon}/gene$a.txt || exit 1
-	
+	else 
+	echo bad model call
 	fi
-	
-	cp ${singleexpression}.Stones.txt ${pathSSSResults}/gene$a.txt || exit 1
 
-done
+
+	echo run >> ${commandfile} 										## second general commands
+
+		
+
+	for ((a=$begingene; a<=$endgene; a++))										## run model for each gene
+		do
+		
+		if [ -e ${pathResults}/AncStates/$m/gene$a.txt ]; then
+   		echo already created $m model file for gene $a
+    	else
+    	
+    	b=$((a + 1))
+    	
+		awk -v b="$b" '{print $1,$b}' ${Expressiondata} > ${singleexpression}
+
+		./../BayesTraits/BP3.1 ${tree} ${singleexpression} <${commandfile} > ${pathTemp}/MCMC$scriptversion.txt
+		
+		
+		fi
+		
+	for f in $filestomake 
+	do
+	cp ${singleexpression}.$f.txt ${pathResults}/$f/$m/gene$a.txt
+	done
+		
+	cp ${pathTemp}/MCMC$scriptversion.txt ${pathResults}/MCMC/$m/gene$a.txt
+	cp ${singleexpression}.Output.trees ${pathResults}/Output_trees/$m/gene$a.trees 
+	
+
+	done		
+
+
+	done
+		
