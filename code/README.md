@@ -14,7 +14,7 @@ Before beginning, create a home directory for the pipeline that contains the fol
 
 				home/data/
 					
-							forBAGER
+						forBAGER
 							
 							BAGERresults
 				
