@@ -30,11 +30,13 @@ Place the contents of this repository in the code folder, except for the BP3.1. 
 
 ## Input files Formats
 
-The following input files are required for this analysis:
+The following input files are required for this analysis and should be places in `home/data/forBAGER`:
 
  - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. Be sure to keep another document that notes the gene in each column.
 
  - tissuecode_tree.tree: tissuecode_tree.tree is an ultrametric nexus formatted phylogeny formatted according to the BayesTraits Manual.
+ 
+ - tissuecode_genesincluded.txt: a tab delimited file containing expression data identical to that in tissuecode_exp.txt, but formatted differently. This file should have column and row names. Columns are the samples and rows are each gene, labeled with its EnsemblID.
 
 * tissuecode is the name of the tissue you are analyzing that will be an input for the scripts below *
 
@@ -57,14 +59,14 @@ I typically run the code one tissue at a time, broken into 4 or 5 chunks specifi
 ```
 
 
-#### 2) ID_best_model.R - Identify the model with the largest log marginal likelihood from the stepping stone sampler files. Saves model choice as modelchoice.txt in the `BAGERresults/$tissuecode` directory
+#### 2) ID_best_model.R - Identify the model with the largest log marginal likelihood from the stepping stone sampler files. Saves model choice as modelchoice.txt in the `home/data/BAGERresults/$tissuecode` directory
 
 ```
 R --vanilla < ID_best_model.R
 ```
 
 
-#### 3) Create.BAGER.Summary.File.R - Collect BAGER summary statistics (foldSD change between ancestral and descendent reconstructions, medians of both reconstructions, and the Bayesian Posterior Probability of Divergence/BPPD [see script for description]) for every branch into one Summary file, called `BAGERresults/$tissuecode/$DATEBAGERSummary.txt`.
+#### 3) Create.BAGER.Summary.File.R - Collect BAGER summary statistics (foldSD change between ancestral and descendent reconstructions, medians of both reconstructions, and the Bayesian Posterior Probability of Divergence/BPPD [see script for description]) for every branch into one Summary file, called `home/data/BAGERresults/$tissuecode/$DATEBAGERSummary.txt`.
 
 ```
 R --vanilla < Create.BAGER.Summary.File.R 
@@ -76,7 +78,7 @@ R --vanilla < Create.BAGER.Summary.File.R
 Best used in R studio.
 
 
-## Simulate gene expression evolution across your tree.
+## Simulate gene expression evolution across your tree. This portion is not yet finished.
 
 **Using the `SimulateAGER.Rmd` file, you may simulate data that matches your data's expression patterns.**
 
