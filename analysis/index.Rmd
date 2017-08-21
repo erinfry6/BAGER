@@ -7,7 +7,7 @@ output:
     highlight: espresso
 ---
 
-BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of reconstructing ancestral gene expression levels. We are employing BAGER to identify expression shifts in the human lineage, or since our common ancestor with chimpanzees. However, BAGER can be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.
+BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of reconstructing ancestral gene expression levels. We are employing BAGER to identify expression shifts across the primate phylogeny, with particular focus on the human lineage, or the lineage leading to Homo sapiens since the common ancestor with chimpanzees. BAGER can be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.
 
 ## Steps:
 
@@ -17,8 +17,12 @@ BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of r
 
  3) BAGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. ([see for scripts](https://github.com/erinfry6/AncGeneExpReconstructionBT))
 
- 4) Identify genes with expression shifts in the lineage of interest by comparing the posterior probability distributions of the ancestral reconstructions. 
-    - [Expression shifts in the human frontal cortex](BrainBAGERAnalysis.html)
-    - [Expression shifts in human testis](TestisBAGERAnalysis.html)
+ 4) Identify genes with expression shifts throughout the primate phylogeny by comparing the posterior probability distributions of the ancestral expression reconstructions. 
+    - [Expression shifts in the frontal cortex](BrainIdentifyShiftsInAllLineages.html)
+    - [Expression shifts testis](TestisIdentifyShiftsInAllLineages.html)
+ 
+ 5) Identify genes with expression shifts in the human lineage.
+    - [Genes and pathways with expression shifts in the human frontal cortex](BrainBAGERAnalysis.html)
+    - [Genes and pathways with expression shifts in human testis](TestisBAGERAnalysis.html)
 
 ![image source: https://www.liverpool.ac.uk/infection-and-global-health/research/zoonotic-infections/BADGER-survey/](https://www.liverpool.ac.uk/media/livacuk/infectionandglobalhealth/BADGER.jpg)

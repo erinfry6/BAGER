@@ -1,6 +1,6 @@
 
 ## Erin Fry
-## July 28 2017
+## Aug 8 2017
 
 ## this script generates and stores the BAGER summary statistics for each primate lineage.
 ## it collects the fold standard deviation between the ancestral and descdant node at each lineage,
@@ -21,7 +21,7 @@
 
 ## SET PATHS, ARGUMENTS AND LIBRARIES
 
-tissue<-"cb"
+tissue<-"ts"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -66,12 +66,12 @@ if (tissue=="br"){
   node.ancApes="Node-00002"
   node.ancHominini="Node-00003"
   node.ancHomo="Node-00004"
-  node.ancPan="Node-00008"
-  node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00012"
+  node.ancOrang="Node-00015"
+  node.ancMacaque="Node-00018"
   
 } else if (tissue=="kd"){
   node.ancPrimates="Node-00000"
@@ -81,10 +81,10 @@ if (tissue=="br"){
   node.ancHomo="Node-00004"
   node.ancPan="Node-00008"
   node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancPpa="Node-00012"
+  node.ancGorilla="Node-00015"
+  node.ancOrang="Node-00018"
+  node.ancMacaque="Node-00021"
   
 } else if (tissue=="ts"){
   node.ancPrimates="Node-00000"
@@ -93,7 +93,7 @@ if (tissue=="br"){
   node.ancHomo="Node-00003"
   node.ancPan="Node-00006"
   node.ancPtr="Node-00007"
-  node.ancPpa="Node-00018"
+  node.ancPpa="Node-00008"
   node.ancGorilla="Node-00009"
   node.ancMacaque="Node-00010"
   
@@ -103,28 +103,55 @@ if (tissue=="br"){
   node.ancApes="Node-00002"
   node.ancHominini="Node-00003"
   node.ancHomo="Node-00004"
-  node.ancPan="Node-00008"
-  node.ancPtr="Node-00009"
-  node.ancPpa="Node-00016"
-  node.ancGorilla="Node-00020"
-  node.ancOrang="Node-00023"
-  node.ancMacaque="Node-00026"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00014"
+  node.ancOrang="Node-00017"
+  node.ancMacaque="Node-00018"
   
 } else {
   print("this tissue is not known") }
 
 ## specify each lineage in the tree to test
 ## formatted that the first column is the ancestral node and the second is the descendent node
-lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
-                                                     "ancPrimates", "ancHaplorhini",
-                                                     "ancHaplorhini", "ancOrang",
-                                                     "ancHaplorhini","ancApes",
-                                                     "ancApes","ancGorilla",
-                                                     "ancApes", "ancHominini",
-                                                     "ancHominini","ancPan",
-                                                     "ancHominini", "ancHomo",
-                                                     "ancPan", "ancPtr",
-                                                     "ancPan", "ancPpa"))
+
+if (tissue=="ts"){
+  lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
+                                                       "ancPrimates", "ancApes",
+                                                       "ancApes","ancGorilla",
+                                                       "ancApes", "ancHominini",
+                                                       "ancHominini","ancPan",
+                                                       "ancHominini", "ancHomo",
+                                                       "ancPan", "ancPtr",
+                                                       "ancPan", "ancPpa"))
+  
+} else {
+  lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
+                                                       "ancPrimates", "ancHaplorhini",
+                                                       "ancHaplorhini", "ancOrang",
+                                                       "ancHaplorhini","ancApes",
+                                                       "ancApes","ancGorilla",
+                                                       "ancApes", "ancHominini",
+                                                       "ancHominini","ancPan",
+                                                       "ancHominini", "ancHomo",
+                                                       "ancPan", "ancPtr",
+                                                       "ancPan", "ancPpa"))
+}
+
+species.with.one<-NULL
+if (tissue=="cb"){
+  species.with.one<-c("ancOrang")
+}
+
+if (tissue=="ts"){
+  species.with.one<-c("ancOrang", "ancPtr","ancPpa","ancGorilla","andMacaque")
+}
+
+if (tissue=="ht"){
+  species.with.one<-c("ancOrang")
+}
+
 
 ## load libraries
 library(dplyr)
@@ -166,8 +193,13 @@ read.AncRecon=function(file, firstrow, lastrow,header=F, sep='\t'){
 ## Calculate the Bayesian Posterior Probability of Divergnce (BPPD)
 ## first, find the difference between the two reconstructions
 ## then, take the maximum proportion of the iterations that are greater than or less than 0
-calc.BPPD=function(file, recon1, recon2){
-  diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(file[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])
+calc.BPPD=function(file, recon1, recon2, single.sample=FALSE){
+  if (single.sample==TRUE){
+      diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(rnorm(mean = mean(as.numeric(gene[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])), sd = sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]), n = expectedrows))
+  } else {
+      diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(file[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])
+  }
+  
   BPPD<-max(1-(length(which(diff>0))/(expectedrows-1)), (length(which(diff>0))/(expectedrows-1)))  ## to do
   return(BPPD)
 }
@@ -176,19 +208,29 @@ calc.BPPD=function(file, recon1, recon2){
 
 ## COLLECT STATS FUNCTION
 
-collect.stats.for.one.gene<-function(gene, reconAnc, reconDesc){
+collect.stats.for.one.gene<-function(gene, single.sample=FALSE, reconAnc, reconDesc){
   
   ## calculate the fold difference increase in the ancestral node compared to the descendent node
   foldSD<-sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))])/sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))])
   
   ## in the case where a species only has on sample, foldSD will be calculated to be infinity
   ## for these circumstances, save the maximum standard deviation (which will be of the ancestor) to gauge if successfully reconstructed
+  
+  if (is.na(foldSD)){
+    foldSD=max(sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]),sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))]))
+  } else {
   if (foldSD=="Inf"){
     foldSD=max(sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]),sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))]))
-  }
+  } else {} }
   
-  ## calculate bppd
-  BPPD<-calc.BPPD(gene, reconAnc, reconDesc)
+  
+  if (single.sample==TRUE){
+    ## calculate bppd
+    BPPD<-calc.BPPD(gene, reconAnc, reconDesc, single.sample=TRUE)
+  
+  } else{
+    BPPD<-calc.BPPD(gene, reconAnc, reconDesc, single.sample=FALSE)
+  }
   
   ## find the median reconstructed values for both nodes
   MedianAnc<-median(as.numeric(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]))
@@ -278,9 +320,16 @@ for (i in 1:length(listgenes)){
   
   ## for each lineage
   for (l in 1:nrow(lineages.to.test)){
-    ## find the BAGER statistics
-    summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, reconAnc = eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
     
+    if (lineages.to.test[l,2] %in% species.with.one){
+      summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, single.sample = FALSE, reconAnc= eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), reconDesc = eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
+      
+    } else {
+    
+      ## find the BAGER statistics
+      summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, single.sample=FALSE, reconAnc = eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), reconDesc = eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
+    }
+  
   }
 
 
@@ -292,3 +341,4 @@ head(summary.df)
 ######################################################################
 ## SAVE BAGER SUMMER STATS
 write.table(summary.df,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')
+

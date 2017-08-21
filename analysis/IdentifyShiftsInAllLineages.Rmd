@@ -15,7 +15,7 @@ output:
 
 
 ## Erin Fry
-## August 1 2017
+## August 8 2017
 
 ## this script analyzes BAGER results
 
@@ -33,11 +33,11 @@ output:
 
 ## tissue name
 
-tissuename<-"Cerebellum"
+tissuename<-"Kidney"
 
 ## set tissue code
 
-tissue<-"cb"
+tissue<-"kd"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -269,8 +269,9 @@ shiftanalysis<-function(reconsdf=reconsgenes, listnumber, lineages.df=lineages.t
   
   ## if want to write results, save both reconstructed gene list and shift gene list
   if (write.results==TRUE){
-  write.table(reconsdf,paste(pathResults,Sys.Date(),lineage,"Reconstructed.txt", sep=""),sep='\t')
-  write.table(shiftgenes,paste(pathResults,Sys.Date(),lineage,"90Cutoff.txt", sep=""),sep='\t') }
+    write.table(reconsdf[[listnumber]],paste(pathResults,Sys.Date(),lineage,"Reconstructed.txt", sep=""),sep='\t')
+    write.table(shiftgenes,paste(pathResults,Sys.Date(),lineage,"90Cutoff.txt", sep=""),sep='\t') 
+  }
   
   if (histogram==TRUE){
   ## View the distribution of divergence of converged genes
@@ -281,7 +282,7 @@ shiftanalysis<-function(reconsdf=reconsgenes, listnumber, lineages.df=lineages.t
        col="#1c9099", breaks=100)
   abline(v=BPPDcutoff, col="red") }
   
-  return(c(nrow(reconsdf[[listnumber]]),nrow(shiftgenes), num.recons[listnumber],length(listcsv)))
+  return(c((nrow(reconsdf[[listnumber]])-nrow(shiftgenes)),nrow(shiftgenes), num.recons[listnumber],length(listcsv)))
 }
 
 
@@ -435,7 +436,7 @@ if (save.scatter==TRUE){
 
 ```{r Load BAGER summary file, echo=FALSE, tidy=TRUE, cache=TRUE}
 ## uploaded saved file 
-Summary<-read.table(paste(pathResults,"2017-07-30BAGERSummary.txt", sep=""),sep='\t', header=T)
+Summary<-read.table(paste(pathResults,"2017-08-10BAGERSummary.txt", sep=""),sep='\t', header=T)
 
 Summary[1:5,1:10]
 
@@ -451,7 +452,7 @@ expectedrows=ncol(finding.information.about.file)-it.begin
 
 ```
 
-### Select genes that are expressed with successful reconstructions
+## Select genes that are expressed with successful reconstructions
 Genes that succesfully reconstructed will have similar posterior variations in the two ancestral node reconstructions. For each lineage, select only genes with fold standard deviations between the ancestral and descendant node of less than 4. Save these gene lists in the list of dataframes, reconsgenes.
 
 ```{r find reconstructed genes in each lineage, warnings=FALSE}
@@ -508,7 +509,7 @@ BAGERshiftsummary
 
 ```
 
-```{r for saving number of shifts in each lineage, eval=FALSE, include=FALSE}
+```{r save number of shifts in each lineage, eval=FALSE, include=FALSE}
 write.table(BAGERshiftsummary,paste(pathResults,Sys.Date(),"BAGERshiftsummary.txt", sep=""),sep='\t')
 
 ```
@@ -520,7 +521,7 @@ write.table(BAGERshiftsummary,paste(pathResults,Sys.Date(),"BAGERshiftsummary.tx
 for (l in 1:nrow(lineages.to.test)){
   createScatterPlot(listnumber = l, save.scatter = FALSE)
 }
-
+#createScatterPlot(listnumber =8, save.scatter = TRUE)
 ```
 
 
@@ -529,9 +530,10 @@ for (l in 1:nrow(lineages.to.test)){
 
 for (l in 1:nrow(lineages.to.test)){
 
-for (enrichdb in c("geneontology_Biological_Process", "geneontology_Cellular_Component","pathway_Panther","pathway_KEGG", "pathway_Wikipathway", "phenotype_Human_Phenotype_Ontology")){
+  for (enrichdb in c("geneontology_Biological_Process", "geneontology_Cellular_Component","pathway_Panther","pathway_KEGG",
+                     "pathway_Wikipathway", "phenotype_Human_Phenotype_Ontology")){
 
-WebGestaltR(enrichMethod = "ORA", organism = "hsapiens", enrichDatabase = enrichdb,
+    WebGestaltR(enrichMethod = "ORA", organism = "hsapiens", enrichDatabase = enrichdb,
             enrichDatabaseFile=NULL, enrichDatabaseType=NULL,
             interestGene=filter(as.data.frame(reconsgenes[[l]]),
             eval(as.symbol(paste(lineages.to.test[l,1],lineages.to.test[l,2],"BPPD",sep="_")))>BPPDcutoff)$ensembl_gene_id, 
@@ -542,9 +544,12 @@ WebGestaltR(enrichMethod = "ORA", organism = "hsapiens", enrichDatabase = enrich
             fdrMethod="BH",sigMethod="fdr",fdrThr=0.05,
             topThr=10,dNum=20,perNum=1000,
             lNum=20,is.output=TRUE,
-            outputDirectory=paste(pathResults,"Enrichments/",sep=""),projectName=paste(Sys.Date(),lineages.to.test[l,1],lineages.to.test[l,2],enrichdb,sep="-"),
+            outputDirectory=paste(pathResults,"Enrichments/",sep=""),
+            projectName=paste(Sys.Date(),lineages.to.test[l,1],lineages.to.test[l,2],enrichdb,sep="-"),
             keepGSEAFolder=FALSE, methodType="R",dagColor="binary",hostName="http://www.webgestalt.org/")
-} }
+  } 
+  
+}
 ```
 
 ## View original gene expression heatmaps of genes with expression shifts compared to one of all reconstructed genes in the human lineage
@@ -553,13 +558,28 @@ These heatmaps are generated using the expression data in all sampled primate fr
 
 ```{r examine qualities of genes identified to have shifts in the original data, eval=FALSE, cache=TRUE}
 ## load expression data used to run scripts
-TPM_log<-t(as.matrix(read.table(paste(pathData,tissue,"_exp.txt", sep=""),header=F)))
-
+TPM_log<-t(as.matrix(read.table(paste(pathData,tissue,"_genesincluded.txt", sep=""),header=F)))
+expr<-t(as.matrix(read.table(paste(pathData,tissue,"_exp.txt", sep=""),header=F)))
+colnames(TPM_log)<-TPM_log[1,]
+TPM_log<-t(TPM_log[-1,])
 colnames(TPM_log)<-TPM_log[1,]
 TPM_log<-TPM_log[-1,]
 
 ## select only converged genes to create heatmap
-converged_expression<-prepforheatmap(TPM_log[as.numeric(test),])
+converged_expression<-prepforheatmap(TPM_log[test$ensembl_gene_id %in% rownames(TPM_log),])
+
+x=1
+for (l in 1:nrow(lineages.to.test)){
+    lineage<-paste(lineages.to.test[l,1],lineages.to.test[l,2], sep="_")
+    
+    temp<-filter(Summary, eval(as.symbol(paste(lineage,"foldSD",sep="_"))) <cutoffSD,
+                 eval(as.symbol(paste(lineage,"reconAnc",sep="_")))>expcut | eval(as.symbol(paste(lineage,"reconDesc",sep="_")))>expcut)
+    
+    reconsgenes[[x]]<-temp[,c(1:5,grep(pattern = lineage, x = colnames(temp)))]
+    
+    x=x+1
+  }
+
 
 (which(Summary$hgnc_symbol %in% reconsgenes[[which(lineages.to.test[,2]=="ancHomo")]]$hgnc_symbol))
 ## order of the columns in the heatmaps

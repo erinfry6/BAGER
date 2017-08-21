@@ -31,7 +31,6 @@ knitr::read_chunk("chunks.R")
 ```{r code-version, echo=FALSE, results='asis'}
 ```
 
-<!-- Add your analysis here -->
 
 # Introduction
 
@@ -60,7 +59,10 @@ knitr::read_chunk("chunks.R")
 
 ```{r set directories and load libraries, include=FALSE}
 ## Load paths and libraries
-setwd("/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/analysis")
+path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
+pathData=paste(path,"data/",sep="")
+pathResults=paste(path,"data/forBAGER/",sep="")
+
 library(dplyr)
 library(limma)
 library(ggplot2)
@@ -79,13 +81,13 @@ library("ape")
 The following sample information was obtained directly from the authors of Brawand et al.
 ```{r Load data, echo=TRUE}
 ## read in raw expression data
-TPM_raw<-read.table("../data/Transcript_Abundances31.txt", header=TRUE, sep="\t", na.strings='NA', stringsAsFactors = FALSE) 
+TPM_raw<-read.table(paste(pathData,"Transcript_Abundances31.txt", sep=""), header=TRUE, sep="\t", na.strings='NA', stringsAsFactors = FALSE) 
 
 ## upload gene information
-geneinfo<-read.table("../data/mart_export.txt",header=TRUE,sep='\t',na.strings='NA',stringsAsFactors = FALSE)
+geneinfo<-read.table(paste(pathData,"mart_export.txt", sep=""),header=TRUE,sep='\t',na.strings='NA',stringsAsFactors = FALSE)
 
 ## load and view the sample information
-SampleInfo<-read.table("../data/SampleInformation.txt",sep='\t',header=TRUE)
+SampleInfo<-read.table(paste(pathData,"SampleInformation.txt", sep=""),sep='\t',header=TRUE)
 head(SampleInfo)
 ## check that sample info file has the same number of samples at the TPM_raw file
 nrow(SampleInfo)==ncol(TPM_raw)-1
@@ -105,7 +107,7 @@ colnames(TPM_raw)<-c('EnsemblID',colnames(TPM_raw)[-1])
 **Quantify the number of raw reads that mapped to genes during psuedo-alignement.**
 ```{r number of mapped reads}
 ## create list of kallisto output files
-setwd("../data/KallistoOutput/")
+setwd(paste(pathData,"KallistoOutput/", sep=""))
 listcsv<-as.character(dir(pattern="*"))# creates the list of all the csv files in the directory in true (not computer) numerical order
 ## check that matches sample info
 length(listcsv)==nrow(SampleInfo)
@@ -127,7 +129,7 @@ colnames(SampleInfo)<-c(colnames(SampleInfo)[-n],"Mapped_Reads")
 SampleInfo$Proportion_mapped_reads<-SampleInfo$Mapped_Reads/SampleInfo$Raw_reads
 SampleInfo$Unmapped_reads<-SampleInfo$Raw_reads-SampleInfo$Mapped_Reads
 SampleInfo$Proportion_unmapped_reads<-SampleInfo$Unmapped_reads/SampleInfo$Raw_reads
-setwd("/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/analysis")
+
 ```
 
 
@@ -182,7 +184,7 @@ To ensure our samples are from the correct tissue, check the human gene expressi
 #write.table(GtexMedians,"GTex_Medians_All.txt",sep='\t')
 #remove excess row and column headers in excel, also get rid of versions of gene or ".3" part of gene name, replace spaces with _
 
-GtexMedians<-read.table("../data/Gtex_Medians_All.txt",header=T,sep='\t')
+GtexMedians<-read.table(paste(pathData,"Gtex_Medians_All.txt", sep=""),header=T,sep='\t')
 
 ## select tissues to compare to
 GtexMedians<-select(GtexMedians, Name, Brain_._Cerebellum,Brain_._Frontal_Cortex_.BA9.,Kidney_._Cortex,Heart_._Left_Ventricle,Liver,Testis)
@@ -299,7 +301,7 @@ TopGTEXindata<-filter(TPM_raw,EnsemblID %in% Top100Gtex$EnsemblID)[, c(1,(grep("
 
 ## visualize the raw counts per gene for all genes or the top expressed genes
 ## boxplots of all and top genes for each human sample
-boxplot(log(TPM_raw[,grep("ts", colnames(TPM_raw_inGtex))]),ylim=c(-5,12), main=paste("log TPM All Genes and top 100 in Gtex","Cerebellum",sep=" "), ylab = "log(TPM)", las = 2, cex.axis = .75)
+suppressWarnings(boxplot(log(TPM_raw[,grep("ts", colnames(TPM_raw_inGtex))]),ylim=c(-5,12), main=paste("log TPM All Genes and top 100 in Gtex","Cerebellum",sep=" "), ylab = "log(TPM)", las = 2, cex.axis = .75))
 boxplot(log(TopGTEXindata[,-1]), ylab = "log(TPM)", las = 2, cex.axis = .75, add=T, col="blue")
 
 ```
@@ -342,18 +344,161 @@ ggplot(as.data.frame(correlationstohuman), aes(x = factor(SampleID), y = correla
 ## keep track of failures - samples that have abnormally low correlation with humans
 SampleInfo$Failures[which(correlationstohuman$correlationstohuman<.7)]<-SampleInfo$Failures[which(correlationstohuman$correlationstohuman<.7)]+1
 ```
-# Processing RNA-seq data
-## Eliminate mitochondrial genes and lowly expressed genes, log transform the data
+
+
+```{r define PC functions, include=FALSE}
+plot_scores <- function(pca, Covars,scores, n, m, points=F, legend=F){
+  xmin <- min(scores[,n]) - (max(scores[,n]) - min(scores[,n]))*0.05
+  if (legend == T){ ## let some room (35%) for a legend                                                                                                                                                 
+    xmax <- max(scores[,n]) + (max(scores[,n]) - min(scores[,n]))*0.50
+  }
+  else {
+    xmax <- max(scores[,n]) + (max(scores[,n]) - min(scores[,n]))*0.05
+  }
+  ymin <- min(scores[,m]) - (max(scores[,m]) - min(scores[,m]))*0.05
+  ymax <- max(scores[,m]) + (max(scores[,m]) - min(scores[,m]))*0.05
+  plot(scores[,n], scores[,m], xlab=paste("PC", n, ": ", round(summary(pca)$importance[2,n],3)*100, "% variance explained", sep=""), ylab=paste("PC", m, ": ", round(summary(pca)$importance[2,m],3)*100, "% variance explained", sep=""), main="PCA of Expression Data", xlim=c(xmin, xmax), ylim=c(ymin, ymax), type="n")
+  if (points == F){
+    text(scores[,n],scores[,m], rownames(scores), col="black", cex=1)
+  }
+  else {
+    cols=pal[as.numeric(as.factor(Covars$Tissue))]
+    pchs=as.numeric(as.factor(Covars$Species))
+    points(scores[,n],scores[,m], col=cols, pch=pchs, cex=1.3)
+    if (legend == T){ ## let some room (35%) for a legend     
+      legend(x="topright",legend=unique(Covars$Tissue), fill =unique(cols))
+      legend(x="topleft", legend= unique(Covars$Species), pch = unique(pchs)) }
+  }
+}
+
+## make PC figures function
+plot_PCs <- function(pca, Covars,firstPC,lastPC, points=F, legTorF){
+  pca_genes<-prcomp(pca, scale=F)
+  scores<-pca_genes$x
+  for (n in (firstPC-1):(lastPC-2)){
+    n=n+1
+    if (points == F){
+      plot_scores(pca_genes, Covars,scores, n, n+1, points=F, legend=legTorF) 
+    } else {
+      plot_scores(pca_genes,Covars, scores, n, n+1, points=T, legend=legTorF) 
+    }
+  } }
+
+## set seed
+set.seed(6)
+
+
+## Load color scale for Heatmap
+colors <- colorRampPalette(c(brewer.pal(9, "Blues")[1],brewer.pal(9, "Blues")[9]))(100)
+
+
+## make PC figures from desired first PC to last PC
+## by tissue
+
+plotPCandHeatmap<-function(RNA_data, Covars){
+  for (i in 1:length(tissue)){
+    plot_PCs(t(RNA_data[,grep(x=colnames(RNA_data),pattern = tissue[i])]),Covars,1,2)
+
+    ## cluster by tissue
+    cors <- cor(RNA_data[,grep(x=colnames(RNA_data),pattern = tissue[i])], method="spearman", use="pairwise.complete.obs")
+
+    ## make the heatmap by tissue
+    if (tissue[i]=="br"){
+      heatmap.2( cors, scale="none",margins = c(12, 12), col=colors, trace='none', denscol="white", labCol=colnames(cors),cexCol = 0.2 + 1/log10(15), cexRow = 0.2 + 1/log10(15))
+    } else {
+        heatmap.2( cors, scale="none",margins = c(12, 12), col=colors, trace='none', denscol="white", labCol=colnames(cors), ColSideColors=pal[as.numeric(as.factor(filter(Covars,Tissue==tissuefull[i])$Species))], RowSideColors=pal[as.numeric(as.factor(filter(Covars,Tissue==tissuefull[i])$Species))], cexCol = 0.2 + 1/log10(15), cexRow = 0.2 + 1/log10(15))
+      }
+  }
+  
+  ## all samples
+  plot_PCs(t(RNA_data),Covars,1,2, points=T)
+  cors <- cor(RNA_data, method="spearman", use="pairwise.complete.obs")
+  heatmap.2( cors, scale="none",margins = c(12, 12), col=colors, trace='none', denscol="white", labCol=colnames(cors), ColSideColors=pal[as.numeric(as.factor(Covars$Species))], RowSideColors=pal[as.numeric(as.factor(Covars$Species))], cexCol = 0.2 + 1/log10(15), cexRow = 0.2 + 1/log10(15))
+  
+}
+
+```
+
+### Eliminate mitochondrial genes
 ```{r exclude mito genes, include=TRUE}
 # eliminate all Mitochondrial genes
 TPM_noMT<-filter(TPM_raw, Chromosome.Name !="MT")
+rownames(TPM_noMT)<-TPM_noMT$EnsemblID
+TPM_noMT<-TPM_noMT[,4:ncol(TPM_noMT_expressed)]
 
-## eliminate lowly expressed genes (with TPM<2 in all samples)
-TPM_noMT_expressed<-TPM_noMT[rowSums(TPM_noMT[,4:ncol(TPM_noMT)])>2*nrow(SampleInfo),]
+labels <- paste(SampleInfo$Species, SampleInfo$Tissue, sep=" ")
 
-## log the data and prepare for PCA and regression analysis
-TPM_noMT_expressed_log<-log2(TPM_noMT_expressed[,4:ncol(TPM_noMT_expressed)]+0.0000001)
-rownames(TPM_noMT_expressed_log)<-TPM_noMT_expressed$EnsemblID
+plot_PCs(pca = t(TPM_noMT), firstPC = 1, lastPC = 4, Covars = SampleInfo, points=T, legTorF = F)
+
+```
+
+# Processing RNA-seq data
+## Visualize different normalizations
+### Log2
+Calculate log2-transformed TPM.
+```{r log2}
+labels <- paste(SampleInfo$Species, SampleInfo$Tissue, sep=" ")
+
+TPM_noMT_log<-log2(TPM_noMT+0.0000001)
+
+head(TPM_noMT_log)
+
+
+for (t in 1:length(tissue)){
+plotDensities(TPM_noMT_log[,grep(tissue[t], colnames(TPM_noMT_log))],main=paste("log(TPM) Expression Density Curves for", tissue[t], sep=" "), col = pal, legend = "topleft")
+  abline(v=log(2))
+}
+
+plot_PCs(pca = t(TPM_noMT_log), firstPC = 1, lastPC = 2, Covars = SampleInfo, points=T, legTorF = F)
+
+```
+
+### Log2 and TMM
+Using weighted trimmed mean of M-values algorithm (TMM) to account for differences in the read counts at the extremes of the distribution and calculate the TMM-normalized log2-transformed TPM. 
+```{r log2 and TMM}
+dge_original <- DGEList(counts=as.matrix(TPM_noMT), genes=rownames(TPM_noMT), group = as.character(t(labels)))
+dge_original <- calcNormFactors(dge_original)
+
+tmm_tpm <- cpm(dge_original, normalized.lib.sizes=TRUE, log=TRUE, prior.count = 0.25)
+head(tmm_tpm)
+
+boxplot_library_size <- ggplot(dge_original$samples, aes(x = SampleInfo$Tissue, y = dge_original$samples$lib.size, fill = SampleInfo$Species)) + geom_boxplot()
+ 
+boxplot_library_size + labs(title = "Library size by tissue") + labs(y = "Library size") + labs(x = "Tissues") + guides(fill=guide_legend(title="Species"))
+
+for (t in 1:length(tissue)){
+plotDensities(tmm_tpm[,grep(tissue[t], colnames(tmm_tpm))],main=paste("log(TPM)+TMM Expression Density Curves for", tissue[t], sep=" "), col = pal, legend = "topright")
+  abline(v=log(2))
+}
+
+plot_PCs(pca = t(tmm_tpm), firstPC = 1, lastPC = 2, Covars = SampleInfo, points=T, legTorF = F)
+
+```
+
+** ppa_lv_M_1 is not clustering with the other tissues and will be eliminated**
+
+### Log2 and TMM remove ppa_lv_M_1
+Using weighted trimmed mean of M-values algorithm (TMM) to account for differences in the read counts at the extremes of the distribution and calculate the TMM-normalized log2-transformed TPM. 
+```{r log2 and TMM}
+dge <- DGEList(counts=as.matrix(TPM_noMT[,-(SampleInfo$SampleID=="ppa_lv_M_1")]), genes=rownames(TPM_noMT), group = as.character(t(labels[-which(SampleInfo$SampleID=="ppa_lv_M_1")])))
+dge <- calcNormFactors(dge)
+
+tmm_tpm <- cpm(dge, normalized.lib.sizes=TRUE, log=TRUE, prior.count = 0.25)
+head(tmm_tpm)
+
+SampleInfo_1elim<-SampleInfo[-which(SampleInfo$SampleID=="ppa_lv_M_1"),]
+
+boxplot_library_size <- ggplot(dge$samples, aes(x = SampleInfo_1elim$Tissue, y = dge$samples$lib.size, fill = SampleInfo_1elim$Species)) + geom_boxplot()
+ 
+boxplot_library_size + labs(title = "Library size by tissue") + labs(y = "Library size") + labs(x = "Tissues") + guides(fill=guide_legend(title="Species"))
+
+for (t in 1:length(tissue)){
+plotDensities(tmm_tpm[,grep(tissue[t], colnames(tmm_tpm))],main=paste("log(TPM)+TMM Expression Density Curves for", tissue[t], sep=" "), col = pal, legend = "topright")
+  abline(v=log(2))
+}
+
+plot_PCs(pca = t(tmm_tpm), firstPC = 1, lastPC = 2, Covars = SampleInfo_1elim, points=T, legTorF = F)
+
 ```
 
 ## Examine Expression Density Curves by Tissue
@@ -383,7 +528,10 @@ for (t in tissue){
     sd.not[i]<-sd(distsumm_noMT_expressed_log[grep(t, colnames(TPM_noMT_expressed_log))[-i],1])
     abnormQ[i]<-pnorm(q =distsumm_noMT_expressed_log[grep(t, colnames(TPM_noMT_expressed_log))[i],1] , mean = mean.not[i],sd = sd.not[i]) ## calculate the probability of seeing the mean of the one being examined
   }
-  abnorm<-cbind(abnorm,colnames(TPM_noMT_expressed_log)[grep(t, colnames(TPM_noMT_expressed_log))][which(abnormQ<0.023 | abnormQ>0.977)]) ## identify samples that have mean expression more than two standard deviations away from the others
+  
+  print(colnames(TPM_noMT_expressed_log)[grep(t, colnames(TPM_noMT_expressed_log))][which(abnormQ<0.023 | abnormQ>0.977)])
+  
+  #abnorm<-cbind(abnorm,colnames(TPM_noMT_expressed_log)[grep(t, colnames(TPM_noMT_expressed_log))][which(abnormQ<0.023 | abnormQ>0.977)]) ## identify samples that have mean expression more than two standard deviations away from the others
 }
 
 ## which samples have bad expression density curves?
@@ -391,7 +539,7 @@ abnorm[1,]
 
 ## samples that have very abnormal distributions will be eliminated
 ## hsa_br_M_5 is also labeled 'temporal' instead of frontal cortex
-SampleInfo$Failures[c(17,59,21,42)]<-SampleInfo$Failures[c(17,59,21,42)]+3
+SampleInfo$Failures[which(SampleInfo$SampleID %in% abnorm[1,])]<-SampleInfo$Failures[which(SampleInfo$SampleID %in% abnorm[1,])]+3
 
 ```
 

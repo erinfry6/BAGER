@@ -28,6 +28,7 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	export pathResults=${path}/data/BAGERresults/${tissue}
 	export pathCommands=${pathScripts}/commands
 	export pathTemp=${pathResults}/temporary
+	export pathEnrichments=${pathResults}/Enrichments
 
 	## make directories if they do not already exist
 	
@@ -49,12 +50,18 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
     else
     mkdir ${pathTemp}
     fi	
+    
+    if [ -e ${pathEnrichments} ]; then
+   	echo 'Command dir already here'
+    else
+    mkdir ${pathEnrichments}
+    fi	
 
 ###########################################################
 
 	
 ## define the models to be tested
-models="Lambda"
+models="Lambda VarRates"
 	
 	## make a list of .txt files to be created from the model, these should blank in the *.txt______.txt
 	## if using VarRates with stepping stone sampler these will be the files created
