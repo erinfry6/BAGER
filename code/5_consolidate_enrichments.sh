@@ -6,6 +6,13 @@
 ## User must modify the base path
 ## The other basic options to change might be the models to evaluate if different than the recommended models
 
+	
+###########################################################
+
+	## read in tissue code and start and end gene numbers
+
+	tissue=$1
+
 ###########################################################
 
 	## set directory paths
@@ -18,18 +25,17 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	export pathCommands=${pathScripts}/commands
 	export pathEnrichments=${pathResults}/Enrichments
 	
-	
-###########################################################
 
-	## read in tissue code and start and end gene numbers
-
-	tissue=$1
 
 ###########################################################
 
 ## create results file
+## first give it a header with column names corresponding to results below for easier manipulation
 
-echo These are the significant enrichments FDR less than 5 percent for $tissue in all primate lineages > $pathEnrichments/enrichmentresults.txt
+echo -e 'geneset	description	link	C	O	E	R	PValue	FDR	overlapGene	OverlapGene_UserID' > $pathEnrichments/enrichmentresults.txt
+
+## explanation of what the file contains
+echo These are the significant enrichments FDR less than 5 percent for $tissue in all primate lineages >> $pathEnrichments/enrichmentresults.txt
 echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ >> $pathEnrichments/enrichmentresults.txt
 
 cd $pathEnrichments
