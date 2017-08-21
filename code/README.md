@@ -51,31 +51,37 @@ The following input files are required for this analysis and should be places in
 ## Run the Bayesian Ancestral Transcriptome Reconstruction Scripts
 
 
-#### 1) create_model_files.sh - Reconstruct transcriptomes under each model. The default recommended models are coded in, but if you would like to change or add models, you will have to do so.
+#### 1) 1_ancestral_reconstruction.sh - Reconstruct transcriptomes under each model. The default recommended models are coded in, but if you would like to change or add models, you will have to do so.
 I typically run the code one tissue at a time, broken into 4 or 5 chunks specified by begingene and endgene numbers to decrease run time per tissue. Begingene and endgene are integers of the beginning and start gene number you would like to reconstruct.
 
 ```
-./create_model_files.sh tissuecode begingene endgene
+./1_ancestral_reconstruction.sh tissuecode begingene endgene
 ```
 
 
-#### 2) ID_best_model.R - Identify the model with the largest log marginal likelihood from the stepping stone sampler files. Saves model choice as modelchoice.txt in the `home/data/BAGERresults/$tissuecode` directory
+#### 2) 2_ID_best_model.R - Identify the model with the largest log marginal likelihood from the stepping stone sampler files. Saves model choice as modelchoice.txt in the `home/data/BAGERresults/$tissuecode` directory
 
 ```
-R --vanilla < ID_best_model.R
+R --vanilla < 2_ID_best_model.R
 ```
 
 
-#### 3) Create.BAGER.Summary.File.R - Collect BAGER summary statistics (foldSD change between ancestral and descendent reconstructions, medians of both reconstructions, and the Bayesian Posterior Probability of Divergence/BPPD [see script for description]) for every branch into one Summary file, called `home/data/BAGERresults/$tissuecode/$DATEBAGERSummary.txt`.
+#### 3) 3_Create.BAGER.Summary.File.R - Collect BAGER summary statistics (foldSD change between ancestral and descendent reconstructions, medians of both reconstructions, and the Bayesian Posterior Probability of Divergence/BPPD [see script for description]) for every branch into one Summary file, called `home/data/BAGERresults/$tissuecode/$DATEBAGERSummary.txt`.
 
 ```
-R --vanilla < Create.BAGER.Summary.File.R 
+R --vanilla < 3_Create.BAGER.Summary.File.R 
 ```
 
 #### 4) IdentifyShiftsInAllLineages.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts across the phylogeny. Also, finds enriched pathways in each lineage and visualizes transcriptome evolution.
 
 
 Best used in R studio.
+
+#### 5) 5_consolidate_enrichments.sh - Concatenates all significant enrichments from enrichment outputs in previous step into one file in `home/data/BAGERresults/$tissuecode/Enrichments/enrichmentresults.txt`
+
+```
+./5_consolidate_enrichments.sh $tissuecode
+```
 
 
 ## Simulate gene expression evolution across your tree. This portion is not yet finished.

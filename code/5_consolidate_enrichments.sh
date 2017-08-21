@@ -1,18 +1,10 @@
 
-
 ## Erin Fry
-## August 1 2017
+## August 21 2017
 
 ## this script consolidates all significant GO enrichments (FDR<0.05) in all lineages after running IdentifyShiftsInAllLineages.Rmd
-## User MUST modify the base path
+## User must modify the base path
 ## The other basic options to change might be the models to evaluate if different than the recommended models
-
-
-###########################################################
-
-	## read in tissue code and start and end gene numbers
-
-	tissue=$1
 
 ###########################################################
 
@@ -27,6 +19,12 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 	export pathEnrichments=${pathResults}/Enrichments
 	
 	
+###########################################################
+
+	## read in tissue code and start and end gene numbers
+
+	tissue=$1
+
 ###########################################################
 
 ## create results file
