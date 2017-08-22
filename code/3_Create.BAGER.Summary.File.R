@@ -21,7 +21,7 @@
 
 ## SET PATHS, ARGUMENTS AND LIBRARIES
 
-tissue<-"ht"
+tissue<-"ts"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -248,7 +248,12 @@ genenames<-read.csv(paste(pathData,tissue,"_genesincluded.txt",sep=""),header=T,
 
 ## import other infomration of those genes from biomart
 mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
-genes <- rownames(genenames)
+
+if (rownames(genenames)[1]==1){
+  genes <- genenames[,1]
+} else { 
+  genes <- rownames(genenames) }
+
 G_list <- getBM(filters= "ensembl_gene_id", attributes= c("hgnc_symbol","ensembl_gene_id","chromosome_name"),values=genes,mart= mart)
 
 
@@ -264,7 +269,10 @@ modelchoice<-as.data.frame(modelchoice[-1,])
 listcsv<-modelchoice$gene.number
 
 ## sometimes there are multiple ensembl id's per gene name, and this will misalign gene labels with the reconstruction information
-dup.ensembl<-which(rownames(genenames) %in% G_list$ensembl_gene_id ==FALSE)
+if (rownames(genenames)[1]==1){
+  dup.ensembl<-which(genenames[,1] %in% G_list$ensembl_gene_id ==FALSE)
+} else { 
+  dup.ensembl<-which(rownames(genenames) %in% G_list$ensembl_gene_id ==FALSE) }
 
 if (length(dup.ensembl)>0 ){
   warning(paste(length(dup.ensembl), "genes are duplicated v ensembl"))
