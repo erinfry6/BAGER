@@ -1,0 +1,28 @@
+#NEXUS
+[written Fri Oct 02 10:50:31 CDT 2015 by Mesquite  version 2.75 (build 566) at Lynchs-iMac-2.local/192.168.1.9]
+
+BEGIN TREES;
+	TRANSLATE
+		2 hsa_br_M_2,
+		3 hsa_br_M_3,
+		4 hsa_br_F_1,
+		5 ptr_br_M_3,
+		6 ptr_br_M_2,
+		7 ptr_br_M_5,
+		8 ptr_br_M_1,
+		9 ptr_br_M_4,
+		10 ptr_br_F_1,
+		11 ppa_br_M_1,
+		12 ppa_br_F_1,
+		13 ppa_br_F_2,
+		14 ggo_br_M_1,
+		15 ggo_br_F_1,
+		16 ppy_br_M_1,
+		17 ppy_br_F_1,
+		18 mml_br_F_1,
+		19 mml_br_M_1,
+		20 mml_br_M_2;
+	tree primateBR = (((((2:0.2,3:0.2,4:0.2):6.4,((5:0.9,6:0.9,7:0.9,8:0.9,9:0.9,10:0.9):1.9,(11:0.9,12:0.9,13:0.9):1.9):3.8):2.3,(14:0.95,15:0.95):7.95):6.9,(16:1.5,17:1.5):14.3):13.3,(18:1,19:1,20:1):28.1);
+
+END;
+

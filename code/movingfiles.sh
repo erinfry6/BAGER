@@ -1,6 +1,12 @@
 ## this script moves genes up. need to redo the first 17 genes of testis and move the rest
 
-## only tested on ts. 
+## br needs to be moved up
+
+## all but brain are in order
+
+## will have to redo br and ts analysis
+
+## cb analysis is at the point of calculating statistics
 
 ###########################################################
 	## read in which tissue
@@ -25,7 +31,7 @@ export path=/Users/lynchlab/Desktop/ErinFry/workflowr/AGER ##full absolute path 
 
 	
 	## define the models to be tested
-	models="VarRates"
+	models="Lambda VarRates"
 	
 	## make a list of .txt files to be created from the model, these should blank in the *.txt______.txt
 	## if using VarRates with stepping stone sampler these will be the files created

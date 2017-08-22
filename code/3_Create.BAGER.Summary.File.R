@@ -21,7 +21,7 @@
 
 ## SET PATHS, ARGUMENTS AND LIBRARIES
 
-tissue<-"ts"
+tissue<-"cb"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -193,9 +193,9 @@ read.AncRecon=function(file, firstrow, lastrow,header=F, sep='\t'){
 ## Calculate the Bayesian Posterior Probability of Divergnce (BPPD)
 ## first, find the difference between the two reconstructions
 ## then, take the maximum proportion of the iterations that are greater than or less than 0
-calc.BPPD=function(file, recon1, recon2, single.sample=FALSE){
+calc.BPPD=function(file, recon1, recon2, single.sample){
   if (single.sample==TRUE){
-      diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(rnorm(mean = mean(as.numeric(gene[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])), sd = sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]), n = expectedrows))
+      diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(rnorm(mean = mean(as.numeric(gene[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])), sd = sd(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))]), n = expectedrows))
   } else {
       diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(file[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])
   }
@@ -208,7 +208,7 @@ calc.BPPD=function(file, recon1, recon2, single.sample=FALSE){
 
 ## COLLECT STATS FUNCTION
 
-collect.stats.for.one.gene<-function(gene, single.sample=FALSE, reconAnc, reconDesc){
+collect.stats.for.one.gene<-function(gene, single.sample, reconAnc, reconDesc){
   
   ## calculate the fold difference increase in the ancestral node compared to the descendent node
   foldSD<-sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))])/sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))])
@@ -322,13 +322,13 @@ for (i in 1:length(listgenes)){
   for (l in 1:nrow(lineages.to.test)){
     
     if (lineages.to.test[l,2] %in% species.with.one){
-      summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, single.sample = FALSE, reconAnc= eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), reconDesc = eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
-      
+      summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, single.sample = TRUE, reconAnc= eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), reconDesc = eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
     } else {
     
       ## find the BAGER statistics
       summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, single.sample=FALSE, reconAnc = eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), reconDesc = eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
     }
+      
   
   }
 
