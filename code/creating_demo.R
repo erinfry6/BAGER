@@ -38,6 +38,5 @@ exp_data<-exp_data[-1,]
 demo_exp_data<-exp_data[exp_data$EnsemblID %in% demoresults$ensembl_gene_id,]
 
 ## save files
-write.table(demo_exp_data, paste(pathDemo, "/br_genesincluded.txt", sep=""), sep="\t", row.names = FALSE)
-write.table(t(demo_exp_data)[-1,], paste(pathDemo, "/br_exp.txt", sep=""), sep="\t", col.names = FALSE)
-
+write.table(demo_exp_data, paste(pathDemo, "/br_genesincluded.txt", sep=""), sep="\t", row.names = FALSE, quote=FALSE)
+write.table(t(demo_exp_data)[-1,], paste(pathDemo, "/br_exp.txt", sep=""), sep="\t", col.names = FALSE, quote=FALSE)
