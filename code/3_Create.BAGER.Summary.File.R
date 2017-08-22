@@ -1,6 +1,6 @@
 
 ## Erin Fry
-## Aug 8 2017
+## Aug 22 2017
 
 ## this script generates and stores the BAGER summary statistics for each primate lineage.
 ## it collects the fold standard deviation between the ancestral and descdant node at each lineage,
@@ -21,7 +21,7 @@
 
 ## SET PATHS, ARGUMENTS AND LIBRARIES
 
-tissue<-"cb"
+tissue<-"ht"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
