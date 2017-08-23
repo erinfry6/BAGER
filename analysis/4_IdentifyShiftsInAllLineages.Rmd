@@ -455,7 +455,7 @@ expectedrows=ncol(finding.information.about.file)-it.begin
 ```
 
 ## Select genes that are expressed with successful reconstructions
-Genes that succesfully reconstructed will have similar posterior variations in the two ancestral node reconstructions. For each lineage, select only genes with fold standard deviations between the ancestral and descendant node of less than 4. Save these gene lists in the list of dataframes, reconsgenes.
+Genes that successfully reconstructed will have similar posterior variations in the two ancestral node reconstructions. For each lineage, select only genes with fold standard deviations between the ancestral and descendant node of less than 4. Save these gene lists in the list of data frames, reconsgenes.
 
 ```{r find reconstructed genes in each lineage, warnings=FALSE}
 ## the more ancestral reconstruction generally has a higher standard deviation, but if too large the chain failed to converge on a reconstruction
