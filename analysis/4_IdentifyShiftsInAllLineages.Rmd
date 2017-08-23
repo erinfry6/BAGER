@@ -560,7 +560,14 @@ sig_enrichments<-read.csv(paste(pathResults,"Enrichments/enrichmentresults.txt",
 kable(sig_enrichments[,c(1,2,9)], caption="sig enrichments")
 ```
 
+
+
 ```{r heatmaps, eval=FALSE, cache=TRUE, echo=FALSE}
+
+## from here on, scripts are incomplete and will not work. these chunks are not evaluated. eval=FALSE
+
+
+
 ## View original gene expression heatmaps of genes with expression shifts compared to one of all reconstructed genes in the human lineage
 
 ## load expression data used to run scripts

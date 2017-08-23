@@ -25,29 +25,30 @@ Before beginning, create a home directory for the pipeline that contains the fol
 				home/BayesTraits
 				
 				
-Place the contents of this repository's code directory and `analysis/4_IdentifyShiftsInAllLineages.Rmd` in the `code` directory. Place your data to be analyzed in `data/forBAGER` and create directories for each tissue in `data/BAGERresults`.
+Place the contents of this repository's `code` directory and `analysis/4_IdentifyShiftsInAllLineages.Rmd` in the `code` directory. Place data to be analyzed in `data/forBAGER` and create directories for each tissue in `data/BAGERresults`.
 
-[BayesTraits Manual](http://www.evolution.rdg.ac.uk/BayesTraitsV3/Files/BayesTraitsV3.Manual.pdf)
+It may be useful to consult the [BayesTraits Manual](http://www.evolution.rdg.ac.uk/BayesTraitsV3/Files/BayesTraitsV3.Manual.pdf) to understand the phylogenetic models used to reconstruct ancestral traits.
 
 
 ## Input files Formats
 
-The following input files are required for this analysis and should be places in `data/forBAGER`. (Examples of these formats can be found in `demo` in part created by `code/creating_demo.R`):
+The following input files are required for this analysis and should be placed in `data/forBAGER`. (Examples of these formats can be found in `demo` in part created by `code/creating_demo.R`):
 
- - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. Be sure to keep another document that notes the gene in each column.
+ - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. *Be sure to keep another document (_genesincluded) that notes the gene in each column.*
 
- - tissuecode_tree.tree: tissuecode_tree.tree is an ultrametric nexus formatted phylogeny formatted according to the BayesTraits Manual.
+ - tissuecode_tree.tree: an ultrametric nexus formatted phylogeny formatted according to the BayesTraits Manual.
  
  - tissuecode_genesincluded.txt: a tab delimited file containing expression data identical to that in tissuecode_exp.txt, but formatted differently. This file should have column and row names. Columns are the samples and rows are each gene, labeled with its EnsemblID.
 
-* tissuecode is the name of the tissue you are analyzing that will be an input for the scripts below *
+
+*tissuecode is the name of the tissue you are analyzing that will be an input for the scripts below*
 
 
 ## Modify the scripts
 
  - **Please see the instructions at the top of each individual script for modification requirements.**
 
- - If you would like to modify the models tested by BayesTraits from the default models in this pipeline, you will need to specify which models in`create_model_files.sh` , `identify_best_model.sh` , `ID_best_model.R`, and `Create.BAGER.Summary.File.R`.
+ - If you would like to modify the models tested by BayesTraits from the default models in this pipeline, you will need to specify which models in `create_model_files.sh` , `identify_best_model.sh` , `ID_best_model.R`, and `Create.BAGER.Summary.File.R`.
 
  
 ## Run the Bayesian Ancestral Transcriptome Reconstruction Scripts
@@ -74,7 +75,7 @@ R --vanilla < 2_ID_best_model.R
 R --vanilla < 3_Create.BAGER.Summary.File.R 
 ```
 
-#### 4) IdentifyShiftsInAllLineages.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts across the phylogeny. Also, finds enriched pathways in each lineage and visualizes transcriptome evolution.
+#### 4) 4_IdentifyShiftsInAllLineages.Rmd - Analyzes Ancestral Transcriptome Reconstructions to identify genes with expression shifts across the phylogeny. Also, finds enriched pathways in each lineage and visualizes transcriptome evolution. You will need to run step 5 before knitting this file.
 
 
 Best used in R studio.
