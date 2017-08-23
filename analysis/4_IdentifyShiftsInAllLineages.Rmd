@@ -33,11 +33,11 @@ output:
 
 ## tissue name
 
-tissuename<-"Frontal Cortex"
+tissuename<-"Heart"
 
 ## set tissue code
 
-tissue<-"br"
+tissue<-"ht"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -317,8 +317,10 @@ createScatterPlot<-function(reconsdf=reconsgenes, listnumber, print.BPPDs=FALSE,
   df_layer_90 <- test[ test$labels =="90-95%",]
   df_layer_95 <- test[ test$labels =="95-97.5%",]
   df_layer_99 <- test[ test$labels ==">97.5%",]
+  
+  ## create plot using different layers depending on which layers are present
 
-  ## all three cat's of shift
+  ## all four categories of shift
   if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & "(0.95,0.975]" %in% BPPDcats$BPPDLevel & "(0.975,1.1]" %in% BPPDcats$BPPDLevel) {
   
     p<-ggplot(data=test, mapping=aes(
@@ -342,7 +344,7 @@ createScatterPlot<-function(reconsdf=reconsgenes, listnumber, print.BPPDs=FALSE,
                           labels = c('>97.5%','95-97.5%', '90-95%', '<90%'))
 } 
 
-  ## lower two cat's of shift
+  ## lowest three categories of shift
   if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & "(0.95,0.975]" %in% BPPDcats$BPPDLevel & is.null(p)) {
     
     p<-ggplot(data=test, mapping=aes(
@@ -361,11 +363,11 @@ createScatterPlot<-function(reconsdf=reconsgenes, listnumber, print.BPPDs=FALSE,
       geom_abline(intercept=0,slope=1) + 
       geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
       scale_colour_manual(name = 'BPPD', 
-                          values =c('#0c2c84'='#0c2c84', '#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), 
+                          values =c('#41b6c4'='#41b6c4', '#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), 
                           labels = c('95-97.5%', '90-95%', '<90%'))
   } 
   
-  
+  ## lowest two + highest categories of shift
   if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & "(0.975,1.1]" %in% BPPDcats$BPPDLevel & is.null(p)) {
     
     p<-ggplot(data=test, mapping=aes(
@@ -384,10 +386,34 @@ createScatterPlot<-function(reconsdf=reconsgenes, listnumber, print.BPPDs=FALSE,
       geom_abline(intercept=0,slope=1) + 
       geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
       scale_colour_manual(name = 'BPPD', 
-                          values =c('#41b6c4'='#41b6c4', '#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), 
+                          values =c('#0c2c84'='#0c2c84', '#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), 
                           labels = c('>97.5%', '90-95%', '<90%'))
   } 
   
+    ## lowest + second two highest categories of shift
+  if("(0.95,0.975]" %in% BPPDcats$BPPDLevel & "(0.975,1.1]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_95, aes(color="#41b6c4")) +
+      geom_point(data=df_layer_99, aes(color="#0c2c84")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#0c2c84'='#0c2c84', '#41b6c4'='#41b6c4', '#ffffcc'='#ffffcc'), 
+                          labels = c('>97.5%', '95-97.5%', '<90%'))
+  } 
+  
+  ## lowest two categories of shift
   if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & is.null(p)) {
     
     p<-ggplot(data=test, mapping=aes(
@@ -408,7 +434,50 @@ createScatterPlot<-function(reconsdf=reconsgenes, listnumber, print.BPPDs=FALSE,
                           values =c('#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), labels = c( '90-95%', '<90%'))
 } 
 
-if (is.null(p)) {
+  ## lowest + second highest categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+    
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_95, aes(color="#41b6c4")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#41b6c4'='#41b6c4', '#ffffcc'='#ffffcc'), labels = c( '90-95%', '<90%'))
+} 
+
+  ## lowest + highest categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+    
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_99, aes(color="#0c2c84")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#0c2c84'='#0c2c84', '#ffffcc'='#ffffcc'), labels = c( '90-95%', '<90%'))
+} 
+
+  ## only non-shift genes
+  if (is.null(p)) {
 
   p<-ggplot(data=test, mapping=aes(
     x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
@@ -510,7 +579,7 @@ kable(BAGERshiftsummary, caption="Number of Genes with shifts and reconstructed 
 ```
 
 ```{r save number of shifts in each lineage, eval=FALSE, include=FALSE}
-write.table(BAGERshiftsummary,paste(pathResults,Sys.Date(),"BAGERshiftsummary.txt", sep=""),sep='\t')
+#write.table(BAGERshiftsummary,paste(pathResults,Sys.Date(),"BAGERshiftsummary.txt", sep=""),sep='\t')
 
 ```
 
