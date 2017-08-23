@@ -57,6 +57,7 @@ The following input files are required for this analysis and should be placed in
 
 #### 1) 1_ancestral_reconstruction.sh - Reconstruct transcriptomes under each model. The default recommended models are coded in, but if you would like to change or add models, you will have to do so.
 I typically run the code one tissue at a time, broken into 4 or 5 chunks specified by begingene and endgene numbers to decrease run time per tissue. Begingene and endgene are integers of the beginning and start gene number you would like to reconstruct.
+If you need to rerun a gene, you must delete the files in `data/BAGERresults/$tissuecode/AncStates`. The script will not rerun genes that already exist in this directory.
 
 ```
 ./1_ancestral_reconstruction.sh tissuecode begingene endgene
