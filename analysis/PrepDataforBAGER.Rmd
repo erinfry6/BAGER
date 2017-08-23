@@ -80,7 +80,7 @@ library("ape")
 # Sample Information and Record of Technical Variables
 The following sample information was obtained directly from the authors of Brawand et al.
 ```{r Load data, echo=TRUE}
-## read in raw expression data
+## read in raw expression data output of kallisto run with kmer=31
 TPM_raw<-read.table(paste(pathData,"Transcript_Abundances31.txt", sep=""), header=TRUE, sep="\t", na.strings='NA', stringsAsFactors = FALSE) 
 
 ## upload gene information
@@ -220,6 +220,9 @@ species<-c("ggo","hsa","mml","ppa","ppy","ptr")
 tissue<-c("br","cb","ht","kd","lv","ts")
 tissuefull<-c("Brain","Cerebellum","Heart","Kidney","Liver","Testis")
 
+## create labels for the samples
+labels <- paste(SampleInfo$Species, SampleInfo$Tissue, sep=" ")
+
 ## create a matrix to contain average epxression levels for each species tissue combo
 sampleaverages<-matrix(nrow=nrow(TPM_raw_inGtex),ncol=length(species)*length(tissue))
 
@@ -345,8 +348,12 @@ ggplot(as.data.frame(correlationstohuman), aes(x = factor(SampleID), y = correla
 SampleInfo$Failures[which(correlationstohuman$correlationstohuman<.7)]<-SampleInfo$Failures[which(correlationstohuman$correlationstohuman<.7)]+1
 ```
 
+## Visualize unprocessed data
+### define functions
+```{r define functions to visualize data}
+### load colors
+pal <- c(brewer.pal(8, "Set1"), brewer.pal(8, "Dark2"))
 
-```{r define PC functions, include=FALSE}
 plot_scores <- function(pca, Covars,scores, n, m, points=F, legend=F){
   xmin <- min(scores[,n]) - (max(scores[,n]) - min(scores[,n]))*0.05
   if (legend == T){ ## let some room (35%) for a legend                                                                                                                                                 
@@ -387,10 +394,8 @@ plot_PCs <- function(pca, Covars,firstPC,lastPC, points=F, legTorF){
 ## set seed
 set.seed(6)
 
-
 ## Load color scale for Heatmap
 colors <- colorRampPalette(c(brewer.pal(9, "Blues")[1],brewer.pal(9, "Blues")[9]))(100)
-
 
 ## make PC figures from desired first PC to last PC
 ## by tissue
@@ -417,6 +422,26 @@ plotPCandHeatmap<-function(RNA_data, Covars){
   
 }
 
+
+## create PC 1 and 2 plot, Heatmap and Density curves for all samples
+PCHMDensAll<-function(RNA_data, Covars, legendTorF = F, dens.legend.loc){
+  
+  ## PCs for all samples on one plot
+  plot_PCs(t(RNA_data),Covars,1,2, points=T, legTorF = legendTorF)
+  
+  ## heatmap for all samples
+  cors <- cor(RNA_data, method="spearman", use="pairwise.complete.obs")
+  heatmap.2( cors, scale="none",margins = c(12, 12), col=colors, trace='none', denscol="white", labCol=colnames(cors), ColSideColors=pal[as.numeric(as.factor(Covars$Species))], RowSideColors=pal[as.numeric(as.factor(Covars$Species))], cexCol = 0.2 + 1/log10(15), cexRow = 0.2 + 1/log10(15))
+  
+ ## look at density curves one tissue at a time 
+  for (t in 1:length(tissue)){
+   plotDensities(RNA_data[,grep(tissue[t], colnames(RNA_data))],
+                main=paste("Expression Density Curves for", tissue[t], 
+                           sep=" "), col = pal, legend = dens.legend.loc)
+   abline(v=log(2))
+  }
+}
+
 ```
 
 ### Eliminate mitochondrial genes
@@ -424,12 +449,14 @@ plotPCandHeatmap<-function(RNA_data, Covars){
 # eliminate all Mitochondrial genes
 TPM_noMT<-filter(TPM_raw, Chromosome.Name !="MT")
 rownames(TPM_noMT)<-TPM_noMT$EnsemblID
-TPM_noMT<-TPM_noMT[,4:ncol(TPM_noMT_expressed)]
 
-labels <- paste(SampleInfo$Species, SampleInfo$Tissue, sep=" ")
+## eliminate information rows from gene expression data as they give errors during processing
+TPM_noMT<-TPM_noMT[,4:ncol(TPM_noMT)]
+```
 
-plot_PCs(pca = t(TPM_noMT), firstPC = 1, lastPC = 4, Covars = SampleInfo, points=T, legTorF = F)
-
+### view PC, heatmap, and expression density curves of raw data
+```{r visualize unprocessed data}
+PCHMDensAll(TPM_noMT, SampleInfo, legendTorF = F, dens.legend.loc = "topright")
 ```
 
 # Processing RNA-seq data
@@ -437,25 +464,18 @@ plot_PCs(pca = t(TPM_noMT), firstPC = 1, lastPC = 4, Covars = SampleInfo, points
 ### Log2
 Calculate log2-transformed TPM.
 ```{r log2}
-labels <- paste(SampleInfo$Species, SampleInfo$Tissue, sep=" ")
-
+## log transform the values
 TPM_noMT_log<-log2(TPM_noMT+0.0000001)
-
 head(TPM_noMT_log)
 
-
-for (t in 1:length(tissue)){
-plotDensities(TPM_noMT_log[,grep(tissue[t], colnames(TPM_noMT_log))],main=paste("log(TPM) Expression Density Curves for", tissue[t], sep=" "), col = pal, legend = "topleft")
-  abline(v=log(2))
-}
-
-plot_PCs(pca = t(TPM_noMT_log), firstPC = 1, lastPC = 2, Covars = SampleInfo, points=T, legTorF = F)
+## visualize log transformed data
+PCHMDensAll(TPM_noMT_log, SampleInfo, legendTorF = F, dens.legend.loc = "topleft")
 
 ```
 
-### Log2 and TMM
+```{r log2 and TMM, include=FALSE, evaluate=FALSE}
+## ### Log2 and TMM
 Using weighted trimmed mean of M-values algorithm (TMM) to account for differences in the read counts at the extremes of the distribution and calculate the TMM-normalized log2-transformed TPM. 
-```{r log2 and TMM}
 dge_original <- DGEList(counts=as.matrix(TPM_noMT), genes=rownames(TPM_noMT), group = as.character(t(labels)))
 dge_original <- calcNormFactors(dge_original)
 
@@ -466,166 +486,129 @@ boxplot_library_size <- ggplot(dge_original$samples, aes(x = SampleInfo$Tissue, 
  
 boxplot_library_size + labs(title = "Library size by tissue") + labs(y = "Library size") + labs(x = "Tissues") + guides(fill=guide_legend(title="Species"))
 
-for (t in 1:length(tissue)){
-plotDensities(tmm_tpm[,grep(tissue[t], colnames(tmm_tpm))],main=paste("log(TPM)+TMM Expression Density Curves for", tissue[t], sep=" "), col = pal, legend = "topright")
-  abline(v=log(2))
-}
-
-plot_PCs(pca = t(tmm_tpm), firstPC = 1, lastPC = 2, Covars = SampleInfo, points=T, legTorF = F)
+PCHMDensAll(tmm_tpm, SampleInfo, legendTorF = F, dens.legend.loc = "topright")
 
 ```
 
 ** ppa_lv_M_1 is not clustering with the other tissues and will be eliminated**
 
-### Log2 and TMM remove ppa_lv_M_1
+** hsa_kd_M_1 and mml_ts_M_2 have a very weird density curves**
+
+### Log2 remove ppa_lv_M_1
 Using weighted trimmed mean of M-values algorithm (TMM) to account for differences in the read counts at the extremes of the distribution and calculate the TMM-normalized log2-transformed TPM. 
-```{r log2 and TMM}
-dge <- DGEList(counts=as.matrix(TPM_noMT[,-(SampleInfo$SampleID=="ppa_lv_M_1")]), genes=rownames(TPM_noMT), group = as.character(t(labels[-which(SampleInfo$SampleID=="ppa_lv_M_1")])))
-dge <- calcNormFactors(dge)
+```{r log2 remove ppa}
+elim.before.regression<-c("ppa_lv_M_1")
 
-tmm_tpm <- cpm(dge, normalized.lib.sizes=TRUE, log=TRUE, prior.count = 0.25)
-head(tmm_tpm)
+SampleInfo.elim.before.regression<-SampleInfo[-which(SampleInfo$SampleID==elim.before.regression),]
 
-SampleInfo_1elim<-SampleInfo[-which(SampleInfo$SampleID=="ppa_lv_M_1"),]
+TPM_noMT_elim.before.regression<-TPM_noMT[,-which(colnames(TPM_noMT)==elim.before.regression)]
 
-boxplot_library_size <- ggplot(dge$samples, aes(x = SampleInfo_1elim$Tissue, y = dge$samples$lib.size, fill = SampleInfo_1elim$Species)) + geom_boxplot()
- 
-boxplot_library_size + labs(title = "Library size by tissue") + labs(y = "Library size") + labs(x = "Tissues") + guides(fill=guide_legend(title="Species"))
+labels.elim.before.regression<-labels[-which(colnames(TPM_noMT)==elim.before.regression)]
 
-for (t in 1:length(tissue)){
-plotDensities(tmm_tpm[,grep(tissue[t], colnames(tmm_tpm))],main=paste("log(TPM)+TMM Expression Density Curves for", tissue[t], sep=" "), col = pal, legend = "topright")
-  abline(v=log(2))
-}
+## log transform the values
+tpm_elim<-log2(TPM_noMT_elim.before.regression+0.0000001)
+head(tpm_elim)
 
-plot_PCs(pca = t(tmm_tpm), firstPC = 1, lastPC = 2, Covars = SampleInfo_1elim, points=T, legTorF = F)
+## visualize log transformed data
+PCHMDensAll(tpm_elim, SampleInfo.elim.before.regression, legendTorF = T, dens.legend.loc = "topright")
 
 ```
 
-## Examine Expression Density Curves by Tissue
-```{r density curves}
-### load colors
-pal <- c(brewer.pal(8, "Set1"), brewer.pal(8, "Dark2"))
+## Filter lowly expressed genes
+We begin with 13226 orthologous genes. Based on previous studies, a cutoff of TPM>2 should be used for expressed genes. 
+```{r lowly expressed}
+expr_cutoff <- 2
 
-## view expression density curves one tissue at a time
-for (t in 1:length(tissue)){
-plotDensities(TPM_noMT_expressed_log[,grep(tissue[t], colnames(TPM_noMT_expressed_log))],main=paste("log(TPM) Expression Density Curves for", tissue[t], sep=" "), col = pal)
-  abline(v=log(2))
-}
+## define sample info for
 
-## identify samples with abnormal expression density curves
-## these are samples with expression means that differ by more than two standard deviations from the other samples from those tissues
+SampleInfo_br<-rbind(filter(SampleInfo.elim.before.regression,Tissue=="Brain" ),filter(SampleInfo.elim.before.regression,Tissue=="FC" ),filter(SampleInfo.elim.before.regression,Tissue=="PFC" ))
 
-distsumm_noMT_expressed_log<-cbind(apply(TPM_noMT_expressed_log,2, mean),apply(TPM_noMT_expressed_log,2, sd))  ## caluclate the mean and sds of the curves
-colnames(distsumm_noMT_expressed_log)<-c("mean", "sd")
+SampleInfo_cb<-filter(SampleInfo.elim.before.regression,Tissue=="Cerebellum")
+SampleInfo_ht<-filter(SampleInfo.elim.before.regression,Tissue=="Heart")
+SampleInfo_lv<-filter(SampleInfo.elim.before.regression,Tissue=="Liver")
+SampleInfo_kd<-filter(SampleInfo.elim.before.regression,Tissue=="Kidney")
+SampleInfo_ts<-filter(SampleInfo.elim.before.regression,Tissue=="Testis")
 
-abnorm<-vector() ## set vectors
-for (t in tissue){
-  mean.not<-vector()
-  sd.not<-vector()
-  abnormQ<-vector()
-  for (i in 1:length(grep(t, colnames(TPM_noMT_expressed_log)))){
-    mean.not[i]<-mean(distsumm_noMT_expressed_log[grep(t, colnames(TPM_noMT_expressed_log))[-i],1]) ## calculate the average mean and standard deviation expression in all tissues except the one being examined
-    sd.not[i]<-sd(distsumm_noMT_expressed_log[grep(t, colnames(TPM_noMT_expressed_log))[-i],1])
-    abnormQ[i]<-pnorm(q =distsumm_noMT_expressed_log[grep(t, colnames(TPM_noMT_expressed_log))[i],1] , mean = mean.not[i],sd = sd.not[i]) ## calculate the probability of seeing the mean of the one being examined
-  }
-  
-  print(colnames(TPM_noMT_expressed_log)[grep(t, colnames(TPM_noMT_expressed_log))][which(abnormQ<0.023 | abnormQ>0.977)])
-  
-  #abnorm<-cbind(abnorm,colnames(TPM_noMT_expressed_log)[grep(t, colnames(TPM_noMT_expressed_log))][which(abnormQ<0.023 | abnormQ>0.977)]) ## identify samples that have mean expression more than two standard deviations away from the others
-}
+require.expressed<-function(GeneExp, Covars){
+    elim.geneExp<-GeneExp[,colnames(GeneExp) %in% Covars$SampleID]
+    
+    keep<-matrix(nrow=nrow(GeneExp), ncol=length(species))
+    colnames(keep)<-species
+    rownames(keep)<-rownames(GeneExp)
 
-## which samples have bad expression density curves?
-abnorm[1,]
-
-## samples that have very abnormal distributions will be eliminated
-## hsa_br_M_5 is also labeled 'temporal' instead of frontal cortex
-SampleInfo$Failures[which(SampleInfo$SampleID %in% abnorm[1,])]<-SampleInfo$Failures[which(SampleInfo$SampleID %in% abnorm[1,])]+3
-
-```
-
-
-## Examine PCs and Heatmaps to identify samples that cluster poorly by tissue and/or species
-
-```{r define PC functions, include=FALSE}
-plot_scores <- function(pca, Covars,scores, n, m, points=F, legend=F){
-  xmin <- min(scores[,n]) - (max(scores[,n]) - min(scores[,n]))*0.05
-  if (legend == T){ ## let some room (35%) for a legend                                                                                                                                                 
-    xmax <- max(scores[,n]) + (max(scores[,n]) - min(scores[,n]))*0.50
-  }
-  else {
-    xmax <- max(scores[,n]) + (max(scores[,n]) - min(scores[,n]))*0.05
-  }
-  ymin <- min(scores[,m]) - (max(scores[,m]) - min(scores[,m]))*0.05
-  ymax <- max(scores[,m]) + (max(scores[,m]) - min(scores[,m]))*0.05
-  plot(scores[,n], scores[,m], xlab=paste("PC", n, ": ", round(summary(pca)$importance[2,n],3)*100, "% variance explained", sep=""), ylab=paste("PC", m, ": ", round(summary(pca)$importance[2,m],3)*100, "% variance explained", sep=""), main="PCA of Expression Data", xlim=c(xmin, xmax), ylim=c(ymin, ymax), type="n")
-  if (points == F){
-    text(scores[,n],scores[,m], rownames(scores), col="black", cex=1)
-  }
-  else {
-    cols=pal[as.numeric(as.factor(Covars$Tissue))]
-    pchs=as.numeric(as.factor(Covars$Species))
-    points(scores[,n],scores[,m], col=cols, pch=pchs, cex=1.3)
-    legend(x="topright",legend=unique(Covars$Tissue), fill =unique(cols))
-    legend(x="topleft", legend= unique(Covars$Species), pch = unique(pchs))
-  }
-}
-
-## make PC figures function
-plot_PCs <- function(pca, Covars,firstPC,lastPC, points=F){
-  pca_genes<-prcomp(pca, scale=F)
-  scores<-pca_genes$x
-  for (n in (firstPC-1):(lastPC-2)){
-    n=n+1
-    if (points == F){
-      plot_scores(pca_genes, Covars,scores, n, n+1, points=F) 
-    } else {
-      plot_scores(pca_genes,Covars, scores, n, n+1, points=T) 
-    }
-  } }
-
-## set seed
-set.seed(6)
-
-
-## Load color scale for Heatmap
-colors <- colorRampPalette(c(brewer.pal(9, "Blues")[1],brewer.pal(9, "Blues")[9]))(100)
-
-
-## make PC figures from desired first PC to last PC
-## by tissue
-
-plotPCandHeatmap<-function(RNA_data, Covars){
-  for (i in 1:length(tissue)){
-    plot_PCs(t(RNA_data[,grep(x=colnames(RNA_data),pattern = tissue[i])]),Covars,1,2)
-
-    ## cluster by tissue
-    cors <- cor(RNA_data[,grep(x=colnames(RNA_data),pattern = tissue[i])], method="spearman", use="pairwise.complete.obs")
-
-    ## make the heatmap by tissue
-    if (tissue[i]=="br"){
-      heatmap.2( cors, scale="none",margins = c(12, 12), col=colors, trace='none', denscol="white", labCol=colnames(cors),cexCol = 0.2 + 1/log10(15), cexRow = 0.2 + 1/log10(15))
-    } else {
-        heatmap.2( cors, scale="none",margins = c(12, 12), col=colors, trace='none', denscol="white", labCol=colnames(cors), ColSideColors=pal[as.numeric(as.factor(filter(Covars,Tissue==tissuefull[i])$Species))], RowSideColors=pal[as.numeric(as.factor(filter(Covars,Tissue==tissuefull[i])$Species))], cexCol = 0.2 + 1/log10(15), cexRow = 0.2 + 1/log10(15))
+    for (s in 1:length(species)){
+      sp=species[s]
+    
+      if (length(grep(sp, colnames(elim.geneExp)))==0){
+      } else{
+      
+      for (g in 1:nrow(elim.geneExp)){
+           keep[g,s]<-length(which((elim.geneExp[g,grep(pattern = sp, x = colnames(elim.geneExp))]>log(expr_cutoff))==TRUE))/length(grep(pattern = sp, x = colnames(elim.geneExp)))>0.75
       }
+      }
+    
+    }
+    
+    elim.gene.Exp.keep<-elim.geneExp[ apply(keep, 1, FUN =function(x){length(grep("TRUE", x))>0}), ]
+
+    plotDensities(elim.gene.Exp.keep,
+                main=paste("Expression Density Curves",
+                           sep=" "), col = pal, legend = "topright")
+   abline(v=log(2)) 
+   
+   dist_stats<-cbind(apply(elim.gene.Exp.keep,2, mean),apply(elim.gene.Exp.keep,2, sd))  ## caluclate the mean and sds of the curves
+   colnames(dist_stats)<-c("mean", "sd")
+
+    abnorm<-vector() ## set vectors
+    mean.not<-vector()
+    sd.not<-vector()
+    abnormQ<-vector()
+    for (i in 1:length(colnames(elim.gene.Exp.keep))){
+      mean.not[i]<-mean(dist_stats[-i,1]) ## calculate the average mean and standard deviation expression in all tissues except the one being examined
+      sd.not[i]<-sd(dist_stats[-i,1])
+      abnormQ[i]<-pnorm(q =dist_stats[i,1] , mean = mean.not[i],sd = sd.not[i]) ## calculate the probability of seeing the mean of the one being examined
   }
+
+    
+  message(paste(colnames(elim.gene.Exp.keep)[which(abnormQ<0.025 | abnormQ>0.975)], " distribution is irregular and should be considered for removal. ", sep=""))
   
-  ## all samples
-  plot_PCs(t(RNA_data),Covars,1,2, points=T)
-  cors <- cor(RNA_data, method="spearman", use="pairwise.complete.obs")
-  heatmap.2( cors, scale="none",margins = c(12, 12), col=colors, trace='none', denscol="white", labCol=colnames(cors), ColSideColors=pal[as.numeric(as.factor(Covars$Species))], RowSideColors=pal[as.numeric(as.factor(Covars$Species))], cexCol = 0.2 + 1/log10(15), cexRow = 0.2 + 1/log10(15))
-  
+  return(elim.gene.Exp.keep)
 }
 
-```
-
-```{r Plot the PCs before batch correction, echo=FALSE}
-## plot PCs and heatmaps before eliminate samples
-plotPCandHeatmap(TPM_noMT_expressed_log, SampleInfo)
-
+tpm_br<-require.expressed(tpm_elim, SampleInfo_br)
+tpm_cb<-require.expressed(tpm_elim, SampleInfo_cb)
+tpm_ht<-require.expressed(tpm_elim, SampleInfo_ht)
+tpm_lv<-require.expressed(tpm_elim, SampleInfo_lv)
+tpm_kd<-require.expressed(tpm_elim, SampleInfo_kd)
+tpm_ts<-require.expressed(tpm_elim, SampleInfo_ts)
 
 ```
 
 ## Eliminate samples before regression analysis
+
+```{r remove samples with bad dist'ns}
+
+elim.2.before.regression<-c("ppy_br_M_1", "ptr_br_M_2", "ggo_cb_M_1", "ggo_ht_M_1", "hsa_lv_M_1", "mml_kd_M_1", "mml_ts_M_2")
+
+SampleInfo_br_elim_1<-SampleInfo_br[-which(SampleInfo_br$SampleID %in% elim.2.before.regression),]
+tpm_br_elim_1<-tpm_br[,-which(SampleInfo_br$SampleID %in% elim.2.before.regression)]
+
+SampleInfo_cb_elim_1<-SampleInfo_cb[-which(SampleInfo_cb$SampleID %in% elim.2.before.regression),]
+tpm_cb_elim_1<-tpm_cb[,-which(SampleInfo_cb$SampleID %in% elim.2.before.regression)]
+
+SampleInfo_ht_elim_1<-SampleInfo_ht[-which(SampleInfo_ht$SampleID %in% elim.2.before.regression),]
+tpm_ht_elim_1<-tpm_ht[,-which(SampleInfo_ht$SampleID %in% elim.2.before.regression)]
+
+SampleInfo_kd_elim_1<-SampleInfo_kd[-which(SampleInfo_kd$SampleID %in% elim.2.before.regression),]
+tpm_kd_elim_1<-tpm_kd[,-which(SampleInfo_kd$SampleID %in% elim.2.before.regression)]
+
+SampleInfo_lv_elim_1<-SampleInfo_lv[-which(SampleInfo_lv$SampleID %in% elim.2.before.regression),]
+tpm_lv_elim_1<-tpm_lv[,-which(SampleInfo_lv$SampleID %in% elim.2.before.regression)]
+
+SampleInfo_ts_elim_1<-SampleInfo_ts[-which(SampleInfo_ts$SampleID %in% elim.2.before.regression),]
+tpm_ts_elim_1<-tpm_ts[,-which(SampleInfo_ts$SampleID %in% elim.2.before.regression)]
+```
+
 
 **Samples will be eliminated based on the following criteria:**
 
@@ -661,24 +644,31 @@ nrow(Sample_Info_First_Elim)==ncol(TPM_noMT_expressed_log_First_Pass)
 ### Choose covariates to include in analysis
 
 ```{r choose covariates and modify file, warnings=FALSE}
+## define function to eliminate covariates that are correlated with species
+eliminate.correlated.covars<-function(Covars, elimcolumns){
 ## find correlations between covariates and tissue or species to be sure to NOT include
-SampleInfo_test<-SampleInfo[,-15]
-corrwithTissue<-vector()
+Covars<-Covars[,-elimcolumns]
+
 corrwithSpecies<-vector()
-for (i in 1:ncol(SampleInfo_test)){
-  corrwithTissue[i]<-suppressWarnings(chisq.test(SampleInfo$Tissue,SampleInfo_test[,i])$p.val)
-  corrwithSpecies[i]<-suppressWarnings(chisq.test(SampleInfo$Species,SampleInfo_test[,i])$p.val)
+for (i in 1:ncol(Covars)){
+  ##for troubleshooting use print, otherwise hash-out
+  ##print(paste("checking covariate", colnames(Covars)[i], sep=" "))
+  corrwithSpecies[i]<-suppressWarnings(chisq.test(Covars$Species,Covars[,i])$p.val)
 }
 
-## which are correlated with Tissue
-colnames(SampleInfo_test[which(corrwithTissue<0.05/ncol(SampleInfo_test))])
-
 ## which with Species?
-colnames(SampleInfo_test[which(corrwithSpecies<0.05/ncol(SampleInfo_test))])
+print(paste(colnames(Covars[which(corrwithSpecies<0.05/ncol(Covars))]), "is correlated with species.", sep=" "))
 
 ## select covariates that should be included in regression analysis, either because they are informative, not correlated with tissue and species, or because we need to know if they are significant (and there were enough samples with the information)
-Sample_Info_First_Pass<-select(Sample_Info_First_Elim, G, RIN, Raw_reads, Library_prepared_in)
+return(Covars[,-which(corrwithSpecies<0.05/ncol(Covars))]) }
 
+
+SampleInfo_br_elim_1<-eliminate.correlated.covars(SampleInfo_br_elim_1, elimcolumns=c(14,15,31, 21:26))
+SampleInfo_cb_elim_1<-eliminate.correlated.covars(SampleInfo_cb_elim_1, elimcolumns=c(3,9,15,19,31,21:26))
+SampleInfo_ht_elim_1<-eliminate.correlated.covars(SampleInfo_ht_elim_1, elimcolumns=c(3,9,15,31,21:26))
+SampleInfo_kd_elim_1<-eliminate.correlated.covars(SampleInfo_kd_elim_1,elimcolumns=c(3,9,15,18,19,31,21:26))
+SampleInfo_lv_elim_1<-eliminate.correlated.covars(SampleInfo_lv_elim_1, elimcolumns=c(3,9,14,15,19,31,21:26))
+SampleInfo_ts_elim_1<-eliminate.correlated.covars(SampleInfo_ts_elim_1, elimcolumns=c(3,4,9,15,19,31,21:26))
 ```
 
 ### Define regression functions
@@ -722,31 +712,39 @@ Regress_out<-function(RNA_DATA, covariates, ColumntoRegress){
 }
 ```
 
-### Initial regression
+### Initial regression with brain
 ```{r regression}
 #### Initial Regression Analysis ####
-First_Pass<-RegressionAnalysis(TPM_noMT_expressed_log_First_Pass, Sample_Info_First_Pass)
+First_Pass<-RegressionAnalysis(tpm_br_elim_1, SampleInfo_br_elim_1)
 head(First_Pass,5)
 
 ## Define signifcance cutoff
-sigcorr<-0.05/ncol(Sample_Info_First_Pass)
+sigcorr<-0.05/ncol(SampleInfo_br_elim_1)
 
 #### Second Pass ####
 
 ## Which covariates are the most correlated with top PCs?
 which(head(First_Pass,5)<sigcorr)
 
-## First regress out Library_prepared_in
-TPM_noMT_expressed_log_Second_Pass<-Regress_out(TPM_noMT_expressed_log_First_Pass, Sample_Info_First_Pass, which(colnames(Sample_Info_First_Pass)=="Library_prepared_in"))
+## First regress out Raw_reads
+tpm_br_elim_2<-Regress_out(tpm_br_elim_1, SampleInfo_br_elim_1, which(colnames(SampleInfo_br_elim_1)=="Raw_reads"))
 
 ## Perform Second Regression Analysis
-Second_Pass<-RegressionAnalysis(TPM_noMT_expressed_log_Second_Pass, Sample_Info_First_Pass)
+Second_Pass<-RegressionAnalysis(tpm_br_elim_2, SampleInfo_br_elim_1)
 head(Second_Pass,6)
 
 #### Third Pass ####
 
 ## Which covariate are still correlated?
-which(head(Second_Pass,6)<sigcorr)
+which(head(Second_Pass,10)<sigcorr)
+
+## Second regress out RNA_conc
+tpm_br_elim_3<-Regress_out(tpm_br_elim_2, SampleInfo_br_elim_1, which(colnames(SampleInfo_br_elim_1)=="RNA_conc"))
+
+## Perform Third Regression Analysis
+Third_Pass<-RegressionAnalysis(tpm_br_elim_3, SampleInfo_br_elim_1)
+head(Third_Pass,7)
+
 
 #### Examine Clustering ####
 

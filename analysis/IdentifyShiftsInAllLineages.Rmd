@@ -33,11 +33,11 @@ output:
 
 ## tissue name
 
-tissuename<-"Cerebellum"
+tissuename<-"Frontal Cortex"
 
 ## set tissue code
 
-tissue<-"cb"
+tissue<-"br"
 
 ## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
@@ -544,7 +544,7 @@ for (l in 1:nrow(lineages.to.test)){
             fdrMethod="BH",sigMethod="fdr",fdrThr=0.05,
             topThr=10,dNum=20,perNum=1000,
             lNum=20,is.output=TRUE,
-            outputDirectory=paste(pathResults,"Enrichments/",sep=""),
+            outputDirectory=paste(pathResults,"Enrichments",sep=""),
             projectName=paste(Sys.Date(),lineages.to.test[l,1],lineages.to.test[l,2],enrichdb,sep="-"),
             keepGSEAFolder=FALSE, methodType="R",dagColor="binary",hostName="http://www.webgestalt.org/")
   } 

@@ -145,7 +145,7 @@ if (tissue=="cb"){
 }
 
 if (tissue=="ts"){
-  species.with.one<-c("ancOrang", "ancPtr","ancPpa","ancGorilla","andMacaque")
+  species.with.one<-c("ancOrang", "ancPtr","ancPpa","ancGorilla","ancMacaque")
 }
 
 if (tissue=="ht"){
