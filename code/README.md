@@ -30,18 +30,18 @@ Place the contents of this repository's `code` directory and `analysis/4_Identif
 It may be useful to consult the [BayesTraits Manual](http://www.evolution.rdg.ac.uk/BayesTraitsV3/Files/BayesTraitsV3.Manual.pdf) to understand the phylogenetic models used to reconstruct ancestral traits.
 
 
-## Input files Formats
+## Input files formats
 
 The following input files are required for this analysis and should be placed in `data/forBAGER`. (Examples of these formats can be found in `demo` in part created by `code/creating_demo.R`):
 
- - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. *Be sure to keep another document (_genesincluded) that notes the gene in each column.*
+ - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. *Be sure to keep another document (_genesincluded) that documents the gene in each column and which gene number corresponds to which gene.*
 
  - tissuecode_tree.tree: an ultrametric nexus formatted phylogeny formatted according to the BayesTraits Manual.
  
  - tissuecode_genesincluded.txt: a tab delimited file containing expression data identical to that in tissuecode_exp.txt, but formatted differently. This file should have column and row names. Columns are the samples and rows are each gene, labeled with its EnsemblID.
 
 
-*tissuecode is the name of the tissue you are analyzing that will be an input for the scripts below*
+**tissuecode is the name of the tissue you are analyzing that will be an input for the scripts below**
 
 
 ## Modify the scripts
@@ -51,7 +51,7 @@ The following input files are required for this analysis and should be placed in
  - If you would like to modify the models tested by BayesTraits from the default models in this pipeline, you will need to specify which models in `create_model_files.sh` , `identify_best_model.sh` , `ID_best_model.R`, and `Create.BAGER.Summary.File.R`.
 
  
-## Run the Bayesian Ancestral Transcriptome Reconstruction Scripts
+## Run BAGER
 
 
 #### 1) 1_ancestral_reconstruction.sh - Reconstruct transcriptomes under each model. The default recommended models are coded in, but if you would like to change or add models, you will have to do so.
@@ -87,14 +87,15 @@ Best used in R studio.
 ```
 
 
+## Troubleshooting on demo example files
+
+To run these scripts on the example demo files provided, copy the files in `demo` to `data/forBAGER` and follow the above steps.
+
+
 ## Simulate gene expression evolution across your tree. This portion is not yet finished.
 
 **Using the `SimulateAGER.Rmd` file, you may simulate data that matches your data's expression patterns.**
 
-
-## Troubleshooting on demo example files
-
-To run these scripts on the example demo files provided, copy the files in `demo` to `data/forBAGER` and follow the above steps.
 
 ### written by Erin Fry
 ### Last modified: August 23 2017
