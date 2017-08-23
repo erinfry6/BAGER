@@ -25,14 +25,14 @@ Before beginning, create a home directory for the pipeline that contains the fol
 				home/BayesTraits
 				
 				
-Place the contents of this repository in the code folder, except for the BP3.1. Place this in the home/BayesTraits folder.
+Place the contents of this repository's code directory and `analysis/4_IdentifyShiftsInAllLineages.Rmd` in the `code` directory. Place your data to be analyzed in `data/forBAGER` and create directories for each tissue in `data/BAGERresults`.
 
 [BayesTraits Manual](http://www.evolution.rdg.ac.uk/BayesTraitsV3/Files/BayesTraitsV3.Manual.pdf)
 
 
 ## Input files Formats
 
-The following input files are required for this analysis and should be places in `home/data/forBAGER`. (Examples of these formats can be found in `home/demo` in part created by `home/code/creating_demo.R`):
+The following input files are required for this analysis and should be places in `data/forBAGER`. (Examples of these formats can be found in `demo` in part created by `code/creating_demo.R`):
 
  - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. Be sure to keep another document that notes the gene in each column.
 
@@ -91,9 +91,9 @@ Best used in R studio.
 **Using the `SimulateAGER.Rmd` file, you may simulate data that matches your data's expression patterns.**
 
 
-## Troubleshooting on test example files
+## Troubleshooting on demo example files
 
-To run these scripts on the example test files, copy the files in scripts/test to the data directory and follow the above steps.
+To run these scripts on the example demo files provided, copy the files in `demo` to `data/forBAGER` and follow the above steps.
 
 ### written by Erin Fry
-### Last modified: August 21 2017
+### Last modified: August 23 2017
