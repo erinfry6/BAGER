@@ -15,14 +15,14 @@ BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of r
  
  2) [Assess quality of samples, eliminate samples that are of poor quality or that fail to cluster by tissue and/or species, and generate the files needed for BAGER.](PrepDataforBAGER.html)
 
- 3) BAGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. ([see for scripts](https://github.com/erinfry6/AncGeneExpReconstructionBT))
+ 3) BAGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. ([see for scripts](https://github.com/erinfry6/BAGER/tree/master/code))
 
  4) Identify genes with expression shifts throughout the primate phylogeny by comparing the posterior probability distributions of the ancestral expression reconstructions. 
-    - [Expression shifts in the frontal cortex](BrainIdentifyShiftsInAllLineages.html)
-    - [Expression shifts testis](TestisIdentifyShiftsInAllLineages.html)
+    - [Expression shifts in the frontal cortex](Brain.html)
+    - [Cerebellum](Cerebellum.html)
+    - [Heart](Heart.html)
+    - [Kidney](Kidney.html)
+    - [Testis](Testis.html)
  
- 5) Identify genes with expression shifts in the human lineage.
-    - [Genes and pathways with expression shifts in the human frontal cortex](BrainBAGERAnalysis.html)
-    - [Genes and pathways with expression shifts in human testis](TestisBAGERAnalysis.html)
 
 ![image source: https://www.liverpool.ac.uk/infection-and-global-health/research/zoonotic-infections/BADGER-survey/](https://www.liverpool.ac.uk/media/livacuk/infectionandglobalhealth/BADGER.jpg)

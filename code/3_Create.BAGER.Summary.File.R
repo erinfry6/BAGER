@@ -1,9 +1,8 @@
-
 ## Erin Fry
-## Aug 22 2017
+## Aug 23 2017
 
 ## this script generates and stores the BAGER summary statistics for each primate lineage.
-## it collects the fold standard deviation between the ancestral and descdant node at each lineage,
+## it collects the fold standard deviation between the ancestral and descendant node at each lineage,
 ## the Bayesian Posterior Probability of Divergence (or BPPD), which is the proportion of MCMC iterations in which there was an increase or decrease in expression in the lineage,
 ## and the median reconstructed value of the ancestral and descendent node for each lineage.
 ## The BPPD is used to identify expression shifts in downstream analysis.
@@ -23,7 +22,7 @@
 
 tissue<-"ts"
 
-## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
+## set paths to directories, be sure to modify your home directory and the Ancestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
 pathData=paste(path,"data/forBAGER/",sep="")
 pathResults=paste(path,"data/BAGERresults/",tissue,"/",sep="")
@@ -190,14 +189,14 @@ read.AncRecon=function(file, firstrow, lastrow,header=F, sep='\t'){
   return(temp)
 }
 
-## Calculate the Bayesian Posterior Probability of Divergnce (BPPD)
+## Calculate the Bayesian Posterior Probability of Divergence (BPPD)
 ## first, find the difference between the two reconstructions
 ## then, take the maximum proportion of the iterations that are greater than or less than 0
 calc.BPPD=function(file, recon1, recon2, single.sample){
   if (single.sample==TRUE){
-      diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(rnorm(mean = mean(as.numeric(gene[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])), sd = sd(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))]), n = expectedrows))
+    diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(rnorm(mean = mean(as.numeric(gene[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])), sd = sd(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))]), n = expectedrows))
   } else {
-      diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(file[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])
+    diff<-as.numeric(file[,which(colnames(file)==paste(recon1, " - 1",sep=""))])-as.numeric(file[,which(colnames(gene)==paste(recon2, " - 1",sep=""))])
   }
   
   BPPD<-max(1-(length(which(diff>0))/(expectedrows-1)), (length(which(diff>0))/(expectedrows-1)))  ## to do
@@ -219,15 +218,15 @@ collect.stats.for.one.gene<-function(gene, single.sample, reconAnc, reconDesc){
   if (is.na(foldSD)){
     foldSD=max(sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]),sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))]))
   } else {
-  if (foldSD=="Inf"){
-    foldSD=max(sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]),sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))]))
-  } else {} }
+    if (foldSD=="Inf"){
+      foldSD=max(sd(gene[,which(colnames(gene)==paste(reconAnc, " - 1",sep=""))]),sd(gene[,which(colnames(gene)==paste(reconDesc, " - 1",sep=""))]))
+    } else {} }
   
   
   if (single.sample==TRUE){
-    ## calculate bppd
+    ## calculate BPPD
     BPPD<-calc.BPPD(gene, reconAnc, reconDesc, single.sample=TRUE)
-  
+    
   } else{
     BPPD<-calc.BPPD(gene, reconAnc, reconDesc, single.sample=FALSE)
   }
@@ -246,7 +245,7 @@ collect.stats.for.one.gene<-function(gene, single.sample, reconAnc, reconDesc){
 ## import the gene information to we can include them in our analysis
 genenames<-read.csv(paste(pathData,tissue,"_genesincluded.txt",sep=""),header=T, sep='\t')
 
-## import other infomration of those genes from biomart
+## import other information of those genes from biomart
 mart <- useDataset("hsapiens_gene_ensembl", useMart("ensembl"))
 
 if (rownames(genenames)[1]==1){
@@ -293,14 +292,14 @@ expectedrows=ncol(finding.information.about.file)-it.begin
 
 ######################################################################
 ## PREPARE SUMMARY DATA FRAME
-## create the summary dataframe, first with gene information
+## create the summary data frame, first with gene information
 summary.df<-as.data.frame(cbind(listgenes, modelchoice$model.choice[1:length(listgenes)], G_list[1:length(listgenes),]))
 colnames(summary.df)<-c("listcsv","modelchoice","hgnc_symbol", "ensembl_gene_id", "chromosome_name")
 
 ## define the statistics to be collected 
 stats.to.collect<-c("foldSD","BPPD","reconAnc","reconDesc")
 
-## define column numbers for completing the dataframe with statistics
+## define column numbers for completing the data frame with statistics
 basecol<-ncol(summary.df)
 statcol<-length(stats.to.collect)
 
@@ -332,15 +331,15 @@ for (i in 1:length(listgenes)){
     if (lineages.to.test[l,2] %in% species.with.one){
       summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, single.sample = TRUE, reconAnc= eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), reconDesc = eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
     } else {
-    
+      
       ## find the BAGER statistics
       summary.df[i,(basecol+(l-1)*statcol+(1:statcol))]<-collect.stats.for.one.gene(gene, single.sample=FALSE, reconAnc = eval(as.symbol(paste("node.",lineages.to.test[l,1],sep=""))), reconDesc = eval(as.symbol(paste("node.",lineages.to.test[l,2],sep=""))))
     }
-      
-  
+    
+    
   }
-
-
+  
+  
 }
 
 ## view summary stats
@@ -349,4 +348,5 @@ head(summary.df)
 ######################################################################
 ## SAVE BAGER SUMMER STATS
 write.table(summary.df,paste(pathResults,Sys.Date(),"BAGERSummary.txt", sep=""),sep='\t')
+
 

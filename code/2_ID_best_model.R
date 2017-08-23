@@ -1,6 +1,6 @@
 
 ## Erin Fry
-## July 28 2017
+## August 23 2017
 
 ## this script identifies the best model for each gene's evolution
 
@@ -16,7 +16,7 @@
 
 tissue="br"
 
-## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
+## set paths to directories, be sure to modify your home directory and the Ancestral Reconstruction directory you are analyzing
 path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
 pathData=paste(path,"data/forBAGER/",sep="")
 pathResults=paste(path,"data/BAGERresults/",tissue,"/",sep="")

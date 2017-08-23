@@ -1,8 +1,8 @@
 
 ## Erin Fry
-## August 21 2017
+## August 23 2017
 
-## this script consolidates all significant GO enrichments (FDR<0.05) in all lineages after running IdentifyShiftsInAllLineages.Rmd
+## this script consolidates all significant GO enrichments (FDR<0.05) in all lineages after running 4_IdentifyShiftsInAllLineages.Rmd
 ## User must modify the base path
 ## The other basic options to change might be the models to evaluate if different than the recommended models
 

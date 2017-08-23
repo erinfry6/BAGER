@@ -34,7 +34,8 @@ It may be useful to consult the [BayesTraits Manual](http://www.evolution.rdg.ac
 
 The following input files are required for this analysis and should be placed in `data/forBAGER`. (Examples of these formats can be found in `demo` in part created by `code/creating_demo.R`):
 
- - tissuecode_exp.txt: a tab delimited file containing expression data formatted according to the BayesTraits Manual: Expression data file with no column names. First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. *Be sure to keep another document (_genesincluded) that documents the gene in each column and which gene number corresponds to which gene.*
+ - tissuecode_exp.txt: a tab delimited file containing expression data generated from RNA-seq quantification programs (I used Kallisto) formatted according to the BayesTraits Manual: Expression data file with no column names. 
+ First column: names of the samples that coordinate with the Nexus tree file. All subsequent columns are the expression data for each gene. *Be sure to keep another document (_genesincluded) that documents the gene in each column and which gene number corresponds to which gene.*
 
  - tissuecode_tree.tree: an ultrametric nexus formatted phylogeny formatted according to the BayesTraits Manual.
  
@@ -48,7 +49,7 @@ The following input files are required for this analysis and should be placed in
 
  - **Please see the instructions at the top of each individual script for modification requirements.**
 
- - If you would like to modify the models tested by BayesTraits from the default models in this pipeline, you will need to specify which models in `create_model_files.sh` , `identify_best_model.sh` , `ID_best_model.R`, and `Create.BAGER.Summary.File.R`.
+ - If you would like to modify the models tested by BayesTraits from the default models in this pipeline, you will need to specify which models in `1_ancestral_reconstruction.sh` , `2_ID_best_model.R` , `3_Create.BAGER.Summary.File.R`, and `4_IdentifyShiftsInAllLineages.Rmd`.
 
  
 ## Run BAGER
