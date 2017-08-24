@@ -9,7 +9,7 @@ output:
 
 BAGER is a novel method of reconstructing ancestral gene expression levels. We are employing BAGER to identify expression shifts in the human lineage, or since our common ancestor with chimpanzees, and the entire primate lineage. However, this approach could theoretically be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.
 
-The RNA-sequencing data analyzed on this website is from [Brawand et al 2011](http://www.ncbi.nlm.nih.gov/pubmed/22012392). The raw sequencing files were reanalyzed by [Erin Fry](mailto:efry@uchicago.edu) with [a pipeline](https://github.com/erinfry6/RNASeqRealignAcrossPrimates) in part written by Anamaria Necsulea. Erin Fry is a graduate student in the [Lynch Laboratory](https://lynchlab.uchicago.edu/), Department of Human Genetics, University of Chicago.
+The RNA-sequencing data analyzed on this website is from [Brawand et al 2011](http://www.ncbi.nlm.nih.gov/pubmed/22012392). The raw sequencing files were reanalyzed by [Erin Fry](mailto:efry@uchicago.edu) with [a pipeline](https://github.com/erinfry6/RNASeqRealignAcrossPrimates) in part written by Anamaria Necsulea. Erin Fry is a graduate student in the [Lynch Laboratory](https://lynchlab.uchicago.edu/), Department of Human Genetics, University of Chicago. BAGER scripts can be found [here](https://github.com/erinfry6/BAGER/tree/master/code)).
 
 
 ![image source: https://qz.com/947859/highly-satisfied-badger-on-six-day-digging-bender-buries-entire-cow-to-eat-later/](https://qzprod.files.wordpress.com/2017/04/american_badger-e1491066906811.jpg?quality=80&strip=all&w=1600) 

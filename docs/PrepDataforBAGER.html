@@ -11,7 +11,7 @@
 
 <meta name="author" content="Erin Fry" />
 
-<meta name="date" content="2017-07-19" />
+<meta name="date" content="2017-08-24" />
 
 <title>Quality Control and Processing of Brawand et al RNA Seq data in preparation for BAGER</title>
 
@@ -314,7 +314,10 @@ div.tocify {
   <a href="PrepDataforBAGER.html">Sample Processing</a>
 </li>
 <li>
-  <a href="NewBAGERAnalysis.html">Brain Expression Shifts</a>
+  <a href="BrainIdentifyShiftsInAllLineages.html">Frontal Cortex Expression Shifts</a>
+</li>
+<li>
+  <a href="TestisIdentifyShiftsInAllLineages.html">Testis Expression Shifts</a>
 </li>
 <li>
   <a href="license.html">License</a>
@@ -338,7 +341,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Quality Control and Processing of Brawand et al RNA Seq data in preparation for BAGER</h1>
 <h4 class="author"><em>Erin Fry</em></h4>
-<h4 class="date"><em>2017-07-19</em></h4>
+<h4 class="date"><em>2017-08-24</em></h4>
 
 </div>
 
@@ -347,11 +350,10 @@ div.tocify {
 shared across the workflowr files. -->
 <!-- Update knitr chunk options -->
 <!-- Insert the date the file was last updated -->
-<p><strong>Last updated:</strong> 2017-07-19</p>
+<p><strong>Last updated:</strong> 2017-08-24</p>
 <!-- Insert the code version (Git commit SHA1) if Git repository exists and R
  package git2r is installed -->
-<p><strong>Code version:</strong> ac6c004</p>
-<!-- Add your analysis here -->
+<p><strong>Code version:</strong> 3d1c599</p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p><strong>This R markdown file will create RNA_seq log transformed gene expression files for Bayesian Ancestral Gene Expression Reconstruction (BAGER) for six primate species and six tissues.</strong></p>
@@ -375,14 +377,14 @@ shared across the workflowr files. -->
 <div id="sample-information-and-record-of-technical-variables" class="section level1">
 <h1>Sample Information and Record of Technical Variables</h1>
 <p>The following sample information was obtained directly from the authors of Brawand et al.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## read in raw expression data
-TPM_raw&lt;-<span class="kw">read.table</span>(<span class="st">&quot;../data/Transcript_Abundances31.txt&quot;</span>, <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">na.strings=</span><span class="st">&#39;NA&#39;</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## read in raw expression data output of kallisto run with kmer=31
+TPM_raw&lt;-<span class="kw">read.table</span>(<span class="kw">paste</span>(pathData,<span class="st">&quot;Transcript_Abundances31.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">header=</span><span class="ot">TRUE</span>, <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>, <span class="dt">na.strings=</span><span class="st">&#39;NA&#39;</span>, <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) 
 
 ## upload gene information
-geneinfo&lt;-<span class="kw">read.table</span>(<span class="st">&quot;../data/mart_export.txt&quot;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>,<span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>,<span class="dt">na.strings=</span><span class="st">&#39;NA&#39;</span>,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+geneinfo&lt;-<span class="kw">read.table</span>(<span class="kw">paste</span>(pathData,<span class="st">&quot;mart_export.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>),<span class="dt">header=</span><span class="ot">TRUE</span>,<span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>,<span class="dt">na.strings=</span><span class="st">&#39;NA&#39;</span>,<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 
 ## load and view the sample information
-SampleInfo&lt;-<span class="kw">read.table</span>(<span class="st">&quot;../data/SampleInformation.txt&quot;</span>,<span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
+SampleInfo&lt;-<span class="kw">read.table</span>(<span class="kw">paste</span>(pathData,<span class="st">&quot;SampleInformation.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>),<span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>,<span class="dt">header=</span><span class="ot">TRUE</span>)
 <span class="kw">head</span>(SampleInfo)</code></pre></div>
 <pre><code>    SampleID Species     Tissue G Age_Quant Extraction RIN Raw_reads
 1 ggo_br_F_1 Gorilla        PFC F    Fourth     RNeasy 9.1  35257547
@@ -435,7 +437,7 @@ TPM_raw&lt;-<span class="kw">cbind</span>(TPM_raw[,<span class="dv">1</span>],ge
 <h2>Expression unmapped and mapped</h2>
 <p><strong>Quantify the number of raw reads that mapped to genes during psuedo-alignement.</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## create list of kallisto output files
-<span class="kw">setwd</span>(<span class="st">&quot;../data/KallistoOutput/&quot;</span>)
+<span class="kw">setwd</span>(<span class="kw">paste</span>(pathData,<span class="st">&quot;KallistoOutput/&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>))
 listcsv&lt;-<span class="kw">as.character</span>(<span class="kw">dir</span>(<span class="dt">pattern=</span><span class="st">&quot;*&quot;</span>))<span class="co"># creates the list of all the csv files in the directory in true (not computer) numerical order</span>
 ## check that matches sample info
 <span class="kw">length</span>(listcsv)==<span class="kw">nrow</span>(SampleInfo)</code></pre></div>
@@ -461,8 +463,7 @@ for (k in <span class="dv">1</span>:<span class="kw">nrow</span>(SampleInfo)){
 ## caclulate other mapped reads stats and add to SampleInfo
 SampleInfo$Proportion_mapped_reads&lt;-SampleInfo$Mapped_Reads/SampleInfo$Raw_reads
 SampleInfo$Unmapped_reads&lt;-SampleInfo$Raw_reads-SampleInfo$Mapped_Reads
-SampleInfo$Proportion_unmapped_reads&lt;-SampleInfo$Unmapped_reads/SampleInfo$Raw_reads
-<span class="kw">setwd</span>(<span class="st">&quot;/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/analysis&quot;</span>)</code></pre></div>
+SampleInfo$Proportion_unmapped_reads&lt;-SampleInfo$Unmapped_reads/SampleInfo$Raw_reads</code></pre></div>
 <p><img src="figure/PrepDataforBAGER.Rmd/plot%20mapped%20reads-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/plot%20mapped%20reads-2.png" width="768" style="display: block; margin: auto;" /></p>
 <p><strong>Samples will be eliminated based on the following criteria:</strong></p>
 <ol style="list-style-type: decimal">
@@ -751,80 +752,35 @@ PC6 0.39355340 0.4641133 0.38221564                   1</code></pre>
 ## Which covariate are still correlated?
 <span class="kw">which</span>(<span class="kw">head</span>(Second_Pass,<span class="dv">6</span>)&lt;sigcorr)</code></pre></div>
 <pre><code>integer(0)</code></pre>
-</div>
-</div>
-</div>
-<div id="final-processing-complete" class="section level1">
-<h1>Final: processing complete</h1>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#### Examine Clustering ####
 
 ## Check PCs and Heatmap
 <span class="kw">plotPCandHeatmap</span>(TPM_noMT_expressed_log_Second_Pass, Sample_Info_Second_Elim)</code></pre></div>
-<p><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-1.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-2.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-4.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-6.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-7.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-8.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-9.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-10.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-11.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-12.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-13.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/final%20heatmap%20and%20PC-14.png" width="768" style="display: block; margin: auto;" /></p>
+<p><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-3.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-4.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-5.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-6.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-7.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-8.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-9.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-10.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-11.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-12.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-13.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-14.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-15.png" width="768" style="display: block; margin: auto;" /><img src="figure/PrepDataforBAGER.Rmd/remove%20final%20round-16.png" width="768" style="display: block; margin: auto;" /></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## define this processed matrix as the processed RNA-seq data
 TPM_noMT_expressed_log_processed&lt;-TPM_noMT_expressed_log_Second_Pass
 
 ## be sure correctly eliminated by checking for the same number of samples in each file
 <span class="kw">nrow</span>(Sample_Info_Second_Elim)==<span class="kw">ncol</span>(TPM_noMT_expressed_log_processed)</code></pre></div>
 <pre><code>[1] TRUE</code></pre>
-<div id="save-as-tissue-expression-files-for-bager" class="section level2">
-<h2>Save as tissue expression files for BAGER</h2>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## first save all processed data
-<span class="kw">write.table</span>(TPM_noMT_expressed_log_processed, <span class="dt">file=</span> <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,<span class="kw">Sys.Date</span>(),<span class="st">&quot;ProcessedExpData.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">quote =</span> <span class="ot">FALSE</span>)
+</div>
+</div>
+</div>
+<div id="save-processed-data-as-tissue-expression-files-for-bager" class="section level1">
+<h1>Save processed data as tissue expression files for BAGER</h1>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## set directory for files ready for BAGER
+
+## first save all processed data
+<span class="kw">write.table</span>(TPM_noMT_expressed_log_processed, <span class="dt">file=</span> <span class="kw">paste</span>(pathResults,<span class="kw">Sys.Date</span>(),<span class="st">&quot;ProcessedExpData.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>)
 
 ## save list of samples to be included in analysis
-<span class="kw">write.table</span>(Sample_Info_Second_Elim, <span class="dt">file =</span> <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,<span class="kw">Sys.Date</span>(),<span class="st">&quot;IncludedSamples.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">quote=</span><span class="ot">FALSE</span>)
+<span class="kw">write.table</span>(Sample_Info_Second_Elim, <span class="dt">file =</span> <span class="kw">paste</span>(pathResults,<span class="kw">Sys.Date</span>(),<span class="st">&quot;IncludedSamples.txt&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>)
 
-## save expression files by tissue, remove genes that are not expressed and keep record of which genes are included in the analysis
+## save expression files by tissue
 for (t in tissue){
-  temp&lt;-TPM_noMT_expressed_log_processed[,<span class="kw">grep</span>(t,<span class="kw">colnames</span>(TPM_noMT_expressed_log_processed))]
-  temp_rm&lt;-temp[<span class="kw">rowSums</span>(temp)&gt;(<span class="kw">log2</span>(<span class="dv">2</span>)*<span class="kw">ncol</span>(temp)),]
-  <span class="kw">write.table</span>(<span class="kw">t</span>(temp_rm) , <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,t,<span class="st">&quot;_exp&quot;</span>,<span class="st">&quot;.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">col.names =</span> <span class="ot">FALSE</span>, <span class="dt">quote=</span><span class="ot">FALSE</span>)
-  <span class="kw">write.table</span>(temp_rm, <span class="kw">paste</span>(<span class="st">&quot;../data/forBAGER/&quot;</span>,t,<span class="st">&quot;_genesincluded&quot;</span>,<span class="st">&quot;.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">quote=</span><span class="ot">FALSE</span>, <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>)
-  
+  <span class="kw">write.table</span>(<span class="kw">t</span>(TPM_noMT_expressed_log_processed[,<span class="kw">grep</span>(t,<span class="kw">colnames</span>(TPM_noMT_expressed_log_processed))]) , <span class="kw">paste</span>(pathResults,<span class="kw">Sys.Date</span>(),<span class="st">&quot;_&quot;</span>,t,<span class="st">&quot;_exp&quot;</span>,<span class="st">&quot;.txt&quot;</span>, <span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&#39;</span><span class="ch">\t</span><span class="st">&#39;</span>, <span class="dt">col.names =</span> <span class="ot">FALSE</span>)
 }</code></pre></div>
-<p><strong>by Erin Fry, 2017-07-19</strong></p>
-<div id="session-information" class="section level4">
-<h4>Session information</h4>
-<!-- Insert the session information into the document -->
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sessionInfo</span>()</code></pre></div>
-<pre><code>R version 3.3.2 (2016-10-31)
-Platform: x86_64-apple-darwin15.6.0 (64-bit)
-Running under: OS X El Capitan 10.11.6
-
-locale:
-[1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
-
-attached base packages:
-[1] stats     graphics  grDevices utils     datasets  methods   base     
-
-other attached packages:
- [1] ape_4.1            statmod_1.4.30     plyr_1.8.4        
- [4] R.utils_2.5.0      R.oo_1.21.0        R.methodsS3_1.7.1 
- [7] edgeR_3.16.5       scales_0.4.1       RColorBrewer_1.1-2
-[10] limma_3.30.13      bindrcpp_0.2       plotly_4.7.0      
-[13] gplots_3.0.1       ggplot2_2.2.1      dplyr_0.7.1       
-[16] workflowr_0.4.0    rmarkdown_1.6     
-
-loaded via a namespace (and not attached):
- [1] gtools_3.5.0       locfit_1.5-9.1     purrr_0.2.2.2     
- [4] lattice_0.20-35    colorspace_1.3-2   htmltools_0.3.6   
- [7] viridisLite_0.2.0  yaml_2.1.14        rlang_0.1.1       
-[10] glue_1.1.1         bindr_0.1          stringr_1.2.0     
-[13] munsell_0.4.3      gtable_0.2.0       caTools_1.17.1    
-[16] htmlwidgets_0.9    evaluate_0.10.1    labeling_0.3      
-[19] knitr_1.16         httpuv_1.3.5       crosstalk_1.0.0   
-[22] parallel_3.3.2     Rcpp_0.12.12       KernSmooth_2.23-15
-[25] xtable_1.8-2       backports_1.1.0    gdata_2.18.0      
-[28] jsonlite_1.5       mime_0.5           digest_0.6.12     
-[31] stringi_1.1.5      shiny_1.0.3        grid_3.3.2        
-[34] rprojroot_1.2      tools_3.3.2        bitops_1.0-6      
-[37] magrittr_1.5       lazyeval_0.2.0     tibble_1.3.3      
-[40] tidyr_0.6.3        pkgconfig_2.0.1    data.table_1.10.4 
-[43] assertthat_0.2.0   httr_1.2.1         rstudioapi_0.6    
-[46] R6_2.2.2           nlme_3.1-131       git2r_0.18.0      </code></pre>
-</div>
-</div>
+<p><strong>by Erin Fry, 2017-08-24 2017</strong></p>
 </div>
 
 <hr>

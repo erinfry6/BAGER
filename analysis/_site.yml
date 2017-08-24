@@ -11,10 +11,16 @@ navbar:
       href: about.html
     - text: "Sample Processing"
       href: PrepDataforBAGER.html
-    - text: "Frontal Cortex Expression Shifts"
-      href: BrainIdentifyShiftsInAllLineages.html
-    - text: "Testis Expression Shifts"
-      href: TestisIdentifyShiftsInAllLineages.html
+    - text: "Frontal Cortex"
+      href: Brain.html
+    - text: "Cerebellum"
+      href: Cerebellum.html
+    - text: "Heart"
+      href: Heart.html
+    - text: "Kidney"
+      href: Kidney.html
+    - text: "Testis"
+      href: Testis.html
     - text: "License"
       href: license.html
   right:
