@@ -25,7 +25,7 @@ Before beginning, create a home directory for the pipeline that contains the fol
 				home/BayesTraits
 				
 				
-Place the contents of this repository's `code` directory and `analysis/4_IdentifyShiftsInAllLineages.Rmd` in the `code` directory. Place data to be analyzed in `data/forBAGER` and create directories for each tissue in `data/BAGERresults`.
+Place the contents of this repository's `code` directory in the `code` directory. Place data to be analyzed in `data/forBAGER` and create directories for each tissue in `data/BAGERresults`.
 
 It may be useful to consult the [BayesTraits Manual](http://www.evolution.rdg.ac.uk/BayesTraitsV3/Files/BayesTraitsV3.Manual.pdf) to understand the phylogenetic models used to reconstruct ancestral traits.
 

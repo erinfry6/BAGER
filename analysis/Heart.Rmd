@@ -1,0 +1,806 @@
+---
+title: "Identifying Expression Shifts Across Primate Phylogeny in the Heart"
+author: "Erin Fry"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    theme: cerulean
+    highlight: espresso
+    fig_width: 8
+    fig_height: 6
+    self_contained: false
+---
+```{r instructions and variables to define before beginning including tissue and lineages, echo=FALSE}
+
+
+## Erin Fry
+## August 22 2017
+
+## this script analyzes BAGER results
+
+## MODIFICATION INSTRUCTIONS:
+## all required or recommended changes are in the first/current section of the script
+## change the variable tissuename and tissue to the tissue name and code you are evaluating
+## change the variable path to home directory for the project
+## if testing other models, modify model vector to include all models
+## you must modify the nodes of interest 'if then' section. Change the names of the nodes to the clade name 
+## and the "Node ..." to the column names in the files created by BayesTraits for the .tree for that tissue
+## similarly, define the lineages to test
+## these are the same node names and lineages as from the Create.BAGER.Summary.File.R
+
+######################################################################
+
+## tissue name
+
+tissuename<-"Heart"
+
+## set tissue code
+
+tissue<-"ht"
+
+## set paths to directories, be sure to modify your home directory and the Anccestral Reconstruction directory you are analyzing
+path="/Users/lynchlab/Desktop/ErinFry/workflowr/AGER/"
+pathData=paste(path,"data/forBAGER/",sep="")
+pathResults=paste(path,"data/BAGERresults/",tissue,"/",sep="")
+pathAncRecon=paste(pathResults,"AncStates/",sep="")
+
+## update the BAGER Summary date created for this tissue titled ...'BAGERSummary.txt'
+Summary<-read.table(paste(pathResults,"2017-08-22BAGERSummary.txt", sep=""),sep='\t', header=T)
+
+models<-c("VarRates","Lambda")
+
+## set the nodes of interest
+if (tissue=="br"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00016"
+  node.ancGorilla="Node-00020"
+  node.ancOrang="Node-00023"
+  node.ancMacaque="Node-00026"
+  
+  
+} else if (tissue=="cb"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00014"
+  node.ancOrang="Node-00017"
+  node.ancMacaque="Node-00018"
+  
+} else if (tissue=="lv"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00012"
+  node.ancOrang="Node-00015"
+  node.ancMacaque="Node-00018"
+  
+} else if (tissue=="kd"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00008"
+  node.ancPtr="Node-00009"
+  node.ancPpa="Node-00012"
+  node.ancGorilla="Node-00015"
+  node.ancOrang="Node-00018"
+  node.ancMacaque="Node-00021"
+  
+} else if (tissue=="ts"){
+  node.ancPrimates="Node-00000"
+  node.ancApes="Node-00001"
+  node.ancHominini="Node-00002"
+  node.ancHomo="Node-00003"
+  node.ancPan="Node-00006"
+  node.ancPtr="Node-00007"
+  node.ancPpa="Node-00008"
+  node.ancGorilla="Node-00009"
+  node.ancMacaque="Node-00010"
+  
+} else if (tissue=="ht"){
+  node.ancPrimates="Node-00000"
+  node.ancHaplorhini="Node-00001"
+  node.ancApes="Node-00002"
+  node.ancHominini="Node-00003"
+  node.ancHomo="Node-00004"
+  node.ancPan="Node-00007"
+  node.ancPtr="Node-00008"
+  node.ancPpa="Node-00011"
+  node.ancGorilla="Node-00014"
+  node.ancOrang="Node-00017"
+  node.ancMacaque="Node-00018"
+  
+} else {
+  print("this tissue is not known") }
+
+## specify each lineage in the tree to test
+## formatted that the first column is the ancestral node and the second is the descendent node
+
+if (tissue=="ts"){
+  lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
+                                                       "ancPrimates", "ancApes",
+                                                       "ancApes","ancGorilla",
+                                                       "ancApes", "ancHominini",
+                                                       "ancHominini","ancPan",
+                                                       "ancHominini", "ancHomo",
+                                                       "ancPan", "ancPtr",
+                                                       "ancPan", "ancPpa"))
+  
+} else {
+lineages.to.test<-matrix(ncol=2, byrow = TRUE,data=c("ancPrimates", "ancMacaque",
+                                                     "ancPrimates", "ancHaplorhini",
+                                                     "ancHaplorhini", "ancOrang",
+                                                     "ancHaplorhini","ancApes",
+                                                     "ancApes","ancGorilla",
+                                                     "ancApes", "ancHominini",
+                                                     "ancHominini","ancPan",
+                                                     "ancHominini", "ancHomo",
+                                                     "ancPan", "ancPtr",
+                                                     "ancPan", "ancPpa"))
+}
+```
+
+## Introduction
+
+**This script analyzes the Bayesian Ancestral Gene Expression Reconstructions (BAGERs) to identify expression shifts in the `r tissuename` in all primate lineages. The raw RNA-sequencing files were published by [Brawand et al in 2011](http://www.nature.com/nature/journal/v478/n7369/abs/nature10532.html), collected from post-mortem individuals from 6 primate species. This paper identified only 4 genes with expression shifts in the human frontal cortex using maximum likelihood, but hundreds of expression shifts in the other tissues and lineages. I have quantified RNA-Sequencing raw reads using Ensembl 84, an orthologous exon identification pipeline from Brawand et al, and the psueodaligner Kallisto. I then controlled for quality and confounding variables by regressing out technical variables. [Specifics can be found here](https://erinfry6.github.io/BAGER/PrepDataforBAGER.html).**
+
+**I then reconstructed the ancestral transcriptomes of the ancestral primates using a Bayesian MCMC method implemented in [BayesTraits](http://www.evolution.rdg.ac.uk/BayesTraitsV3/BayesTraitsV3.html).	The evolution of gene expression has not yet been modeled using Bayesian MCMC programs, which model discrete and continuous trait evolution across phylogenies. BayesTraits utilizes a Brownian motion model of trait evolution, a phylogeny, continuous trait data, and evolutionary rate parameters to infer posterior probability distributions of evolutionary rate parameters, and thus ancestral trait values. I have utilized a novel approach implemented in BayesTraits to reconstruct gene expression in the frontal cortex and five other tissues. In each tissue and one gene at a time, my pipeline utilizes transcript abundances, the sample phylogeny, and a MCMC model including a variable rates parameter to reconstruct the evolutionary history of the trait while allowing the rate of change of each gene’s expression to differ across the tree, the most biologically realistic assumption. The algorithm infers evolutionary rate parameters and posterior probability distributions of the ancestral gene expression at each node. [Scripts to run BAGER can be found here](https://github.com/erinfry6/AncGeneExpReconstructionBT).**
+
+**In this document, I identify genes with expression shifts in every by calculating the proportion of MCMC iterations in which there was an increase or decrease in expression in the human lineage (termed the Bayesian Posterior Probability of Divergence, or BPPD).**
+
+## Setup
+###Load paths and libraries
+```{r set up paths and load libraries, warning=FALSE, message=FALSE}
+## Models evaluated in BAGER analysis
+print(models)
+
+## set strings as factors as false for everything to run smoothly
+options(stringsAsFactors = FALSE)
+
+## load necessary packages
+library(biomartr)
+library(dplyr)
+library("ggplot2")
+library(gplots)
+library(plotly)
+library(WebGestaltR)
+library(knitr)
+```
+
+```{r define functions, include=FALSE}
+## define function for reading in these types of files which will read incorrectly using standard read.csv
+read.tcsv = function(file, header=TRUE, sep=",", ...) {
+  
+  n = max(count.fields(file, sep=sep), na.rm=TRUE)
+  x = readLines(file)
+  
+  .splitvar = function(x, sep, n) {
+    var = unlist(strsplit(x, split=sep))
+    length(var) = n
+    return(var)
+  }
+  
+  x = do.call(cbind, lapply(x, .splitvar, sep=sep, n=n))
+  x = apply(x, 1, paste, collapse=sep) 
+  out = read.csv(text=x, sep=sep, header=header, ...)
+  return(out)
+  
+}
+
+## set function for importing the ancestral expression reconstructions
+read.AncRecon=function(file, firstrow, lastrow,header=F, sep='\t'){
+  temp<-t(read.tcsv(file, sep='\t', header=F)[,firstrow:lastrow])
+  colnames(temp)<-temp[1,]
+  temp<-temp[-1,]
+  return(temp)
+}
+
+## prepare df or matrix for heatmap.2
+prepforheatmap=function(matrix.or.df){
+  dims <- dim(matrix.or.df)
+matrix.or.df <- as.numeric(matrix.or.df)
+dim(matrix.or.df) <- dims 
+return(matrix.or.df)
+}
+
+## view the posterior probabilty distributions for each gene in a list of genes
+viewPPDs<-function(genelist, m=Summary$modelchoice,nbins=100){
+  for (i in genelist){  #for each of these genes
+  gene<- read.AncRecon(paste(pathAncRecon,m[i],"/",listcsv[i], sep=""), firstrow = it.begin, lastrow = (expectedrows+it.begin), sep='\t') # read reconstruction
+    
+  anc1<-as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])
+  anc2<-as.numeric(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])
+  
+  minimum=(min(anc1, anc2)) #minimum estimated value
+    maximum=(max(anc1, anc2)) #maximum estimated
+    breakby= (maximum-minimum)/nbins  #size of bins
+    bins <- seq(minimum, maximum, by =breakby)  #set the bins for this gene
+  hist(anc1,
+       main= paste("Gene #", i,"-", Summary$hgnc_symbol[i],"- BPPD:",Summary$BayesianPostProbofDivergence[i]),  #title of the image
+       xlab="Inferred Expression in log(TPM)", 
+       ylab="Number of Samples", 
+       col="#1c9099", breaks=bins, xlim=c(minimum,maximum))
+  hist(anc2, add=T, col="#737373", breaks=bins)
+  hist(anc1, border="black", breaks=bins, add=T)
+  #legend(300,300, c("Human-Chimpanzee", "Human"), col=c("#7fbf7b", "#af8dc3"), lwd=10, border=NULL)
+  } }
+
+
+## view the posterior divergences along the lineage
+viewDifference<-function(genelist,m=Summary$modelchoice, lastit=1000,nbins=100){
+  for (i in genelist){  #for each of these genes
+  gene<- read.AncRecon(paste(pathAncRecon,m[i],"/",listcsv[i], sep=""), firstrow = it.begin, lastrow = (expectedrows+it.begin), sep='\t')# read reconstruction
+  anc1<-as.numeric(gene[,which(colnames(gene)==paste(ancHomo, " - 1",sep=""))])
+  anc2<-as.numeric(gene[,which(colnames(gene)==paste(ancHominini, " - 1",sep=""))])
+  diffvector<-anc1-anc2
+  hist(diffvector,
+       main= paste("Gene #", i,"-", Summary$hgnc_symbol[i],"-Post Prob Divergence:",abs(max(1-Summary$BayesianPostProbofDivergence[i], Summary$BayesianPostProbofDivergence[i]))),  #title of the image
+       xlab="AncHuman - AncHC (log(TPM))", 
+       ylab="Number of Samples", col="#1c9099")
+  } }
+
+
+## FIND THE NUMBER OF GENES WITH EXPRESSION SHIFTS GIVEN A BPPD CUTOFF
+## reconsdf should be the list of matrices 
+## listnumber is the number in the lineages.to.test matrix of interest for plotting
+## also create a histogram of BPPDs and save the list of genes with expression shifts and that reconstructed to the tissue directory
+## output of the function will be the total number of genes with shifts, that reconstructed, and that were tested
+shiftanalysis<-function(reconsdf=reconsgenes, listnumber, lineages.df=lineages.to.test, histogram=FALSE, write.results=FALSE){
+  
+  ## define lineage being tested
+  lineage = paste(lineages.df[listnumber,1],lineages.df[listnumber,2], sep="_")
+  
+  ## identify all expressed, converged genes with expression shifts
+  shiftgenes<-filter(as.data.frame(reconsgenes[[listnumber]]),eval(as.symbol(paste(lineage,"BPPD",sep="_")))>BPPDcutoff)
+  
+  ## if want to write results, save both reconstructed gene list and shift gene list
+  if (write.results==TRUE){
+    write.table(reconsdf[[listnumber]],paste(pathResults,Sys.Date(),lineage,"Reconstructed.txt", sep=""),sep='\t')
+    write.table(shiftgenes,paste(pathResults,Sys.Date(),lineage,"90Cutoff.txt", sep=""),sep='\t') 
+  }
+  
+  if (histogram==TRUE){
+  ## View the distribution of divergence of converged genes
+  hist(as.data.frame(reconsdf)[,grep(colnames(reconsdf), pattern = "BPPD")], #create histogram of percent divergence for tested genes
+       main= paste("Transcriptome Divergence for", tissuename, lineage, sep=" "), #title
+       xlab="Bayesian Posterior Probability of Divergence", 
+       ylab="Number of Genes", cex.lab=1.3,
+       col="#1c9099", breaks=100)
+  abline(v=BPPDcutoff, col="red") }
+  
+  return(c((nrow(reconsdf[[listnumber]])-nrow(shiftgenes)),nrow(shiftgenes), num.recons[listnumber],length(listcsv)))
+}
+
+
+## CREATE SCATTERPLOT FOR LINEAGE RECONSTRUCTED TRANSCRIPTOMES
+## reconsdf should be the list of matrices 
+## listnumber is the number in the lineages.to.test matrix of interest for plotting
+## if you want to see the number of genes in each BPPD category, set print.BPPDs equal to TRUE
+## if want to save, set save.scatter equal to TRUE
+
+createScatterPlot<-function(reconsdf=reconsgenes, listnumber, print.BPPDs=FALSE, save.scatter=FALSE) {
+  x=listnumber  ## the lineage number to plot
+  p<-NULL  ## for later if statements must start as null
+  test<-reconsgenes[[x]]  # first choose the dataframe from the list of dataframes
+  test$BPPDLevel <- cut(test[,grep(colnames(test), pattern = "BPPD")], c(0,0.90,0.95,0.975,1.1)) # break BPPD into categories
+
+ 
+    BPPDcats<-test %>% 
+    group_by(BPPDLevel) %>%
+    summarise(no_genes=length(BPPDLevel))
+   if (print.BPPDs=="TRUE"){ print(BPPDcats) }
+
+  ## Reverse the levels and generate some labels for the legend
+  test$labels <- factor(test$BPPDLevel, levels = rev(levels(test$BPPDLevel)),
+                      labels = c('>97.5%', '95-97.5%',
+                                 '90-95%','<90%')) 
+  ## split the data into layers
+  df_layer_1 <- test[ test$labels =="<90%",]
+  df_layer_90 <- test[ test$labels =="90-95%",]
+  df_layer_95 <- test[ test$labels =="95-97.5%",]
+  df_layer_99 <- test[ test$labels ==">97.5%",]
+  
+  ## create plot using different layers depending on which layers are present
+
+  ## all four categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & "(0.95,0.975]" %in% BPPDcats$BPPDLevel & "(0.975,1.1]" %in% BPPDcats$BPPDLevel) {
+  
+    p<-ggplot(data=test, mapping=aes(
+     x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+     y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+     text=hgnc_symbol)) + 
+     theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_90, aes(color="#a1dab4")) +
+      geom_point(data=df_layer_95, aes(color="#41b6c4")) +
+      geom_point(data=df_layer_99, aes(color="#0c2c84")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#41b6c4'='#41b6c4','#0c2c84'='#0c2c84', '#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), 
+                          labels = c('>97.5%','95-97.5%', '90-95%', '<90%'))
+} 
+
+  ## lowest three categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & "(0.95,0.975]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+    
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_90, aes(color="#a1dab4")) +
+      geom_point(data=df_layer_95, aes(color="#41b6c4")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#41b6c4'='#41b6c4', '#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), 
+                          labels = c('95-97.5%', '90-95%', '<90%'))
+  } 
+  
+  ## lowest two + highest categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & "(0.975,1.1]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+    
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_90, aes(color="#a1dab4")) +
+      geom_point(data=df_layer_99, aes(color="#0c2c84")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#0c2c84'='#0c2c84', '#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), 
+                          labels = c('>97.5%', '90-95%', '<90%'))
+  } 
+  
+    ## lowest + second two highest categories of shift
+  if("(0.95,0.975]" %in% BPPDcats$BPPDLevel & "(0.975,1.1]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_95, aes(color="#41b6c4")) +
+      geom_point(data=df_layer_99, aes(color="#0c2c84")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#0c2c84'='#0c2c84', '#41b6c4'='#41b6c4', '#ffffcc'='#ffffcc'), 
+                          labels = c('>97.5%', '95-97.5%', '<90%'))
+  } 
+  
+  ## lowest two categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+    
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_90, aes(color="#a1dab4")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#a1dab4'='#a1dab4', '#ffffcc'='#ffffcc'), labels = c( '90-95%', '<90%'))
+} 
+
+  ## lowest + second highest categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+    
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_95, aes(color="#41b6c4")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#41b6c4'='#41b6c4', '#ffffcc'='#ffffcc'), labels = c( '90-95%', '<90%'))
+} 
+
+  ## lowest + highest categories of shift
+  if("(0.9,0.95]" %in% BPPDcats$BPPDLevel & is.null(p)) {
+    
+    p<-ggplot(data=test, mapping=aes(
+      x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+      y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+      text=hgnc_symbol)) + 
+      theme_bw() +
+      theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+      ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+      theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+      labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+            y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+      geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+      geom_point(data=df_layer_99, aes(color="#0c2c84")) +
+      geom_abline(intercept=0,slope=1) + 
+      geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+      scale_colour_manual(name = 'BPPD', 
+                          values =c('#0c2c84'='#0c2c84', '#ffffcc'='#ffffcc'), labels = c( '90-95%', '<90%'))
+} 
+
+  ## only non-shift genes
+  if (is.null(p)) {
+
+  p<-ggplot(data=test, mapping=aes(
+    x=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconAnc")])),
+    y=eval(as.symbol(colnames(test)[grep(colnames(test), pattern = "reconDesc")])), 
+    text=hgnc_symbol)) + 
+    theme_bw() +
+    theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+    ggtitle(paste("Ancestral Transcriptomes of ", lineages.to.test[x,1], " and ", lineages.to.test[x,2],sep="")) +
+    theme(plot.title = element_text(size = 12, face = "bold", hjust=0.5), legend.title = element_text(face="bold")) +
+    labs( x=paste(lineages.to.test[x,1]," log(TPM)", sep=""), 
+          y=paste(lineages.to.test[x,2]," log(TPM)", sep=""), face="bold", size=20) +
+    geom_point(data=df_layer_1, aes(color="#ffffcc")) +
+    geom_abline(intercept=0,slope=1) + 
+    geom_vline(xintercept=expcut, alpha=.5) + geom_hline(yintercept=expcut, alpha=0.5) +
+    scale_colour_manual(name = 'BPPD', 
+                        values =c('#ffffcc'='#ffffcc'), labels = c('<90%'))
+} 
+
+
+suppressWarnings(print(p))
+
+if (save.scatter==TRUE){
+  ggsave(paste(pathResults,Sys.Date(),lineages.to.test[x,1],lineages.to.test[x,2], "_Scatter.pdf",sep="")) }
+
+}
+```
+
+### Load and examine the BAGER statistics for every lineage and gene
+
+```{r Load BAGER summary file, echo=FALSE, tidy=TRUE, cache=TRUE}
+## view BAGER summary header
+kable(Summary[1:5,1:10], caption = paste("BAGER Summary Stats for ",tissuename, sep=""))
+
+## define the list of genes
+listcsv<-Summary$listcsv
+
+## find which row the iteration information begins on for this tissue's tree
+finding.information.about.file<-(read.tcsv(paste(pathAncRecon,models[length(models)],"/",listcsv[1],sep=""), sep='\t'))
+it.begin<-which(colnames(finding.information.about.file)=="Itter")
+
+## set the total number of rows you expect to have in each file so the code will warn you if reconstructions failed
+expectedrows=ncol(finding.information.about.file)-it.begin
+
+```
+
+## Select genes that are expressed with successful reconstructions
+Genes that successfully reconstructed will have similar posterior variations in the two ancestral node reconstructions. For each lineage, select only genes with fold standard deviations between the ancestral and descendant node of less than 4. Save these gene lists in the list of data frames, reconsgenes.
+
+```{r find reconstructed genes in each lineage, warnings=FALSE}
+## the more ancestral reconstruction generally has a higher standard deviation, but if too large the chain failed to converge on a reconstruction
+
+## define divergence fold standard deviation cutoff
+cutoffSD<-4
+
+## only select genes which are expressed, set cutoff for expression
+## 2 TPM is a standard expression cutoff
+expcut<-log(2)
+
+## filter genes that did not converge or are not expressed in either reconstruction for every lineage
+## define reconstructed genes list
+reconsgenes<-list()
+
+## for each lineage, select only expressed and reconstructed genes
+## then save those genes in the list, but only including relavent statistics for that lineage
+x=1
+for (l in 1:nrow(lineages.to.test)){
+    lineage<-paste(lineages.to.test[l,1],lineages.to.test[l,2], sep="_")
+    
+    temp<-filter(Summary, eval(as.symbol(paste(lineage,"foldSD",sep="_"))) <cutoffSD,
+                 eval(as.symbol(paste(lineage,"reconAnc",sep="_")))>expcut | eval(as.symbol(paste(lineage,"reconDesc",sep="_")))>expcut)
+    
+    reconsgenes[[x]]<-temp[,c(1:5,grep(pattern = lineage, x = colnames(temp)))]
+    
+    x=x+1
+  }
+
+## How many genes successfully reconstructed in each lineage?
+num.recons<-sapply(reconsgenes, nrow)
+```
+
+## Identify genes with expression shifts across the phylogeny
+
+**I have chosen to use the Bayesian Posterior Probability of Divergence to identify genes with different expression levels in ancHuman and ancHuman-Chimpanzee nodes. We will use a BPPD of 90% as a cutoff.**
+
+```{r quantify shifts for each lineage, echo=FALSE, warning=FALSE}
+## define the BPPD cutoff to call a gene to have an expression shift
+BPPDcutoff<-0.9
+
+BAGERshiftsummary<-matrix(ncol=nrow(lineages.to.test), nrow=4)
+rownames(BAGERshiftsummary)<- c(paste('BPPD<',BPPDcutoff,'%',sep=""),paste('BPPD>',BPPDcutoff,'% / Expression Shifts',sep=""), 
+                                "Reconstructed Genes","Genes Tested")
+colnames(BAGERshiftsummary)<-apply(lineages.to.test, 1, FUN = function(x){paste(x[1],x[2])})
+
+for (l in 1:nrow(lineages.to.test)){
+    BAGERshiftsummary[,l]<-shiftanalysis(listnumber = l, write.results = FALSE)
+}
+
+kable(BAGERshiftsummary, caption="Number of Genes with shifts and reconstructed in each lineage")
+```
+
+```{r save number of shifts in each lineage, eval=FALSE, include=FALSE}
+#write.table(BAGERshiftsummary,paste(pathResults,Sys.Date(),"BAGERshiftsummary.txt", sep=""),sep='\t')
+
+```
+
+## View reconstructed transcriptomes for each ancestral and descendant node pair
+
+```{r create scatter plots}
+
+for (l in 1:nrow(lineages.to.test)){
+  createScatterPlot(listnumber = l, save.scatter = FALSE)
+}
+#createScatterPlot(listnumber =8, save.scatter = TRUE)
+```
+
+## Enrichment Analysis
+```{r enrichment analysis, eval=FALSE}
+## webgestalt R for GO enrichment analysis, see manual https://cran.r-project.org/web/packages/WebGestaltR/WebGestaltR.pdf 
+
+for (l in 1:nrow(lineages.to.test)){
+
+  for (enrichdb in c("geneontology_Biological_Process", "geneontology_Cellular_Component","pathway_Panther","pathway_KEGG",
+                     "pathway_Wikipathway", "phenotype_Human_Phenotype_Ontology")){
+
+    WebGestaltR(enrichMethod = "ORA", organism = "hsapiens", enrichDatabase = enrichdb,
+            enrichDatabaseFile=NULL, enrichDatabaseType=NULL,
+            interestGene=filter(as.data.frame(reconsgenes[[l]]),
+            eval(as.symbol(paste(lineages.to.test[l,1],lineages.to.test[l,2],"BPPD",sep="_")))>BPPDcutoff)$ensembl_gene_id, 
+            interestGeneType="ensembl_gene_id",
+            collapseMethod="mean",
+            referenceGene=reconsgenes[[l]]$ensembl_gene_id,referenceGeneType="ensembl_gene_id",
+            minNum=10, maxNum=500,
+            fdrMethod="BH",sigMethod="fdr",fdrThr=0.05,
+            topThr=10,dNum=20,perNum=1000,
+            lNum=20,is.output=TRUE,
+            outputDirectory=paste(pathResults,"Enrichments",sep=""),
+            projectName=paste(Sys.Date(),lineages.to.test[l,1],lineages.to.test[l,2],enrichdb,sep="-"),
+            keepGSEAFolder=FALSE, methodType="R",dagColor="binary",hostName="http://www.webgestalt.org/")
+  } 
+  
+}
+```
+
+### Results
+```{r enrich results}
+## after run ./5_consolidate_enrichments.sh
+sig_enrichments<-read.csv(paste(pathResults,"Enrichments/enrichmentresults.txt",sep=""), sep="\t")
+
+kable(sig_enrichments[,c(1,2,9)], caption="sig enrichments")
+```
+
+
+
+```{r heatmaps, eval=FALSE, cache=TRUE, echo=FALSE}
+
+## from here on, scripts are incomplete and will not work. these chunks are not evaluated. eval=FALSE
+
+
+
+## View original gene expression heatmaps of genes with expression shifts compared to one of all reconstructed genes in the human lineage
+
+## load expression data used to run scripts
+TPM_log<-t(as.matrix(read.table(paste(pathData,tissue,"_genesincluded.txt", sep=""),header=F)))
+expr<-t(as.matrix(read.table(paste(pathData,tissue,"_exp.txt", sep=""),header=F)))
+colnames(TPM_log)<-TPM_log[1,]
+TPM_log<-t(TPM_log[-1,])
+colnames(TPM_log)<-TPM_log[1,]
+TPM_log<-TPM_log[-1,]
+
+## select only converged genes to create heatmap
+converged_expression<-prepforheatmap(TPM_log[test$ensembl_gene_id %in% rownames(TPM_log),])
+
+x=1
+for (l in 1:nrow(lineages.to.test)){
+    lineage<-paste(lineages.to.test[l,1],lineages.to.test[l,2], sep="_")
+    
+    temp<-filter(Summary, eval(as.symbol(paste(lineage,"foldSD",sep="_"))) <cutoffSD,
+                 eval(as.symbol(paste(lineage,"reconAnc",sep="_")))>expcut | eval(as.symbol(paste(lineage,"reconDesc",sep="_")))>expcut)
+    
+    reconsgenes[[x]]<-temp[,c(1:5,grep(pattern = lineage, x = colnames(temp)))]
+    
+    x=x+1
+  }
+
+
+(which(Summary$hgnc_symbol %in% reconsgenes[[which(lineages.to.test[,2]=="ancHomo")]]$hgnc_symbol))
+## order of the columns in the heatmaps
+colnames(TPM_log)
+
+## set heatmap title size
+par(cex.main=.8)
+
+heatmap.2(converged_expression, col=bluered(75),
+          density.info="none", trace="none", symm=FALSE,
+          dendrogram="row", scale="row",
+          Rowv=T, Colv=F,colsep = 1:74, 
+          sepcolor="black", 
+          sepwidth=c(0.0000000001,0.000000001),
+          labRow="", labCol="", main="Raw Expression of Reconstructed Genes")
+
+
+## select only genes identified to have expression shifts
+
+shift_expression<-prepforheatmap(TPM_log[(which(Summary$hgnc_symbol %in% shiftgenes$hgnc_symbol)-1),])
+
+
+heatmap.2(shift_expression, col=bluered(75),
+          density.info="none", trace="none", 
+          dendrogram="row", scale="row",
+          Rowv=T, Colv=F,colsep = 1:74, 
+          sepcolor="black", 
+          sepwidth=c(0.0000000001,0.000000001),
+          labRow="", labCol="", main="Expression of all Genes with Expression Shifts")
+
+```
+
+
+```{r ancrecon as mean exploration, eval=FALSE,warning=FALSE, echo=FALSE}
+### Misc exploratory analysis
+
+## human mean
+human_mean<-apply(converged_expression[,grep(pattern = "hsa", colnames(TPM_log))], 1, mean)
+
+## chimp mean
+chimp_mean<-apply(converged_expression[,c(grep(pattern = "ptr", colnames(TPM_log)) , grep(pattern = "ppa", colnames(TPM_log)) )], 1, mean)
+
+## human and chimp mean
+HC_mean<-apply(converged_expression[,c(grep(pattern = "hsa", colnames(TPM_log)), grep(pattern = "ptr", colnames(TPM_log)) , grep(pattern = "ppa", colnames(TPM_log)) )], 1, mean)
+
+non_human_mean<-apply(converged_expression[,-grep(pattern = "hsa", colnames(TPM_log))], 1, mean)
+
+temp<-cbind(reconsgenes,human_mean, chimp_mean, HC_mean, non_human_mean)
+
+
+df_layer_90 <- temp[ temp$labels =="90-95%",]
+df_layer_95 <- temp[ temp$labels =="95-99%",]
+df_layer_99 <- temp[ temp$labels ==">99%",]
+
+
+
+## If BT is averaging the descendants to reconstuct the ancestor, we should see 1:1 between descendant mean and reconstructed mean
+
+## of humans
+
+ggplot(data=temp, mapping=aes(x=(MedianAncHomo),y=(human_mean), text=hgnc_symbol)) + 
+  theme_bw() +
+  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+  ggtitle("Ancestral Transcript Levels and by BBPD in the Human Lineage") +
+  labs( x="MedianAncHomo", y="human_mean", face="bold", size=20) +
+  geom_point(colour="grey",alpha=0.5)+
+    geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
+  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
+  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
+  scale_y_log10(limits=c(1e-1,1e2)) + scale_x_log10(limits=c(1e-1,1e2)) +
+  geom_abline(intercept=0,slope=1) + 
+  geom_vline(xintercept=expcut, alpha=1) + geom_hline(yintercept=expcut, alpha=1) 
+
+## of humans and chimps
+
+ggplot(data=temp, mapping=aes(x=(MedianAncHominini),y=(HC_mean), text=BayesianPostProbofDivergence)) + 
+  theme_bw() +
+  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+  ggtitle("Ancestral Transcript Levels and by BBPD in the Human Lineage") +
+  labs( x="MedianAncHominini", y="HC_mean", face="bold", size=20) +
+  geom_point(colour="grey",alpha=0.5)+
+    geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
+  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
+  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
+    scale_y_log10(limits=c(1e-1,1e2)) + scale_x_log10(limits=c(1e-1,1e2)) +
+  geom_abline(intercept=0,slope=1) + 
+  geom_vline(xintercept=expcut, alpha=1) + geom_hline(yintercept=expcut, alpha=1) 
+
+## the reconstruction of humans is pretty much the mean. Of humans and chipms, there is some variation, but still many are the mean
+
+
+## Another question: does the method ID genes with different gene expression in humans?
+
+## look at only shift genes comparing human mean to mean of all non_humans
+
+ggplot(data=temp, mapping=aes(x=(human_mean),y=(non_human_mean), text=hgnc_symbol)) + 
+  theme_bw() +
+  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+  ggtitle("Ancestral Transcript Levels and by BBPD in the Human Lineage") +
+  labs( x="human_mean", y="non_human_mean", face="bold", size=20) +
+  geom_point(colour="grey",alpha=0.5)+
+    geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
+  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
+  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
+    scale_y_log10(limits=c(1e-1,1e2)) + scale_x_log10(limits=c(1e-1,1e2)) +
+  geom_abline(intercept=0,slope=1) + 
+  geom_vline(xintercept=expcut, alpha=1) + geom_hline(yintercept=expcut, alpha=1) 
+
+## it is identifying genes with differing means in the original dataset, and giving us a way to model the gene's evolution
+
+
+## if the reconstructions are basically equal to the mean, we should see the humand and HC mean's diverging for genes with shifts
+
+ggplot(data=temp, mapping=aes(x=(human_mean),y=(HC_mean), text=hgnc_symbol)) + 
+  theme_bw() +
+  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+  ggtitle("Ancestral Transcript Levels and by BBPD in the Human Lineage") +
+  labs( x="human_mean", y="HC_mean", face="bold", size=20) +
+  geom_point(colour="grey",alpha=0.5)+
+    geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
+  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
+  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
+    scale_y_log10(limits=c(1e-3,1e2)) + scale_x_log10(limits=c(1e-3,1e2)) +
+  geom_abline(intercept=0,slope=1) + 
+  geom_vline(xintercept=expcut, alpha=1) + geom_hline(yintercept=expcut, alpha=1) 
+
+##this signal coming from the chimpanzees
+
+ggplot(data=temp, mapping=aes(x=(human_mean),y=(chimp_mean), text=hgnc_symbol)) + 
+  theme_bw() +
+  theme(plot.title= element_text(size=15, face="bold"), axis.title.x=element_text(size=20),axis.title.y=element_text(size=20)) +
+  ggtitle("Ancestral Transcript Levels and by BBPD in the Human Lineage") +
+  labs( x="human_mean", y="chimp_mean", face="bold", size=20) +
+  geom_point(colour="grey",alpha=0.5)+
+    geom_point(data=df_layer_90, colour="#a1dab4", alpha=1) +
+  geom_point(data=df_layer_95, colour="#41b6c4", alpha=1) +
+  geom_point(data=df_layer_99, colour="#0c2c84", alpha=1) +
+    scale_y_log10(limits=c(1e-3,1e2)) + scale_x_log10(limits=c(1e-3,1e2)) +
+  geom_abline(intercept=0,slope=1) + 
+  geom_vline(xintercept=expcut, alpha=1) + geom_hline(yintercept=expcut, alpha=1) 
+
+```
