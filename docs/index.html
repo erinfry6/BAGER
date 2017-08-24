@@ -171,10 +171,19 @@ $(document).ready(function () {
   <a href="PrepDataforBAGER.html">Sample Processing</a>
 </li>
 <li>
-  <a href="BrainBAGERAnalysis.html">Frontal Cortex Expression Shifts</a>
+  <a href="Brain.html">Frontal Cortex</a>
 </li>
 <li>
-  <a href="TestisBAGERAnalysis.html">Testis Expression Shifts</a>
+  <a href="Cerebellum.html">Cerebellum</a>
+</li>
+<li>
+  <a href="Heart.html">Heart</a>
+</li>
+<li>
+  <a href="Kidney.html">Kidney</a>
+</li>
+<li>
+  <a href="Testis.html">Testis</a>
 </li>
 <li>
   <a href="license.html">License</a>
@@ -201,17 +210,20 @@ $(document).ready(function () {
 </div>
 
 
-<p>BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of reconstructing ancestral gene expression levels. We are employing BAGER to identify expression shifts in the human lineage, or since our common ancestor with chimpanzees. However, BAGER can be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.</p>
+<p>BAGER, Bayesian Ancestral Gene Expression Reconstruction, is a novel method of reconstructing ancestral gene expression levels. We are employing BAGER to identify expression shifts across the primate phylogeny, with particular focus on the human lineage, or the lineage leading to Homo sapiens since the common ancestor with chimpanzees. BAGER can be applied to any gene expression data set which contains at least three species with known phylogenetic relationships.</p>
 <div id="steps" class="section level2">
 <h2>Steps:</h2>
 <ol style="list-style-type: decimal">
 <li><p>Collect and map RNA-sequencing reads to orthologous exon files. (<a href="https://github.com/erinfry6/RNASeqRealignAcrossPrimates">see for scripts</a>)</p></li>
 <li><p><a href="PrepDataforBAGER.html">Assess quality of samples, eliminate samples that are of poor quality or that fail to cluster by tissue and/or species, and generate the files needed for BAGER.</a></p></li>
-<li><p>BAGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. (<a href="https://github.com/erinfry6/AncGeneExpReconstructionBT">see for scripts</a>)</p></li>
-<li>Identify genes with expression shifts in the lineage of interest by comparing the posterior probability distributions of the ancestral reconstructions.
+<li><p>BAGER- Reconstruct ancestral transcriptomes using BayesTrait’s continuous trait, random walk MCMC algorithm, expression data from samples, and the known species phylogeny with distances. (<a href="https://github.com/erinfry6/BAGER/tree/master/code">see for scripts</a>)</p></li>
+<li>Identify genes with expression shifts throughout the primate phylogeny by comparing the posterior probability distributions of the ancestral expression reconstructions.
 <ul>
-<li><a href="BrainBAGERAnalysis.html">Expression shifts in the human frontal cortex</a></li>
-<li><a href="TestisBAGERAnalysis.html">Expression shifts in human testis</a></li>
+<li><a href="Brain.html">Frontal cortex</a></li>
+<li><a href="Cerebellum.html">Cerebellum</a></li>
+<li><a href="Heart.html">Heart</a></li>
+<li><a href="Kidney.html">Kidney</a></li>
+<li><a href="Testis.html">Testis</a></li>
 </ul></li>
 </ol>
 <div class="figure">
