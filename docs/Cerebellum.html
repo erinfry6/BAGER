@@ -1,0 +1,2116 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Erin Fry" />
+
+<meta name="date" content="2017-08-24" />
+
+<title>Identifying Expression Shifts Across Primate Phylogeny in the Cerebellum</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #2a211c; color: #bdae9d; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #2a211c; color: #bdae9d; border-right: 1px solid #bdae9d; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #bdae9d; background-color: #2a211c; }
+code > span.kw { color: #43a8ed; font-weight: bold; } /* Keyword */
+code > span.dt { text-decoration: underline; } /* DataType */
+code > span.dv { color: #44aa43; } /* DecVal */
+code > span.bn { color: #44aa43; } /* BaseN */
+code > span.fl { color: #44aa43; } /* Float */
+code > span.ch { color: #049b0a; } /* Char */
+code > span.st { color: #049b0a; } /* String */
+code > span.co { color: #0066ff; font-style: italic; } /* Comment */
+code > span.al { color: #ffff00; } /* Alert */
+code > span.fu { color: #ff9358; font-weight: bold; } /* Function */
+code > span.er { color: #ffff00; font-weight: bold; } /* Error */
+code > span.wa { color: #ffff00; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #049b0a; } /* SpecialChar */
+code > span.vs { color: #049b0a; } /* VerbatimString */
+code > span.ss { color: #049b0a; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #43a8ed; font-weight: bold; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #0066ff; font-style: italic; } /* Documentation */
+code > span.an { color: #0066ff; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.co { color: #0066ff; font-weight: bold; font-style: italic; } /* Comment */
+code > span.in { color: #0066ff; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BAGER</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="PrepDataforBAGER.html">Sample Processing</a>
+</li>
+<li>
+  <a href="BrainIdentifyShiftsInAllLineages.html">Frontal Cortex Expression Shifts</a>
+</li>
+<li>
+  <a href="TestisIdentifyShiftsInAllLineages.html">Testis Expression Shifts</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/erinfry6/BADGER">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Identifying Expression Shifts Across Primate Phylogeny in the Cerebellum</h1>
+<h4 class="author"><em>Erin Fry</em></h4>
+<h4 class="date"><em>2017-08-24</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><strong>This script analyzes the Bayesian Ancestral Gene Expression Reconstructions (BAGERs) to identify expression shifts in the Cerebellum in all primate lineages. The raw RNA-sequencing files were published by <a href="http://www.nature.com/nature/journal/v478/n7369/abs/nature10532.html">Brawand et al in 2011</a>, collected from post-mortem individuals from 6 primate species. This paper identified only 4 genes with expression shifts in the human frontal cortex using maximum likelihood, but hundreds of expression shifts in the other tissues and lineages. I have quantified RNA-Sequencing raw reads using Ensembl 84, an orthologous exon identification pipeline from Brawand et al, and the psueodaligner Kallisto. I then controlled for quality and confounding variables by regressing out technical variables. <a href="https://erinfry6.github.io/BAGER/PrepDataforBAGER.html">Specifics can be found here</a>.</strong></p>
+<p><strong>I then reconstructed the ancestral transcriptomes of the ancestral primates using a Bayesian MCMC method implemented in <a href="http://www.evolution.rdg.ac.uk/BayesTraitsV3/BayesTraitsV3.html">BayesTraits</a>. The evolution of gene expression has not yet been modeled using Bayesian MCMC programs, which model discrete and continuous trait evolution across phylogenies. BayesTraits utilizes a Brownian motion model of trait evolution, a phylogeny, continuous trait data, and evolutionary rate parameters to infer posterior probability distributions of evolutionary rate parameters, and thus ancestral trait values. I have utilized a novel approach implemented in BayesTraits to reconstruct gene expression in the frontal cortex and five other tissues. In each tissue and one gene at a time, my pipeline utilizes transcript abundances, the sample phylogeny, and a MCMC model including a variable rates parameter to reconstruct the evolutionary history of the trait while allowing the rate of change of each gene’s expression to differ across the tree, the most biologically realistic assumption. The algorithm infers evolutionary rate parameters and posterior probability distributions of the ancestral gene expression at each node. <a href="https://github.com/erinfry6/AncGeneExpReconstructionBT">Scripts to run BAGER can be found here</a>.</strong></p>
+<p><strong>In this document, I identify genes with expression shifts in every by calculating the proportion of MCMC iterations in which there was an increase or decrease in expression in the human lineage (termed the Bayesian Posterior Probability of Divergence, or BPPD).</strong></p>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<div id="load-paths-and-libraries" class="section level3">
+<h3>Load paths and libraries</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Models evaluated in BAGER analysis
+<span class="kw">print</span>(models)</code></pre></div>
+<pre><code>## [1] &quot;VarRates&quot; &quot;Lambda&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## set strings as factors as false for everything to run smoothly
+<span class="kw">options</span>(<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+
+## load necessary packages
+<span class="kw">library</span>(biomartr)
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)
+<span class="kw">library</span>(gplots)
+<span class="kw">library</span>(plotly)
+<span class="kw">library</span>(WebGestaltR)
+<span class="kw">library</span>(knitr)</code></pre></div>
+</div>
+<div id="load-and-examine-the-bager-statistics-for-every-lineage-and-gene" class="section level3">
+<h3>Load and examine the BAGER statistics for every lineage and gene</h3>
+<table>
+<caption>BAGER Summary Stats for Cerebellum</caption>
+<thead>
+<tr class="header">
+<th align="left">listcsv</th>
+<th align="left">modelchoice</th>
+<th align="left">hgnc_symbol</th>
+<th align="left">ensembl_gene_id</th>
+<th align="left">chromosome_name</th>
+<th align="right">ancPrimates_ancMacaque_foldSD</th>
+<th align="right">ancPrimates_ancMacaque_BPPD</th>
+<th align="right">ancPrimates_ancMacaque_reconAnc</th>
+<th align="right">ancPrimates_ancMacaque_reconDesc</th>
+<th align="right">ancPrimates_ancHaplorhini_foldSD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">gene1.txt</td>
+<td align="left">Lambda</td>
+<td align="left">TSPAN6</td>
+<td align="left">ENSG00000000003</td>
+<td align="left">X</td>
+<td align="right">1.502427</td>
+<td align="right">0.7207207</td>
+<td align="right">3.019009</td>
+<td align="right">3.412585</td>
+<td align="right">1.176167</td>
+</tr>
+<tr class="even">
+<td align="left">gene2.txt</td>
+<td align="left">Lambda</td>
+<td align="left">DPM1</td>
+<td align="left">ENSG00000000419</td>
+<td align="left">20</td>
+<td align="right">1.047333</td>
+<td align="right">0.5845846</td>
+<td align="right">4.697434</td>
+<td align="right">4.820998</td>
+<td align="right">1.249192</td>
+</tr>
+<tr class="odd">
+<td align="left">gene3.txt</td>
+<td align="left">Lambda</td>
+<td align="left">SCYL3</td>
+<td align="left">ENSG00000000457</td>
+<td align="left">1</td>
+<td align="right">1.418341</td>
+<td align="right">0.6966967</td>
+<td align="right">3.579816</td>
+<td align="right">4.010699</td>
+<td align="right">1.165153</td>
+</tr>
+<tr class="even">
+<td align="left">gene4.txt</td>
+<td align="left">VarRates</td>
+<td align="left">C1orf112</td>
+<td align="left">ENSG00000000460</td>
+<td align="left">1</td>
+<td align="right">2.060254</td>
+<td align="right">0.7047047</td>
+<td align="right">2.148521</td>
+<td align="right">1.805416</td>
+<td align="right">1.060737</td>
+</tr>
+<tr class="odd">
+<td align="left">gene5.txt</td>
+<td align="left">Lambda</td>
+<td align="left">FGR</td>
+<td align="left">ENSG00000000938</td>
+<td align="left">1</td>
+<td align="right">1.225495</td>
+<td align="right">0.6746747</td>
+<td align="right">1.999571</td>
+<td align="right">2.287349</td>
+<td align="right">1.152785</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="select-genes-that-are-expressed-with-successful-reconstructions" class="section level2">
+<h2>Select genes that are expressed with successful reconstructions</h2>
+<p>Genes that successfully reconstructed will have similar posterior variations in the two ancestral node reconstructions. For each lineage, select only genes with fold standard deviations between the ancestral and descendant node of less than 4. Save these gene lists in the list of data frames, reconsgenes.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## the more ancestral reconstruction generally has a higher standard deviation, but if too large the chain failed to converge on a reconstruction
+
+## define divergence fold standard deviation cutoff
+cutoffSD&lt;-<span class="dv">4</span>
+
+## only select genes which are expressed, set cutoff for expression
+## 2 TPM is a standard expression cutoff
+expcut&lt;-<span class="kw">log</span>(<span class="dv">2</span>)
+
+## filter genes that did not converge or are not expressed in either reconstruction for every lineage
+## define reconstructed genes list
+reconsgenes&lt;-<span class="kw">list</span>()
+
+## for each lineage, select only expressed and reconstructed genes
+## then save those genes in the list, but only including relavent statistics for that lineage
+x=<span class="dv">1</span>
+for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+    lineage&lt;-<span class="kw">paste</span>(lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>], <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
+    
+    temp&lt;-<span class="kw">filter</span>(Summary, <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;foldSD&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>))) &lt;cutoffSD,
+                 <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;reconAnc&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;expcut |<span class="st"> </span><span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;reconDesc&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;expcut)
+    
+    reconsgenes[[x]]&lt;-temp[,<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>,<span class="kw">grep</span>(<span class="dt">pattern =</span> lineage, <span class="dt">x =</span> <span class="kw">colnames</span>(temp)))]
+    
+    x=x<span class="dv">+1</span>
+  }
+
+## How many genes successfully reconstructed in each lineage?
+num.recons&lt;-<span class="kw">sapply</span>(reconsgenes, nrow)</code></pre></div>
+</div>
+<div id="identify-genes-with-expression-shifts-across-the-phylogeny" class="section level2">
+<h2>Identify genes with expression shifts across the phylogeny</h2>
+<p><strong>I have chosen to use the Bayesian Posterior Probability of Divergence to identify genes with different expression levels in ancHuman and ancHuman-Chimpanzee nodes. We will use a BPPD of 90% as a cutoff.</strong></p>
+<table>
+<caption>Number of Genes with shifts and reconstructed in each lineage</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">ancPrimates ancMacaque</th>
+<th align="right">ancPrimates ancHaplorhini</th>
+<th align="right">ancHaplorhini ancOrang</th>
+<th align="right">ancHaplorhini ancApes</th>
+<th align="right">ancApes ancGorilla</th>
+<th align="right">ancApes ancHominini</th>
+<th align="right">ancHominini ancPan</th>
+<th align="right">ancHominini ancHomo</th>
+<th align="right">ancPan ancPtr</th>
+<th align="right">ancPan ancPpa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BPPD&lt;0.9%</td>
+<td align="right">9504</td>
+<td align="right">9609</td>
+<td align="right">8995</td>
+<td align="right">9611</td>
+<td align="right">9448</td>
+<td align="right">9616</td>
+<td align="right">9608</td>
+<td align="right">8855</td>
+<td align="right">9574</td>
+<td align="right">9573</td>
+</tr>
+<tr class="even">
+<td>BPPD&gt;0.9% / Expression Shifts</td>
+<td align="right">107</td>
+<td align="right">0</td>
+<td align="right">537</td>
+<td align="right">0</td>
+<td align="right">164</td>
+<td align="right">0</td>
+<td align="right">6</td>
+<td align="right">537</td>
+<td align="right">21</td>
+<td align="right">21</td>
+</tr>
+<tr class="odd">
+<td>Reconstructed Genes</td>
+<td align="right">9611</td>
+<td align="right">9609</td>
+<td align="right">9532</td>
+<td align="right">9611</td>
+<td align="right">9612</td>
+<td align="right">9616</td>
+<td align="right">9614</td>
+<td align="right">9392</td>
+<td align="right">9595</td>
+<td align="right">9594</td>
+</tr>
+<tr class="even">
+<td>Genes Tested</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+<td align="right">9616</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="view-reconstructed-transcriptomes-for-each-ancestral-and-descendant-node-pair" class="section level2">
+<h2>View reconstructed transcriptomes for each ancestral and descendant node pair</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+  <span class="kw">createScatterPlot</span>(<span class="dt">listnumber =</span> l, <span class="dt">save.scatter =</span> <span class="ot">FALSE</span>)
+}</code></pre></div>
+<p><img src="Cerebellum_files/figure-html/create%20scatter%20plots-1.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-2.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-3.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-4.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-5.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-6.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-7.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-8.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-9.png" width="768" /><img src="Cerebellum_files/figure-html/create%20scatter%20plots-10.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#createScatterPlot(listnumber =8, save.scatter = TRUE)</span></code></pre></div>
+</div>
+<div id="enrichment-analysis" class="section level2">
+<h2>Enrichment Analysis</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## webgestalt R for GO enrichment analysis, see manual https://cran.r-project.org/web/packages/WebGestaltR/WebGestaltR.pdf 
+
+for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+
+  for (enrichdb in <span class="kw">c</span>(<span class="st">&quot;geneontology_Biological_Process&quot;</span>, <span class="st">&quot;geneontology_Cellular_Component&quot;</span>,<span class="st">&quot;pathway_Panther&quot;</span>,<span class="st">&quot;pathway_KEGG&quot;</span>,
+                     <span class="st">&quot;pathway_Wikipathway&quot;</span>, <span class="st">&quot;phenotype_Human_Phenotype_Ontology&quot;</span>)){
+
+    <span class="kw">WebGestaltR</span>(<span class="dt">enrichMethod =</span> <span class="st">&quot;ORA&quot;</span>, <span class="dt">organism =</span> <span class="st">&quot;hsapiens&quot;</span>, <span class="dt">enrichDatabase =</span> enrichdb,
+            <span class="dt">enrichDatabaseFile=</span><span class="ot">NULL</span>, <span class="dt">enrichDatabaseType=</span><span class="ot">NULL</span>,
+            <span class="dt">interestGene=</span><span class="kw">filter</span>(<span class="kw">as.data.frame</span>(reconsgenes[[l]]),
+            <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>],<span class="st">&quot;BPPD&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;BPPDcutoff)$ensembl_gene_id, 
+            <span class="dt">interestGeneType=</span><span class="st">&quot;ensembl_gene_id&quot;</span>,
+            <span class="dt">collapseMethod=</span><span class="st">&quot;mean&quot;</span>,
+            <span class="dt">referenceGene=</span>reconsgenes[[l]]$ensembl_gene_id,<span class="dt">referenceGeneType=</span><span class="st">&quot;ensembl_gene_id&quot;</span>,
+            <span class="dt">minNum=</span><span class="dv">10</span>, <span class="dt">maxNum=</span><span class="dv">500</span>,
+            <span class="dt">fdrMethod=</span><span class="st">&quot;BH&quot;</span>,<span class="dt">sigMethod=</span><span class="st">&quot;fdr&quot;</span>,<span class="dt">fdrThr=</span><span class="fl">0.05</span>,
+            <span class="dt">topThr=</span><span class="dv">10</span>,<span class="dt">dNum=</span><span class="dv">20</span>,<span class="dt">perNum=</span><span class="dv">1000</span>,
+            <span class="dt">lNum=</span><span class="dv">20</span>,<span class="dt">is.output=</span><span class="ot">TRUE</span>,
+            <span class="dt">outputDirectory=</span><span class="kw">paste</span>(pathResults,<span class="st">&quot;Enrichments&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>),
+            <span class="dt">projectName=</span><span class="kw">paste</span>(<span class="kw">Sys.Date</span>(),lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>],enrichdb,<span class="dt">sep=</span><span class="st">&quot;-&quot;</span>),
+            <span class="dt">keepGSEAFolder=</span><span class="ot">FALSE</span>, <span class="dt">methodType=</span><span class="st">&quot;R&quot;</span>,<span class="dt">dagColor=</span><span class="st">&quot;binary&quot;</span>,<span class="dt">hostName=</span><span class="st">&quot;http://www.webgestalt.org/&quot;</span>)
+  } 
+  
+}</code></pre></div>
+<div id="results" class="section level3">
+<h3>Results</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## after run ./5_consolidate_enrichments.sh
+sig_enrichments&lt;-<span class="kw">read.csv</span>(<span class="kw">paste</span>(pathResults,<span class="st">&quot;Enrichments/enrichmentresults.txt&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+
+<span class="kw">kable</span>(sig_enrichments[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">9</span>)], <span class="dt">caption=</span><span class="st">&quot;sig enrichments&quot;</span>)</code></pre></div>
+<table>
+<caption>sig enrichments</caption>
+<thead>
+<tr class="header">
+<th align="left">geneset</th>
+<th align="left">description</th>
+<th align="left">FDR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">These are the significant enrichments FDR less than 5 percent for cb in all primate lineages</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-08-ancApes-ancGorilla-geneontology_Cellular_Component/enrichment_results_2017-08-08-ancApes-ancGorilla-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0009986" class="uri">GO:0009986</a></td>
+<td align="left">cell surface</td>
+<td align="left">0.00596337559998217</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000794" class="uri">GO:0000794</a></td>
+<td align="left">condensed nuclear chromosome</td>
+<td align="left">0.0129071865832628</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005615" class="uri">GO:0005615</a></td>
+<td align="left">extracellular space</td>
+<td align="left">0.0143986233217309</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000793" class="uri">GO:0000793</a></td>
+<td align="left">condensed chromosome</td>
+<td align="left">0.0155550348761568</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Project_2017-08-08-ancHominini-ancHomo-geneontology_Cellular_Component/enrichment_results_2017-08-08-ancHominini-ancHomo-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005929" class="uri">GO:0005929</a></td>
+<td align="left">cilium</td>
+<td align="left">5.31553373485094e-05</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045202" class="uri">GO:0045202</a></td>
+<td align="left">synapse</td>
+<td align="left">5.31553373485094e-05</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098590" class="uri">GO:0098590</a></td>
+<td align="left">plasma membrane region</td>
+<td align="left">8.8478330367181e-05</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0070382" class="uri">GO:0070382</a></td>
+<td align="left">exocytic vesicle</td>
+<td align="left">0.00037658014938996</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044441" class="uri">GO:0044441</a></td>
+<td align="left">ciliary part</td>
+<td align="left">0.000388304166833664</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044456" class="uri">GO:0044456</a></td>
+<td align="left">synapse part</td>
+<td align="left">0.000501582281420887</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0036477" class="uri">GO:0036477</a></td>
+<td align="left">somatodendritic compartment</td>
+<td align="left">0.000563062297016748</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044297" class="uri">GO:0044297</a></td>
+<td align="left">cell body</td>
+<td align="left">0.000640199245708906</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043025" class="uri">GO:0043025</a></td>
+<td align="left">neuronal cell body</td>
+<td align="left">0.000688562936810522</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005615" class="uri">GO:0005615</a></td>
+<td align="left">extracellular space</td>
+<td align="left">0.00320318065661884</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1902495" class="uri">GO:1902495</a></td>
+<td align="left">transmembrane transporter complex</td>
+<td align="left">0.00405738252317334</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0034702" class="uri">GO:0034702</a></td>
+<td align="left">ion channel complex</td>
+<td align="left">0.00433188208066252</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099503" class="uri">GO:0099503</a></td>
+<td align="left">secretory vesicle</td>
+<td align="left">0.00464021106894816</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1990351" class="uri">GO:1990351</a></td>
+<td align="left">transporter complex</td>
+<td align="left">0.00467855542232337</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0008021" class="uri">GO:0008021</a></td>
+<td align="left">synaptic vesicle</td>
+<td align="left">0.00513426669573572</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030425" class="uri">GO:0030425</a></td>
+<td align="left">dendrite</td>
+<td align="left">0.00513426669573572</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098794" class="uri">GO:0098794</a></td>
+<td align="left">postsynapse</td>
+<td align="left">0.00678490720112917</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045211" class="uri">GO:0045211</a></td>
+<td align="left">postsynaptic membrane</td>
+<td align="left">0.0103129274491738</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030133" class="uri">GO:0030133</a></td>
+<td align="left">transport vesicle</td>
+<td align="left">0.0200820151210806</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005891" class="uri">GO:0005891</a></td>
+<td align="left">voltage-gated calcium channel complex</td>
+<td align="left">0.0270865085793438</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031514" class="uri">GO:0031514</a></td>
+<td align="left">motile cilium</td>
+<td align="left">0.0351801603620355</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0097730" class="uri">GO:0097730</a></td>
+<td align="left">non-motile cilium</td>
+<td align="left">0.0351801603620355</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0097060" class="uri">GO:0097060</a></td>
+<td align="left">synaptic membrane</td>
+<td align="left">0.0387467809161262</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030672" class="uri">GO:0030672</a></td>
+<td align="left">synaptic vesicle membrane</td>
+<td align="left">0.0399114221460998</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099501" class="uri">GO:0099501</a></td>
+<td align="left">exocytic vesicle membrane</td>
+<td align="left">0.0399114221460998</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001750" class="uri">GO:0001750</a></td>
+<td align="left">photoreceptor outer segment</td>
+<td align="left">0.0445663401724505</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0034703" class="uri">GO:0034703</a></td>
+<td align="left">cation channel complex</td>
+<td align="left">0.0445663401724505</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005578" class="uri">GO:0005578</a></td>
+<td align="left">proteinaceous extracellular matrix</td>
+<td align="left">0.0445663401724505</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-08-ancPan-ancPpa-geneontology_Cellular_Component/enrichment_results_2017-08-08-ancPan-ancPpa-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044449" class="uri">GO:0044449</a></td>
+<td align="left">contractile fiber part</td>
+<td align="left">7.75671926249721e-05</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043292" class="uri">GO:0043292</a></td>
+<td align="left">contractile fiber</td>
+<td align="left">7.75671926249721e-05</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030017" class="uri">GO:0030017</a></td>
+<td align="left">sarcomere</td>
+<td align="left">0.0464601291154145</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-22-ancHaplorhini-ancOrang-geneontology_Biological_Process/enrichment_results_2017-08-22-ancHaplorhini-ancOrang-geneontology_Biological_Process.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0008015" class="uri">GO:0008015</a></td>
+<td align="left">blood circulation</td>
+<td align="left">7.13317379753553e-05</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0003013" class="uri">GO:0003013</a></td>
+<td align="left">circulatory system process</td>
+<td align="left">7.13317379753553e-05</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0072358" class="uri">GO:0072358</a></td>
+<td align="left">cardiovascular system development</td>
+<td align="left">0.000102914039136315</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0001944" class="uri">GO:0001944</a></td>
+<td align="left">vasculature development</td>
+<td align="left">0.000124978416223054</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001822" class="uri">GO:0001822</a></td>
+<td align="left">kidney development</td>
+<td align="left">0.000213165536714846</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044057" class="uri">GO:0044057</a></td>
+<td align="left">regulation of system process</td>
+<td align="left">0.000213165536714846</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048514" class="uri">GO:0048514</a></td>
+<td align="left">blood vessel morphogenesis</td>
+<td align="left">0.000213165536714846</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031099" class="uri">GO:0031099</a></td>
+<td align="left">regeneration</td>
+<td align="left">0.000227490478817249</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0009887" class="uri">GO:0009887</a></td>
+<td align="left">animal organ morphogenesis</td>
+<td align="left">0.000227490478817249</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0003012" class="uri">GO:0003012</a></td>
+<td align="left">muscle system process</td>
+<td align="left">0.000227490478817249</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0072001" class="uri">GO:0072001</a></td>
+<td align="left">renal system development</td>
+<td align="left">0.000242615231394652</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0001568" class="uri">GO:0001568</a></td>
+<td align="left">blood vessel development</td>
+<td align="left">0.000282539725908582</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0006936" class="uri">GO:0006936</a></td>
+<td align="left">muscle contraction</td>
+<td align="left">0.000375361992754154</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007423" class="uri">GO:0007423</a></td>
+<td align="left">sensory organ development</td>
+<td align="left">0.000432754555519499</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1903522" class="uri">GO:1903522</a></td>
+<td align="left">regulation of blood circulation</td>
+<td align="left">0.000594379310078441</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0036293" class="uri">GO:0036293</a></td>
+<td align="left">response to decreased oxygen levels</td>
+<td align="left">0.00080985879688867</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001525" class="uri">GO:0001525</a></td>
+<td align="left">angiogenesis</td>
+<td align="left">0.00104535607673079</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0001655" class="uri">GO:0001655</a></td>
+<td align="left">urogenital system development</td>
+<td align="left">0.00104535607673079</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0055123" class="uri">GO:0055123</a></td>
+<td align="left">digestive system development</td>
+<td align="left">0.00104535607673079</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0001666" class="uri">GO:0001666</a></td>
+<td align="left">response to hypoxia</td>
+<td align="left">0.00119336925167042</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048598" class="uri">GO:0048598</a></td>
+<td align="left">embryonic morphogenesis</td>
+<td align="left">0.00119336925167042</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0003014" class="uri">GO:0003014</a></td>
+<td align="left">renal system process</td>
+<td align="left">0.00119336925167042</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0032835" class="uri">GO:0032835</a></td>
+<td align="left">glomerulus development</td>
+<td align="left">0.00119336925167042</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0070482" class="uri">GO:0070482</a></td>
+<td align="left">response to oxygen levels</td>
+<td align="left">0.00119336925167042</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031102" class="uri">GO:0031102</a></td>
+<td align="left">neuron projection regeneration</td>
+<td align="left">0.00119336925167042</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048565" class="uri">GO:0048565</a></td>
+<td align="left">digestive tract development</td>
+<td align="left">0.00163513677693888</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0042044" class="uri">GO:0042044</a></td>
+<td align="left">fluid transport</td>
+<td align="left">0.0016643876472416</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0060047" class="uri">GO:0060047</a></td>
+<td align="left">heart contraction</td>
+<td align="left">0.0018565292797881</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030198" class="uri">GO:0030198</a></td>
+<td align="left">extracellular matrix organization</td>
+<td align="left">0.0018565292797881</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043062" class="uri">GO:0043062</a></td>
+<td align="left">extracellular structure organization</td>
+<td align="left">0.0018565292797881</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048762" class="uri">GO:0048762</a></td>
+<td align="left">mesenchymal cell differentiation</td>
+<td align="left">0.00195664217291497</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007507" class="uri">GO:0007507</a></td>
+<td align="left">heart development</td>
+<td align="left">0.00195664217291497</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0003015" class="uri">GO:0003015</a></td>
+<td align="left">heart process</td>
+<td align="left">0.00195664217291497</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0051216" class="uri">GO:0051216</a></td>
+<td align="left">cartilage development</td>
+<td align="left">0.00195664217291497</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1903524" class="uri">GO:1903524</a></td>
+<td align="left">positive regulation of blood circulation</td>
+<td align="left">0.00222059090982274</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0009611" class="uri">GO:0009611</a></td>
+<td align="left">response to wounding</td>
+<td align="left">0.00222780220238405</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048729" class="uri">GO:0048729</a></td>
+<td align="left">tissue morphogenesis</td>
+<td align="left">0.00239080324417914</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048568" class="uri">GO:0048568</a></td>
+<td align="left">embryonic organ development</td>
+<td align="left">0.00247327897465294</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0008016" class="uri">GO:0008016</a></td>
+<td align="left">regulation of heart contraction</td>
+<td align="left">0.00253160421478647</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0003018" class="uri">GO:0003018</a></td>
+<td align="left">vascular process in circulatory system</td>
+<td align="left">0.00254088202335673</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1901342" class="uri">GO:1901342</a></td>
+<td align="left">regulation of vasculature development</td>
+<td align="left">0.00270258464310797</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0060485" class="uri">GO:0060485</a></td>
+<td align="left">mesenchyme development</td>
+<td align="left">0.00310889346799153</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001501" class="uri">GO:0001501</a></td>
+<td align="left">skeletal system development</td>
+<td align="left">0.00310889346799153</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0016101" class="uri">GO:0016101</a></td>
+<td align="left">diterpenoid metabolic process</td>
+<td align="left">0.00344651302473094</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0070542" class="uri">GO:0070542</a></td>
+<td align="left">response to fatty acid</td>
+<td align="left">0.00344651302473094</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0035296" class="uri">GO:0035296</a></td>
+<td align="left">regulation of tube diameter</td>
+<td align="left">0.00344651302473094</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0097746" class="uri">GO:0097746</a></td>
+<td align="left">regulation of blood vessel diameter</td>
+<td align="left">0.00344651302473094</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0045823" class="uri">GO:0045823</a></td>
+<td align="left">positive regulation of heart contraction</td>
+<td align="left">0.00396376479423261</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048546" class="uri">GO:0048546</a></td>
+<td align="left">digestive tract morphogenesis</td>
+<td align="left">0.00396376479423261</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0042311" class="uri">GO:0042311</a></td>
+<td align="left">vasodilation</td>
+<td align="left">0.00399725405611343</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0051270" class="uri">GO:0051270</a></td>
+<td align="left">regulation of cellular component movement</td>
+<td align="left">0.00399725405611343</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043207" class="uri">GO:0043207</a></td>
+<td align="left">response to external biotic stimulus</td>
+<td align="left">0.00399725405611343</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0051707" class="uri">GO:0051707</a></td>
+<td align="left">response to other organism</td>
+<td align="left">0.00399725405611343</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0071772" class="uri">GO:0071772</a></td>
+<td align="left">response to BMP</td>
+<td align="left">0.00403184307685088</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0071773" class="uri">GO:0071773</a></td>
+<td align="left">cellular response to BMP stimulus</td>
+<td align="left">0.00403184307685088</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0061448" class="uri">GO:0061448</a></td>
+<td align="left">connective tissue development</td>
+<td align="left">0.00403184307685088</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0035150" class="uri">GO:0035150</a></td>
+<td align="left">regulation of tube size</td>
+<td align="left">0.00480439500360263</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0050880" class="uri">GO:0050880</a></td>
+<td align="left">regulation of blood vessel size</td>
+<td align="left">0.00480439500360263</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0060041" class="uri">GO:0060041</a></td>
+<td align="left">retina development in camera-type eye</td>
+<td align="left">0.00480439500360263</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0006721" class="uri">GO:0006721</a></td>
+<td align="left">terpenoid metabolic process</td>
+<td align="left">0.00527560918711864</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045765" class="uri">GO:0045765</a></td>
+<td align="left">regulation of angiogenesis</td>
+<td align="left">0.00527560918711864</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043583" class="uri">GO:0043583</a></td>
+<td align="left">ear development</td>
+<td align="left">0.00527560918711864</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001523" class="uri">GO:0001523</a></td>
+<td align="left">retinoid metabolic process</td>
+<td align="left">0.00527560918711864</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007200" class="uri">GO:0007200</a></td>
+<td align="left">phospholipase C-activating G-protein coupled receptor signaling pathway</td>
+<td align="left">0.0058697464471167</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0040012" class="uri">GO:0040012</a></td>
+<td align="left">regulation of locomotion</td>
+<td align="left">0.00597456192399404</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1904018" class="uri">GO:1904018</a></td>
+<td align="left">positive regulation of vasculature development</td>
+<td align="left">0.00619476263903343</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0035295" class="uri">GO:0035295</a></td>
+<td align="left">tube development</td>
+<td align="left">0.00621636201759146</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:2000145" class="uri">GO:2000145</a></td>
+<td align="left">regulation of cell motility</td>
+<td align="left">0.00621636201759146</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0008285" class="uri">GO:0008285</a></td>
+<td align="left">negative regulation of cell proliferation</td>
+<td align="left">0.00622281371758355</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1903409" class="uri">GO:1903409</a></td>
+<td align="left">reactive oxygen species biosynthetic process</td>
+<td align="left">0.00721629400934906</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0072593" class="uri">GO:0072593</a></td>
+<td align="left">reactive oxygen species metabolic process</td>
+<td align="left">0.00746026578513833</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030334" class="uri">GO:0030334</a></td>
+<td align="left">regulation of cell migration</td>
+<td align="left">0.00781831240993</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0009607" class="uri">GO:0009607</a></td>
+<td align="left">response to biotic stimulus</td>
+<td align="left">0.00814955952803192</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0060317" class="uri">GO:0060317</a></td>
+<td align="left">cardiac epithelial to mesenchymal transition</td>
+<td align="left">0.00910217797606324</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0033002" class="uri">GO:0033002</a></td>
+<td align="left">muscle cell proliferation</td>
+<td align="left">0.00910217797606324</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0006809" class="uri">GO:0006809</a></td>
+<td align="left">nitric oxide biosynthetic process</td>
+<td align="left">0.00910217797606324</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0006720" class="uri">GO:0006720</a></td>
+<td align="left">isoprenoid metabolic process</td>
+<td align="left">0.00933492493766944</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030509" class="uri">GO:0030509</a></td>
+<td align="left">BMP signaling pathway</td>
+<td align="left">0.0107318212250924</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0042312" class="uri">GO:0042312</a></td>
+<td align="left">regulation of vasodilation</td>
+<td align="left">0.0112138927758591</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0045844" class="uri">GO:0045844</a></td>
+<td align="left">positive regulation of striated muscle tissue development</td>
+<td align="left">0.0131082132864893</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0046209" class="uri">GO:0046209</a></td>
+<td align="left">nitric oxide metabolic process</td>
+<td align="left">0.0131082132864893</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048636" class="uri">GO:0048636</a></td>
+<td align="left">positive regulation of muscle organ development</td>
+<td align="left">0.0131082132864893</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048839" class="uri">GO:0048839</a></td>
+<td align="left">inner ear development</td>
+<td align="left">0.0134070304042516</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098542" class="uri">GO:0098542</a></td>
+<td align="left">defense response to other organism</td>
+<td align="left">0.0137036505583625</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0043269" class="uri">GO:0043269</a></td>
+<td align="left">regulation of ion transport</td>
+<td align="left">0.0139132366649788</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0051047" class="uri">GO:0051047</a></td>
+<td align="left">positive regulation of secretion</td>
+<td align="left">0.0145358537160851</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1901863" class="uri">GO:1901863</a></td>
+<td align="left">positive regulation of muscle tissue development</td>
+<td align="left">0.0150359364831636</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:2001057" class="uri">GO:2001057</a></td>
+<td align="left">reactive nitrogen species metabolic process</td>
+<td align="left">0.0150359364831636</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0006937" class="uri">GO:0006937</a></td>
+<td align="left">regulation of muscle contraction</td>
+<td align="left">0.0150991423054481</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0070371" class="uri">GO:0070371</a></td>
+<td align="left">ERK1 and ERK2 cascade</td>
+<td align="left">0.0155287828049849</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001837" class="uri">GO:0001837</a></td>
+<td align="left">epithelial to mesenchymal transition</td>
+<td align="left">0.0155287828049849</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0060548" class="uri">GO:0060548</a></td>
+<td align="left">negative regulation of cell death</td>
+<td align="left">0.015702086221379</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0090092" class="uri">GO:0090092</a></td>
+<td align="left">regulation of transmembrane receptor protein serine/threonine kinase signaling pathway</td>
+<td align="left">0.0165777668892612</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1902533" class="uri">GO:1902533</a></td>
+<td align="left">positive regulation of intracellular signal transduction</td>
+<td align="left">0.017014379215163</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0003208" class="uri">GO:0003208</a></td>
+<td align="left">cardiac ventricle morphogenesis</td>
+<td align="left">0.017014379215163</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007204" class="uri">GO:0007204</a></td>
+<td align="left">positive regulation of cytosolic calcium ion concentration</td>
+<td align="left">0.0174420307634441</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0010718" class="uri">GO:0010718</a></td>
+<td align="left">positive regulation of epithelial to mesenchymal transition</td>
+<td align="left">0.0190067097388663</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0045766" class="uri">GO:0045766</a></td>
+<td align="left">positive regulation of angiogenesis</td>
+<td align="left">0.0190067097388663</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001942" class="uri">GO:0001942</a></td>
+<td align="left">hair follicle development</td>
+<td align="left">0.0194095344458405</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0022404" class="uri">GO:0022404</a></td>
+<td align="left">molting cycle process</td>
+<td align="left">0.0194095344458405</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0022405" class="uri">GO:0022405</a></td>
+<td align="left">hair cycle process</td>
+<td align="left">0.0194095344458405</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048562" class="uri">GO:0048562</a></td>
+<td align="left">embryonic organ morphogenesis</td>
+<td align="left">0.0198976820589337</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0070372" class="uri">GO:0070372</a></td>
+<td align="left">regulation of ERK1 and ERK2 cascade</td>
+<td align="left">0.022098688360628</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098773" class="uri">GO:0098773</a></td>
+<td align="left">skin epidermis development</td>
+<td align="left">0.0224194163245655</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0042310" class="uri">GO:0042310</a></td>
+<td align="left">vasoconstriction</td>
+<td align="left">0.0224194163245655</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0061384" class="uri">GO:0061384</a></td>
+<td align="left">heart trabecula morphogenesis</td>
+<td align="left">0.0224194163245655</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0009790" class="uri">GO:0009790</a></td>
+<td align="left">embryo development</td>
+<td align="left">0.022542758406186</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0050920" class="uri">GO:0050920</a></td>
+<td align="left">regulation of chemotaxis</td>
+<td align="left">0.023854476870022</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0072006" class="uri">GO:0072006</a></td>
+<td align="left">nephron development</td>
+<td align="left">0.0238615919338315</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0009617" class="uri">GO:0009617</a></td>
+<td align="left">response to bacterium</td>
+<td align="left">0.024261636653683</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0061035" class="uri">GO:0061035</a></td>
+<td align="left">regulation of cartilage development</td>
+<td align="left">0.0257446057983182</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0070848" class="uri">GO:0070848</a></td>
+<td align="left">response to growth factor</td>
+<td align="left">0.0260589992714809</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030510" class="uri">GO:0030510</a></td>
+<td align="left">regulation of BMP signaling pathway</td>
+<td align="left">0.0261188203338274</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0006935" class="uri">GO:0006935</a></td>
+<td align="left">chemotaxis</td>
+<td align="left">0.0261188203338274</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0042330" class="uri">GO:0042330</a></td>
+<td align="left">taxis</td>
+<td align="left">0.0261188203338274</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0045428" class="uri">GO:0045428</a></td>
+<td align="left">regulation of nitric oxide biosynthetic process</td>
+<td align="left">0.0261239054653964</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0050918" class="uri">GO:0050918</a></td>
+<td align="left">positive chemotaxis</td>
+<td align="left">0.0261239054653964</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0055025" class="uri">GO:0055025</a></td>
+<td align="left">positive regulation of cardiac muscle tissue development</td>
+<td align="left">0.0261239054653964</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0055001" class="uri">GO:0055001</a></td>
+<td align="left">muscle cell development</td>
+<td align="left">0.0271140077474859</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0032101" class="uri">GO:0032101</a></td>
+<td align="left">regulation of response to external stimulus</td>
+<td align="left">0.0274208095873111</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0007266" class="uri">GO:0007266</a></td>
+<td align="left">Rho protein signal transduction</td>
+<td align="left">0.0277252355267319</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0001503" class="uri">GO:0001503</a></td>
+<td align="left">ossification</td>
+<td align="left">0.0277252355267319</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0010817" class="uri">GO:0010817</a></td>
+<td align="left">regulation of hormone levels</td>
+<td align="left">0.0278819963791971</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0014855" class="uri">GO:0014855</a></td>
+<td align="left">striated muscle cell proliferation</td>
+<td align="left">0.0280287838561835</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0019229" class="uri">GO:0019229</a></td>
+<td align="left">regulation of vasoconstriction</td>
+<td align="left">0.0280287838561835</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030199" class="uri">GO:0030199</a></td>
+<td align="left">collagen fibril organization</td>
+<td align="left">0.0280287838561835</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0060343" class="uri">GO:0060343</a></td>
+<td align="left">trabecula formation</td>
+<td align="left">0.0280287838561835</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0033993" class="uri">GO:0033993</a></td>
+<td align="left">response to lipid</td>
+<td align="left">0.0292612922218861</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044703" class="uri">GO:0044703</a></td>
+<td align="left">multi-organism reproductive process</td>
+<td align="left">0.0294685536908163</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0071363" class="uri">GO:0071363</a></td>
+<td align="left">cellular response to growth factor stimulus</td>
+<td align="left">0.0300491742528847</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0051480" class="uri">GO:0051480</a></td>
+<td align="left">regulation of cytosolic calcium ion concentration</td>
+<td align="left">0.0309252143413685</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048705" class="uri">GO:0048705</a></td>
+<td align="left">skeletal system morphogenesis</td>
+<td align="left">0.0310360286735759</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0055024" class="uri">GO:0055024</a></td>
+<td align="left">regulation of cardiac muscle tissue development</td>
+<td align="left">0.0311745332697576</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043010" class="uri">GO:0043010</a></td>
+<td align="left">camera-type eye development</td>
+<td align="left">0.0311745332697576</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001654" class="uri">GO:0001654</a></td>
+<td align="left">eye development</td>
+<td align="left">0.0311745332697576</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0018108" class="uri">GO:0018108</a></td>
+<td align="left">peptidyl-tyrosine phosphorylation</td>
+<td align="left">0.0311745332697576</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0002719" class="uri">GO:0002719</a></td>
+<td align="left">negative regulation of cytokine production involved in immune response</td>
+<td align="left">0.0311745332697576</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0072012" class="uri">GO:0072012</a></td>
+<td align="left">glomerulus vasculature development</td>
+<td align="left">0.0311745332697576</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0098801" class="uri">GO:0098801</a></td>
+<td align="left">regulation of renal system process</td>
+<td align="left">0.0311745332697576</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0032103" class="uri">GO:0032103</a></td>
+<td align="left">positive regulation of response to external stimulus</td>
+<td align="left">0.0318264726785833</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0003007" class="uri">GO:0003007</a></td>
+<td align="left">heart morphogenesis</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0014031" class="uri">GO:0014031</a></td>
+<td align="left">mesenchymal cell development</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0003206" class="uri">GO:0003206</a></td>
+<td align="left">cardiac chamber morphogenesis</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0008217" class="uri">GO:0008217</a></td>
+<td align="left">regulation of blood pressure</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0003198" class="uri">GO:0003198</a></td>
+<td align="left">epithelial to mesenchymal transition involved in endocardial cushion formation</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0055023" class="uri">GO:0055023</a></td>
+<td align="left">positive regulation of cardiac muscle tissue growth</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0043410" class="uri">GO:0043410</a></td>
+<td align="left">positive regulation of MAPK cascade</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0051050" class="uri">GO:0051050</a></td>
+<td align="left">positive regulation of transport</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0018212" class="uri">GO:0018212</a></td>
+<td align="left">peptidyl-tyrosine modification</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044706" class="uri">GO:0044706</a></td>
+<td align="left">multi-multicellular organism process</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0090257" class="uri">GO:0090257</a></td>
+<td align="left">regulation of muscle system process</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031103" class="uri">GO:0031103</a></td>
+<td align="left">axon regeneration</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0060038" class="uri">GO:0060038</a></td>
+<td align="left">cardiac muscle cell proliferation</td>
+<td align="left">0.0324959557721247</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0045597" class="uri">GO:0045597</a></td>
+<td align="left">positive regulation of cell differentiation</td>
+<td align="left">0.0329285063514766</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0061383" class="uri">GO:0061383</a></td>
+<td align="left">trabecula morphogenesis</td>
+<td align="left">0.0331753254258702</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0072073" class="uri">GO:0072073</a></td>
+<td align="left">kidney epithelium development</td>
+<td align="left">0.0336440951849912</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0051272" class="uri">GO:0051272</a></td>
+<td align="left">positive regulation of cellular component movement</td>
+<td align="left">0.0336440951849912</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0035051" class="uri">GO:0035051</a></td>
+<td align="left">cardiocyte differentiation</td>
+<td align="left">0.034235496610639</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0042303" class="uri">GO:0042303</a></td>
+<td align="left">molting cycle</td>
+<td align="left">0.034235496610639</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0042633" class="uri">GO:0042633</a></td>
+<td align="left">hair cycle</td>
+<td align="left">0.034235496610639</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001934" class="uri">GO:0001934</a></td>
+<td align="left">positive regulation of protein phosphorylation</td>
+<td align="left">0.0355051528095114</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030048" class="uri">GO:0030048</a></td>
+<td align="left">actin filament-based movement</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048678" class="uri">GO:0048678</a></td>
+<td align="left">response to axon injury</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1903426" class="uri">GO:1903426</a></td>
+<td align="left">regulation of reactive oxygen species biosynthetic process</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0003229" class="uri">GO:0003229</a></td>
+<td align="left">ventricular cardiac muscle tissue development</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0055010" class="uri">GO:0055010</a></td>
+<td align="left">ventricular cardiac muscle tissue morphogenesis</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0055021" class="uri">GO:0055021</a></td>
+<td align="left">regulation of cardiac muscle tissue growth</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043408" class="uri">GO:0043408</a></td>
+<td align="left">regulation of MAPK cascade</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001816" class="uri">GO:0001816</a></td>
+<td align="left">cytokine production</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0051056" class="uri">GO:0051056</a></td>
+<td align="left">regulation of small GTPase mediated signal transduction</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0008544" class="uri">GO:0008544</a></td>
+<td align="left">epidermis development</td>
+<td align="left">0.0368974943237088</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0042572" class="uri">GO:0042572</a></td>
+<td align="left">retinol metabolic process</td>
+<td align="left">0.0374001931450438</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0061437" class="uri">GO:0061437</a></td>
+<td align="left">renal system vasculature development</td>
+<td align="left">0.0374001931450438</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0061440" class="uri">GO:0061440</a></td>
+<td align="left">kidney vasculature development</td>
+<td align="left">0.0374001931450438</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:2000810" class="uri">GO:2000810</a></td>
+<td align="left">regulation of bicellular tight junction assembly</td>
+<td align="left">0.0374001931450438</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007178" class="uri">GO:0007178</a></td>
+<td align="left">transmembrane receptor protein serine/threonine kinase signaling pathway</td>
+<td align="left">0.0400246356548275</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030335" class="uri">GO:0030335</a></td>
+<td align="left">positive regulation of cell migration</td>
+<td align="left">0.0405681208548168</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1903825" class="uri">GO:1903825</a></td>
+<td align="left">organic acid transmembrane transport</td>
+<td align="left">0.0437427604146588</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1905039" class="uri">GO:1905039</a></td>
+<td align="left">carboxylic acid transmembrane transport</td>
+<td align="left">0.0437427604146588</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048609" class="uri">GO:0048609</a></td>
+<td align="left">multicellular organismal reproductive process</td>
+<td align="left">0.0439249285736927</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048812" class="uri">GO:0048812</a></td>
+<td align="left">neuron projection morphogenesis</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0003272" class="uri">GO:0003272</a></td>
+<td align="left">endocardial cushion formation</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0060043" class="uri">GO:0060043</a></td>
+<td align="left">regulation of cardiac muscle cell proliferation</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0060421" class="uri">GO:0060421</a></td>
+<td align="left">positive regulation of heart growth</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0043009" class="uri">GO:0043009</a></td>
+<td align="left">chordate embryonic development</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:2000147" class="uri">GO:2000147</a></td>
+<td align="left">positive regulation of cell motility</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0042445" class="uri">GO:0042445</a></td>
+<td align="left">hormone metabolic process</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0070374" class="uri">GO:0070374</a></td>
+<td align="left">positive regulation of ERK1 and ERK2 cascade</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0032504" class="uri">GO:0032504</a></td>
+<td align="left">multicellular organism reproduction</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0050678" class="uri">GO:0050678</a></td>
+<td align="left">regulation of epithelial cell proliferation</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1903532" class="uri">GO:1903532</a></td>
+<td align="left">positive regulation of secretion by cell</td>
+<td align="left">0.0453574207404975</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0051046" class="uri">GO:0051046</a></td>
+<td align="left">regulation of secretion</td>
+<td align="left">0.0456529340732345</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045165" class="uri">GO:0045165</a></td>
+<td align="left">cell fate commitment</td>
+<td align="left">0.0456529340732345</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048738" class="uri">GO:0048738</a></td>
+<td align="left">cardiac muscle tissue development</td>
+<td align="left">0.0456529340732345</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0009792" class="uri">GO:0009792</a></td>
+<td align="left">embryo development ending in birth or egg hatching</td>
+<td align="left">0.0456529340732345</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0006941" class="uri">GO:0006941</a></td>
+<td align="left">striated muscle contraction</td>
+<td align="left">0.0456529340732345</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0007568" class="uri">GO:0007568</a></td>
+<td align="left">aging</td>
+<td align="left">0.0456610451043779</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031069" class="uri">GO:0031069</a></td>
+<td align="left">hair follicle morphogenesis</td>
+<td align="left">0.0471851885143112</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0035886" class="uri">GO:0035886</a></td>
+<td align="left">vascular smooth muscle cell differentiation</td>
+<td align="left">0.0471851885143112</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0042554" class="uri">GO:0042554</a></td>
+<td align="left">superoxide anion generation</td>
+<td align="left">0.0471851885143112</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0007162" class="uri">GO:0007162</a></td>
+<td align="left">negative regulation of cell adhesion</td>
+<td align="left">0.0474369876785664</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0010717" class="uri">GO:0010717</a></td>
+<td align="left">regulation of epithelial to mesenchymal transition</td>
+<td align="left">0.0483337130783525</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0060021" class="uri">GO:0060021</a></td>
+<td align="left">palate development</td>
+<td align="left">0.0483337130783525</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043069" class="uri">GO:0043069</a></td>
+<td align="left">negative regulation of programmed cell death</td>
+<td align="left">0.0496547953607674</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Project_2017-08-22-ancHaplorhini-ancOrang-geneontology_Cellular_Component/enrichment_results_2017-08-22-ancHaplorhini-ancOrang-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005615" class="uri">GO:0005615</a></td>
+<td align="left">extracellular space</td>
+<td align="left">3.63709062867201e-13</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005578" class="uri">GO:0005578</a></td>
+<td align="left">proteinaceous extracellular matrix</td>
+<td align="left">2.47069748660067e-06</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0009986" class="uri">GO:0009986</a></td>
+<td align="left">cell surface</td>
+<td align="left">1.03639737328853e-05</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031012" class="uri">GO:0031012</a></td>
+<td align="left">extracellular matrix</td>
+<td align="left">1.03639737328853e-05</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0043235" class="uri">GO:0043235</a></td>
+<td align="left">receptor complex</td>
+<td align="left">0.00129343251053839</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045177" class="uri">GO:0045177</a></td>
+<td align="left">apical part of cell</td>
+<td align="left">0.00503136917831659</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030141" class="uri">GO:0030141</a></td>
+<td align="left">secretory granule</td>
+<td align="left">0.010306574938051</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0016324" class="uri">GO:0016324</a></td>
+<td align="left">apical plasma membrane</td>
+<td align="left">0.010306574938051</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000794" class="uri">GO:0000794</a></td>
+<td align="left">condensed nuclear chromosome</td>
+<td align="left">0.012912835143059</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0043292" class="uri">GO:0043292</a></td>
+<td align="left">contractile fiber</td>
+<td align="left">0.0147442137552551</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099503" class="uri">GO:0099503</a></td>
+<td align="left">secretory vesicle</td>
+<td align="left">0.0153074164859704</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000780" class="uri">GO:0000780</a></td>
+<td align="left">condensed nuclear chromosome, centromeric region</td>
+<td align="left">0.0183800772699753</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044420" class="uri">GO:0044420</a></td>
+<td align="left">extracellular matrix component</td>
+<td align="left">0.028891623685726</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0098590" class="uri">GO:0098590</a></td>
+<td align="left">plasma membrane region</td>
+<td align="left">0.0472421473421658</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000795" class="uri">GO:0000795</a></td>
+<td align="left">synaptonemal complex</td>
+<td align="left">0.0472421473421658</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0099086" class="uri">GO:0099086</a></td>
+<td align="left">synaptonemal structure</td>
+<td align="left">0.0472421473421658</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030139" class="uri">GO:0030139</a></td>
+<td align="left">endocytic vesicle</td>
+<td align="left">0.0472421473421658</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045121" class="uri">GO:0045121</a></td>
+<td align="left">membrane raft</td>
+<td align="left">0.0472421473421658</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098857" class="uri">GO:0098857</a></td>
+<td align="left">membrane microdomain</td>
+<td align="left">0.0472421473421658</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044449" class="uri">GO:0044449</a></td>
+<td align="left">contractile fiber part</td>
+<td align="left">0.0481094469272753</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0009897" class="uri">GO:0009897</a></td>
+<td align="left">external side of plasma membrane</td>
+<td align="left">0.0481094469272753</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0046658" class="uri">GO:0046658</a></td>
+<td align="left">anchored component of plasma membrane</td>
+<td align="left">0.0481094469272753</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030016" class="uri">GO:0030016</a></td>
+<td align="left">myofibril</td>
+<td align="left">0.0490301139732833</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Project_2017-08-22-ancHaplorhini-ancOrang-pathway_KEGG/enrichment_results_2017-08-22-ancHaplorhini-ancOrang-pathway_KEGG.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="even">
+<td align="left">hsa04060</td>
+<td align="left">Cytokine-cytokine receptor interaction - Homo sapiens (human)</td>
+<td align="left">0.0105007900523031</td>
+</tr>
+<tr class="odd">
+<td align="left">hsa04020</td>
+<td align="left">Calcium signaling pathway - Homo sapiens (human)</td>
+<td align="left">0.0105007900523031</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-22-ancHaplorhini-ancOrang-pathway_Wikipathway/enrichment_results_2017-08-22-ancHaplorhini-ancOrang-pathway_Wikipathway.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left">WP2870</td>
+<td align="left">Extracellular vesicle-mediated signaling in recipient cells</td>
+<td align="left">0.011834867296954</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<hr>
+<p>
+    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

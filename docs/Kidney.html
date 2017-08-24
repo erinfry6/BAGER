@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Erin Fry" />
+
+<meta name="date" content="2017-08-24" />
+
+<title>Identifying Expression Shifts Across Primate Phylogeny in the Kidney</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #2a211c; color: #bdae9d; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #2a211c; color: #bdae9d; border-right: 1px solid #bdae9d; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #bdae9d; background-color: #2a211c; }
+code > span.kw { color: #43a8ed; font-weight: bold; } /* Keyword */
+code > span.dt { text-decoration: underline; } /* DataType */
+code > span.dv { color: #44aa43; } /* DecVal */
+code > span.bn { color: #44aa43; } /* BaseN */
+code > span.fl { color: #44aa43; } /* Float */
+code > span.ch { color: #049b0a; } /* Char */
+code > span.st { color: #049b0a; } /* String */
+code > span.co { color: #0066ff; font-style: italic; } /* Comment */
+code > span.al { color: #ffff00; } /* Alert */
+code > span.fu { color: #ff9358; font-weight: bold; } /* Function */
+code > span.er { color: #ffff00; font-weight: bold; } /* Error */
+code > span.wa { color: #ffff00; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #049b0a; } /* SpecialChar */
+code > span.vs { color: #049b0a; } /* VerbatimString */
+code > span.ss { color: #049b0a; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #43a8ed; font-weight: bold; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #0066ff; font-style: italic; } /* Documentation */
+code > span.an { color: #0066ff; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.co { color: #0066ff; font-weight: bold; font-style: italic; } /* Comment */
+code > span.in { color: #0066ff; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BAGER</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="PrepDataforBAGER.html">Sample Processing</a>
+</li>
+<li>
+  <a href="BrainIdentifyShiftsInAllLineages.html">Frontal Cortex Expression Shifts</a>
+</li>
+<li>
+  <a href="TestisIdentifyShiftsInAllLineages.html">Testis Expression Shifts</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/erinfry6/BADGER">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Identifying Expression Shifts Across Primate Phylogeny in the Kidney</h1>
+<h4 class="author"><em>Erin Fry</em></h4>
+<h4 class="date"><em>2017-08-24</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><strong>This script analyzes the Bayesian Ancestral Gene Expression Reconstructions (BAGERs) to identify expression shifts in the Kidney in all primate lineages. The raw RNA-sequencing files were published by <a href="http://www.nature.com/nature/journal/v478/n7369/abs/nature10532.html">Brawand et al in 2011</a>, collected from post-mortem individuals from 6 primate species. This paper identified only 4 genes with expression shifts in the human frontal cortex using maximum likelihood, but hundreds of expression shifts in the other tissues and lineages. I have quantified RNA-Sequencing raw reads using Ensembl 84, an orthologous exon identification pipeline from Brawand et al, and the psueodaligner Kallisto. I then controlled for quality and confounding variables by regressing out technical variables. <a href="https://erinfry6.github.io/BAGER/PrepDataforBAGER.html">Specifics can be found here</a>.</strong></p>
+<p><strong>I then reconstructed the ancestral transcriptomes of the ancestral primates using a Bayesian MCMC method implemented in <a href="http://www.evolution.rdg.ac.uk/BayesTraitsV3/BayesTraitsV3.html">BayesTraits</a>. The evolution of gene expression has not yet been modeled using Bayesian MCMC programs, which model discrete and continuous trait evolution across phylogenies. BayesTraits utilizes a Brownian motion model of trait evolution, a phylogeny, continuous trait data, and evolutionary rate parameters to infer posterior probability distributions of evolutionary rate parameters, and thus ancestral trait values. I have utilized a novel approach implemented in BayesTraits to reconstruct gene expression in the frontal cortex and five other tissues. In each tissue and one gene at a time, my pipeline utilizes transcript abundances, the sample phylogeny, and a MCMC model including a variable rates parameter to reconstruct the evolutionary history of the trait while allowing the rate of change of each gene’s expression to differ across the tree, the most biologically realistic assumption. The algorithm infers evolutionary rate parameters and posterior probability distributions of the ancestral gene expression at each node. <a href="https://github.com/erinfry6/AncGeneExpReconstructionBT">Scripts to run BAGER can be found here</a>.</strong></p>
+<p><strong>In this document, I identify genes with expression shifts in every by calculating the proportion of MCMC iterations in which there was an increase or decrease in expression in the human lineage (termed the Bayesian Posterior Probability of Divergence, or BPPD).</strong></p>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<div id="load-paths-and-libraries" class="section level3">
+<h3>Load paths and libraries</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Models evaluated in BAGER analysis
+<span class="kw">print</span>(models)</code></pre></div>
+<pre><code>## [1] &quot;VarRates&quot; &quot;Lambda&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## set strings as factors as false for everything to run smoothly
+<span class="kw">options</span>(<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+
+## load necessary packages
+<span class="kw">library</span>(biomartr)
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)
+<span class="kw">library</span>(gplots)
+<span class="kw">library</span>(plotly)
+<span class="kw">library</span>(WebGestaltR)
+<span class="kw">library</span>(knitr)</code></pre></div>
+</div>
+<div id="load-and-examine-the-bager-statistics-for-every-lineage-and-gene" class="section level3">
+<h3>Load and examine the BAGER statistics for every lineage and gene</h3>
+<table>
+<caption>BAGER Summary Stats for Frontal Cortex</caption>
+<thead>
+<tr class="header">
+<th align="left">listcsv</th>
+<th align="left">modelchoice</th>
+<th align="left">hgnc_symbol</th>
+<th align="left">ensembl_gene_id</th>
+<th align="left">chromosome_name</th>
+<th align="right">ancPrimates_ancMacaque_foldSD</th>
+<th align="right">ancPrimates_ancMacaque_BPPD</th>
+<th align="right">ancPrimates_ancMacaque_reconAnc</th>
+<th align="right">ancPrimates_ancMacaque_reconDesc</th>
+<th align="right">ancPrimates_ancHaplorhini_foldSD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">gene1.txt</td>
+<td align="left">VarRates</td>
+<td align="left">TSPAN6</td>
+<td align="left">ENSG00000000003</td>
+<td align="left">X</td>
+<td align="right">1.596068</td>
+<td align="right">0.6066066</td>
+<td align="right">2.974670</td>
+<td align="right">3.204414</td>
+<td align="right">1.250575</td>
+</tr>
+<tr class="even">
+<td align="left">gene2.txt</td>
+<td align="left">Lambda</td>
+<td align="left">DPM1</td>
+<td align="left">ENSG00000000419</td>
+<td align="left">20</td>
+<td align="right">1.596068</td>
+<td align="right">0.6066066</td>
+<td align="right">2.974670</td>
+<td align="right">3.204414</td>
+<td align="right">1.250575</td>
+</tr>
+<tr class="odd">
+<td align="left">gene3.txt</td>
+<td align="left">Lambda</td>
+<td align="left">SCYL3</td>
+<td align="left">ENSG00000000457</td>
+<td align="left">1</td>
+<td align="right">1.476668</td>
+<td align="right">0.8138138</td>
+<td align="right">2.609424</td>
+<td align="right">3.113565</td>
+<td align="right">1.252555</td>
+</tr>
+<tr class="even">
+<td align="left">gene4.txt</td>
+<td align="left">Lambda</td>
+<td align="left">FGR</td>
+<td align="left">ENSG00000000938</td>
+<td align="left">1</td>
+<td align="right">1.562405</td>
+<td align="right">0.5075075</td>
+<td align="right">2.343242</td>
+<td align="right">2.334862</td>
+<td align="right">1.227299</td>
+</tr>
+<tr class="odd">
+<td align="left">gene5.txt</td>
+<td align="left">Lambda</td>
+<td align="left">FUCA2</td>
+<td align="left">ENSG00000001036</td>
+<td align="left">6</td>
+<td align="right">1.907549</td>
+<td align="right">0.5295295</td>
+<td align="right">3.345054</td>
+<td align="right">3.303503</td>
+<td align="right">1.197923</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="select-genes-that-are-expressed-with-successful-reconstructions" class="section level2">
+<h2>Select genes that are expressed with successful reconstructions</h2>
+<p>Genes that successfully reconstructed will have similar posterior variations in the two ancestral node reconstructions. For each lineage, select only genes with fold standard deviations between the ancestral and descendant node of less than 4. Save these gene lists in the list of data frames, reconsgenes.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## the more ancestral reconstruction generally has a higher standard deviation, but if too large the chain failed to converge on a reconstruction
+
+## define divergence fold standard deviation cutoff
+cutoffSD&lt;-<span class="dv">4</span>
+
+## only select genes which are expressed, set cutoff for expression
+## 2 TPM is a standard expression cutoff
+expcut&lt;-<span class="kw">log</span>(<span class="dv">2</span>)
+
+## filter genes that did not converge or are not expressed in either reconstruction for every lineage
+## define reconstructed genes list
+reconsgenes&lt;-<span class="kw">list</span>()
+
+## for each lineage, select only expressed and reconstructed genes
+## then save those genes in the list, but only including relavent statistics for that lineage
+x=<span class="dv">1</span>
+for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+    lineage&lt;-<span class="kw">paste</span>(lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>], <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
+    
+    temp&lt;-<span class="kw">filter</span>(Summary, <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;foldSD&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>))) &lt;cutoffSD,
+                 <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;reconAnc&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;expcut |<span class="st"> </span><span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;reconDesc&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;expcut)
+    
+    reconsgenes[[x]]&lt;-temp[,<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>,<span class="kw">grep</span>(<span class="dt">pattern =</span> lineage, <span class="dt">x =</span> <span class="kw">colnames</span>(temp)))]
+    
+    x=x<span class="dv">+1</span>
+  }
+
+## How many genes successfully reconstructed in each lineage?
+num.recons&lt;-<span class="kw">sapply</span>(reconsgenes, nrow)</code></pre></div>
+</div>
+<div id="identify-genes-with-expression-shifts-across-the-phylogeny" class="section level2">
+<h2>Identify genes with expression shifts across the phylogeny</h2>
+<p><strong>I have chosen to use the Bayesian Posterior Probability of Divergence to identify genes with different expression levels in ancHuman and ancHuman-Chimpanzee nodes. We will use a BPPD of 90% as a cutoff.</strong></p>
+<table>
+<caption>Number of Genes with shifts and reconstructed in each lineage</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">ancPrimates ancMacaque</th>
+<th align="right">ancPrimates ancHaplorhini</th>
+<th align="right">ancHaplorhini ancOrang</th>
+<th align="right">ancHaplorhini ancApes</th>
+<th align="right">ancApes ancGorilla</th>
+<th align="right">ancApes ancHominini</th>
+<th align="right">ancHominini ancPan</th>
+<th align="right">ancHominini ancHomo</th>
+<th align="right">ancPan ancPtr</th>
+<th align="right">ancPan ancPpa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BPPD&lt;0.9%</td>
+<td align="right">9113</td>
+<td align="right">9152</td>
+<td align="right">9067</td>
+<td align="right">9156</td>
+<td align="right">9103</td>
+<td align="right">9157</td>
+<td align="right">9152</td>
+<td align="right">8598</td>
+<td align="right">9126</td>
+<td align="right">9141</td>
+</tr>
+<tr class="even">
+<td>BPPD&gt;0.9% / Expression Shifts</td>
+<td align="right">27</td>
+<td align="right">0</td>
+<td align="right">81</td>
+<td align="right">0</td>
+<td align="right">51</td>
+<td align="right">0</td>
+<td align="right">4</td>
+<td align="right">269</td>
+<td align="right">24</td>
+<td align="right">9</td>
+</tr>
+<tr class="odd">
+<td>Reconstructed Genes</td>
+<td align="right">9140</td>
+<td align="right">9152</td>
+<td align="right">9148</td>
+<td align="right">9156</td>
+<td align="right">9154</td>
+<td align="right">9157</td>
+<td align="right">9156</td>
+<td align="right">8867</td>
+<td align="right">9150</td>
+<td align="right">9150</td>
+</tr>
+<tr class="even">
+<td>Genes Tested</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+<td align="right">9740</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="view-reconstructed-transcriptomes-for-each-ancestral-and-descendant-node-pair" class="section level2">
+<h2>View reconstructed transcriptomes for each ancestral and descendant node pair</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+  <span class="kw">createScatterPlot</span>(<span class="dt">listnumber =</span> l, <span class="dt">save.scatter =</span> <span class="ot">FALSE</span>)
+}</code></pre></div>
+<p><img src="Kidney_files/figure-html/create%20scatter%20plots-1.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-2.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-3.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-4.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-5.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-6.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-7.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-8.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-9.png" width="768" /><img src="Kidney_files/figure-html/create%20scatter%20plots-10.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#createScatterPlot(listnumber =8, save.scatter = TRUE)</span></code></pre></div>
+</div>
+<div id="enrichment-analysis" class="section level2">
+<h2>Enrichment Analysis</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## webgestalt R for GO enrichment analysis, see manual https://cran.r-project.org/web/packages/WebGestaltR/WebGestaltR.pdf 
+
+for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+
+  for (enrichdb in <span class="kw">c</span>(<span class="st">&quot;geneontology_Biological_Process&quot;</span>, <span class="st">&quot;geneontology_Cellular_Component&quot;</span>,<span class="st">&quot;pathway_Panther&quot;</span>,<span class="st">&quot;pathway_KEGG&quot;</span>,
+                     <span class="st">&quot;pathway_Wikipathway&quot;</span>, <span class="st">&quot;phenotype_Human_Phenotype_Ontology&quot;</span>)){
+
+    <span class="kw">WebGestaltR</span>(<span class="dt">enrichMethod =</span> <span class="st">&quot;ORA&quot;</span>, <span class="dt">organism =</span> <span class="st">&quot;hsapiens&quot;</span>, <span class="dt">enrichDatabase =</span> enrichdb,
+            <span class="dt">enrichDatabaseFile=</span><span class="ot">NULL</span>, <span class="dt">enrichDatabaseType=</span><span class="ot">NULL</span>,
+            <span class="dt">interestGene=</span><span class="kw">filter</span>(<span class="kw">as.data.frame</span>(reconsgenes[[l]]),
+            <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>],<span class="st">&quot;BPPD&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;BPPDcutoff)$ensembl_gene_id, 
+            <span class="dt">interestGeneType=</span><span class="st">&quot;ensembl_gene_id&quot;</span>,
+            <span class="dt">collapseMethod=</span><span class="st">&quot;mean&quot;</span>,
+            <span class="dt">referenceGene=</span>reconsgenes[[l]]$ensembl_gene_id,<span class="dt">referenceGeneType=</span><span class="st">&quot;ensembl_gene_id&quot;</span>,
+            <span class="dt">minNum=</span><span class="dv">10</span>, <span class="dt">maxNum=</span><span class="dv">500</span>,
+            <span class="dt">fdrMethod=</span><span class="st">&quot;BH&quot;</span>,<span class="dt">sigMethod=</span><span class="st">&quot;fdr&quot;</span>,<span class="dt">fdrThr=</span><span class="fl">0.05</span>,
+            <span class="dt">topThr=</span><span class="dv">10</span>,<span class="dt">dNum=</span><span class="dv">20</span>,<span class="dt">perNum=</span><span class="dv">1000</span>,
+            <span class="dt">lNum=</span><span class="dv">20</span>,<span class="dt">is.output=</span><span class="ot">TRUE</span>,
+            <span class="dt">outputDirectory=</span><span class="kw">paste</span>(pathResults,<span class="st">&quot;Enrichments&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>),
+            <span class="dt">projectName=</span><span class="kw">paste</span>(<span class="kw">Sys.Date</span>(),lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>],enrichdb,<span class="dt">sep=</span><span class="st">&quot;-&quot;</span>),
+            <span class="dt">keepGSEAFolder=</span><span class="ot">FALSE</span>, <span class="dt">methodType=</span><span class="st">&quot;R&quot;</span>,<span class="dt">dagColor=</span><span class="st">&quot;binary&quot;</span>,<span class="dt">hostName=</span><span class="st">&quot;http://www.webgestalt.org/&quot;</span>)
+  } 
+  
+}</code></pre></div>
+<div id="results" class="section level3">
+<h3>Results</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## after run ./5_consolidate_enrichments.sh
+sig_enrichments&lt;-<span class="kw">read.csv</span>(<span class="kw">paste</span>(pathResults,<span class="st">&quot;Enrichments/enrichmentresults.txt&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+
+<span class="kw">kable</span>(sig_enrichments[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">9</span>)], <span class="dt">caption=</span><span class="st">&quot;sig enrichments&quot;</span>)</code></pre></div>
+<table>
+<caption>sig enrichments</caption>
+<thead>
+<tr class="header">
+<th align="left">geneset</th>
+<th align="left">description</th>
+<th align="left">FDR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">These are the significant enrichments FDR less than 5 percent for kd in all primate lineages</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-10-ancHaplorhini-ancOrang-geneontology_Cellular_Component/enrichment_results_2017-08-10-ancHaplorhini-ancOrang-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1902495" class="uri">GO:1902495</a></td>
+<td align="left">transmembrane transporter complex</td>
+<td align="left">0.046923220626006</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1990351" class="uri">GO:1990351</a></td>
+<td align="left">transporter complex</td>
+<td align="left">0.046923220626006</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<hr>
+<p>
+    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

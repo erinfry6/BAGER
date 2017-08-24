@@ -1,0 +1,1561 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+
+<meta name="author" content="Erin Fry" />
+
+<meta name="date" content="2017-08-24" />
+
+<title>Identifying Expression Shifts Across Primate Phylogeny in the Heart</title>
+
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/cerulean.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-4.5.0/css/font-awesome.min.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #2a211c; color: #bdae9d; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; background-color: #2a211c; color: #bdae9d; border-right: 1px solid #bdae9d; }
+td.sourceCode { padding-left: 5px; }
+pre, code { color: #bdae9d; background-color: #2a211c; }
+code > span.kw { color: #43a8ed; font-weight: bold; } /* Keyword */
+code > span.dt { text-decoration: underline; } /* DataType */
+code > span.dv { color: #44aa43; } /* DecVal */
+code > span.bn { color: #44aa43; } /* BaseN */
+code > span.fl { color: #44aa43; } /* Float */
+code > span.ch { color: #049b0a; } /* Char */
+code > span.st { color: #049b0a; } /* String */
+code > span.co { color: #0066ff; font-style: italic; } /* Comment */
+code > span.al { color: #ffff00; } /* Alert */
+code > span.fu { color: #ff9358; font-weight: bold; } /* Function */
+code > span.er { color: #ffff00; font-weight: bold; } /* Error */
+code > span.wa { color: #ffff00; font-weight: bold; } /* Warning */
+code > span.cn { } /* Constant */
+code > span.sc { color: #049b0a; } /* SpecialChar */
+code > span.vs { color: #049b0a; } /* VerbatimString */
+code > span.ss { color: #049b0a; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { } /* Variable */
+code > span.cf { color: #43a8ed; font-weight: bold; } /* ControlFlow */
+code > span.op { } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { font-weight: bold; } /* Preprocessor */
+code > span.at { } /* Attribute */
+code > span.do { color: #0066ff; font-style: italic; } /* Documentation */
+code > span.an { color: #0066ff; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.co { color: #0066ff; font-weight: bold; font-style: italic; } /* Comment */
+code > span.in { color: #0066ff; font-weight: bold; font-style: italic; } /* Information */
+</style>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+</head>
+
+<body>
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+  height: auto;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 51px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+
+.section h2 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h3 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h4 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h5 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+.section h6 {
+  padding-top: 56px;
+  margin-top: -56px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+
+<div class="container-fluid main-container">
+
+<!-- tabsets -->
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+</script>
+
+<!-- code folding -->
+
+
+
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+  padding-left: 25px;
+  text-indent: 0;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">BAGER</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="about.html">About</a>
+</li>
+<li>
+  <a href="PrepDataforBAGER.html">Sample Processing</a>
+</li>
+<li>
+  <a href="BrainIdentifyShiftsInAllLineages.html">Frontal Cortex Expression Shifts</a>
+</li>
+<li>
+  <a href="TestisIdentifyShiftsInAllLineages.html">Testis Expression Shifts</a>
+</li>
+<li>
+  <a href="license.html">License</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/erinfry6/BADGER">
+    <span class="fa fa-github"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Identifying Expression Shifts Across Primate Phylogeny in the Heart</h1>
+<h4 class="author"><em>Erin Fry</em></h4>
+<h4 class="date"><em>2017-08-24</em></h4>
+
+</div>
+
+
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p><strong>This script analyzes the Bayesian Ancestral Gene Expression Reconstructions (BAGERs) to identify expression shifts in the Heart in all primate lineages. The raw RNA-sequencing files were published by <a href="http://www.nature.com/nature/journal/v478/n7369/abs/nature10532.html">Brawand et al in 2011</a>, collected from post-mortem individuals from 6 primate species. This paper identified only 4 genes with expression shifts in the human frontal cortex using maximum likelihood, but hundreds of expression shifts in the other tissues and lineages. I have quantified RNA-Sequencing raw reads using Ensembl 84, an orthologous exon identification pipeline from Brawand et al, and the psueodaligner Kallisto. I then controlled for quality and confounding variables by regressing out technical variables. <a href="https://erinfry6.github.io/BAGER/PrepDataforBAGER.html">Specifics can be found here</a>.</strong></p>
+<p><strong>I then reconstructed the ancestral transcriptomes of the ancestral primates using a Bayesian MCMC method implemented in <a href="http://www.evolution.rdg.ac.uk/BayesTraitsV3/BayesTraitsV3.html">BayesTraits</a>. The evolution of gene expression has not yet been modeled using Bayesian MCMC programs, which model discrete and continuous trait evolution across phylogenies. BayesTraits utilizes a Brownian motion model of trait evolution, a phylogeny, continuous trait data, and evolutionary rate parameters to infer posterior probability distributions of evolutionary rate parameters, and thus ancestral trait values. I have utilized a novel approach implemented in BayesTraits to reconstruct gene expression in the frontal cortex and five other tissues. In each tissue and one gene at a time, my pipeline utilizes transcript abundances, the sample phylogeny, and a MCMC model including a variable rates parameter to reconstruct the evolutionary history of the trait while allowing the rate of change of each gene’s expression to differ across the tree, the most biologically realistic assumption. The algorithm infers evolutionary rate parameters and posterior probability distributions of the ancestral gene expression at each node. <a href="https://github.com/erinfry6/AncGeneExpReconstructionBT">Scripts to run BAGER can be found here</a>.</strong></p>
+<p><strong>In this document, I identify genes with expression shifts in every by calculating the proportion of MCMC iterations in which there was an increase or decrease in expression in the human lineage (termed the Bayesian Posterior Probability of Divergence, or BPPD).</strong></p>
+</div>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<div id="load-paths-and-libraries" class="section level3">
+<h3>Load paths and libraries</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## Models evaluated in BAGER analysis
+<span class="kw">print</span>(models)</code></pre></div>
+<pre><code>## [1] &quot;VarRates&quot; &quot;Lambda&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## set strings as factors as false for everything to run smoothly
+<span class="kw">options</span>(<span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
+
+## load necessary packages
+<span class="kw">library</span>(biomartr)
+<span class="kw">library</span>(dplyr)
+<span class="kw">library</span>(<span class="st">&quot;ggplot2&quot;</span>)
+<span class="kw">library</span>(gplots)
+<span class="kw">library</span>(plotly)
+<span class="kw">library</span>(WebGestaltR)
+<span class="kw">library</span>(knitr)</code></pre></div>
+</div>
+<div id="load-and-examine-the-bager-statistics-for-every-lineage-and-gene" class="section level3">
+<h3>Load and examine the BAGER statistics for every lineage and gene</h3>
+<table>
+<caption>BAGER Summary Stats for Heart</caption>
+<thead>
+<tr class="header">
+<th align="left">listcsv</th>
+<th align="left">modelchoice</th>
+<th align="left">hgnc_symbol</th>
+<th align="left">ensembl_gene_id</th>
+<th align="left">chromosome_name</th>
+<th align="right">ancPrimates_ancMacaque_foldSD</th>
+<th align="right">ancPrimates_ancMacaque_BPPD</th>
+<th align="right">ancPrimates_ancMacaque_reconAnc</th>
+<th align="right">ancPrimates_ancMacaque_reconDesc</th>
+<th align="right">ancPrimates_ancHaplorhini_foldSD</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">gene1.txt</td>
+<td align="left">Lambda</td>
+<td align="left">TSPAN6</td>
+<td align="left">ENSG00000000003</td>
+<td align="left">X</td>
+<td align="right">1.393987</td>
+<td align="right">0.6806807</td>
+<td align="right">2.626217</td>
+<td align="right">2.989046</td>
+<td align="right">1.186031</td>
+</tr>
+<tr class="even">
+<td align="left">gene2.txt</td>
+<td align="left">Lambda</td>
+<td align="left">DPM1</td>
+<td align="left">ENSG00000000419</td>
+<td align="left">20</td>
+<td align="right">1.274093</td>
+<td align="right">0.5755756</td>
+<td align="right">3.885198</td>
+<td align="right">4.028371</td>
+<td align="right">1.141921</td>
+</tr>
+<tr class="odd">
+<td align="left">gene3.txt</td>
+<td align="left">Lambda</td>
+<td align="left">SCYL3</td>
+<td align="left">ENSG00000000457</td>
+<td align="left">1</td>
+<td align="right">1.414934</td>
+<td align="right">0.6756757</td>
+<td align="right">1.148348</td>
+<td align="right">1.427960</td>
+<td align="right">1.120662</td>
+</tr>
+<tr class="even">
+<td align="left">gene4.txt</td>
+<td align="left">Lambda</td>
+<td align="left">FGR</td>
+<td align="left">ENSG00000000938</td>
+<td align="left">1</td>
+<td align="right">1.320450</td>
+<td align="right">0.5575576</td>
+<td align="right">1.748520</td>
+<td align="right">1.639954</td>
+<td align="right">1.136932</td>
+</tr>
+<tr class="odd">
+<td align="left">gene5.txt</td>
+<td align="left">Lambda</td>
+<td align="left">FUCA2</td>
+<td align="left">ENSG00000001036</td>
+<td align="left">6</td>
+<td align="right">1.458611</td>
+<td align="right">0.6156156</td>
+<td align="right">3.544593</td>
+<td align="right">3.371050</td>
+<td align="right">1.150376</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="select-genes-that-are-expressed-with-successful-reconstructions" class="section level2">
+<h2>Select genes that are expressed with successful reconstructions</h2>
+<p>Genes that successfully reconstructed will have similar posterior variations in the two ancestral node reconstructions. For each lineage, select only genes with fold standard deviations between the ancestral and descendant node of less than 4. Save these gene lists in the list of data frames, reconsgenes.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## the more ancestral reconstruction generally has a higher standard deviation, but if too large the chain failed to converge on a reconstruction
+
+## define divergence fold standard deviation cutoff
+cutoffSD&lt;-<span class="dv">4</span>
+
+## only select genes which are expressed, set cutoff for expression
+## 2 TPM is a standard expression cutoff
+expcut&lt;-<span class="kw">log</span>(<span class="dv">2</span>)
+
+## filter genes that did not converge or are not expressed in either reconstruction for every lineage
+## define reconstructed genes list
+reconsgenes&lt;-<span class="kw">list</span>()
+
+## for each lineage, select only expressed and reconstructed genes
+## then save those genes in the list, but only including relavent statistics for that lineage
+x=<span class="dv">1</span>
+for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+    lineage&lt;-<span class="kw">paste</span>(lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>], <span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)
+    
+    temp&lt;-<span class="kw">filter</span>(Summary, <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;foldSD&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>))) &lt;cutoffSD,
+                 <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;reconAnc&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;expcut |<span class="st"> </span><span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineage,<span class="st">&quot;reconDesc&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;expcut)
+    
+    reconsgenes[[x]]&lt;-temp[,<span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">5</span>,<span class="kw">grep</span>(<span class="dt">pattern =</span> lineage, <span class="dt">x =</span> <span class="kw">colnames</span>(temp)))]
+    
+    x=x<span class="dv">+1</span>
+  }
+
+## How many genes successfully reconstructed in each lineage?
+num.recons&lt;-<span class="kw">sapply</span>(reconsgenes, nrow)</code></pre></div>
+</div>
+<div id="identify-genes-with-expression-shifts-across-the-phylogeny" class="section level2">
+<h2>Identify genes with expression shifts across the phylogeny</h2>
+<p><strong>I have chosen to use the Bayesian Posterior Probability of Divergence to identify genes with different expression levels in ancHuman and ancHuman-Chimpanzee nodes. We will use a BPPD of 90% as a cutoff.</strong></p>
+<table>
+<caption>Number of Genes with shifts and reconstructed in each lineage</caption>
+<thead>
+<tr class="header">
+<th></th>
+<th align="right">ancPrimates ancMacaque</th>
+<th align="right">ancPrimates ancHaplorhini</th>
+<th align="right">ancHaplorhini ancOrang</th>
+<th align="right">ancHaplorhini ancApes</th>
+<th align="right">ancApes ancGorilla</th>
+<th align="right">ancApes ancHominini</th>
+<th align="right">ancHominini ancPan</th>
+<th align="right">ancHominini ancHomo</th>
+<th align="right">ancPan ancPtr</th>
+<th align="right">ancPan ancPpa</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>BPPD&lt;0.9%</td>
+<td align="right">7765</td>
+<td align="right">7772</td>
+<td align="right">7235</td>
+<td align="right">7779</td>
+<td align="right">6638</td>
+<td align="right">7781</td>
+<td align="right">7781</td>
+<td align="right">7574</td>
+<td align="right">7737</td>
+<td align="right">7755</td>
+</tr>
+<tr class="even">
+<td>BPPD&gt;0.9% / Expression Shifts</td>
+<td align="right">14</td>
+<td align="right">0</td>
+<td align="right">499</td>
+<td align="right">0</td>
+<td align="right">1132</td>
+<td align="right">0</td>
+<td align="right">1</td>
+<td align="right">154</td>
+<td align="right">30</td>
+<td align="right">13</td>
+</tr>
+<tr class="odd">
+<td>Reconstructed Genes</td>
+<td align="right">7779</td>
+<td align="right">7772</td>
+<td align="right">7734</td>
+<td align="right">7779</td>
+<td align="right">7770</td>
+<td align="right">7781</td>
+<td align="right">7782</td>
+<td align="right">7728</td>
+<td align="right">7767</td>
+<td align="right">7768</td>
+</tr>
+<tr class="even">
+<td>Genes Tested</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+<td align="right">7784</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="view-reconstructed-transcriptomes-for-each-ancestral-and-descendant-node-pair" class="section level2">
+<h2>View reconstructed transcriptomes for each ancestral and descendant node pair</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+  <span class="kw">createScatterPlot</span>(<span class="dt">listnumber =</span> l, <span class="dt">save.scatter =</span> <span class="ot">FALSE</span>)
+}</code></pre></div>
+<p><img src="Heart_files/figure-html/create%20scatter%20plots-1.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-2.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-3.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-4.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-5.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-6.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-7.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-8.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-9.png" width="768" /><img src="Heart_files/figure-html/create%20scatter%20plots-10.png" width="768" /></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co">#createScatterPlot(listnumber =8, save.scatter = TRUE)</span></code></pre></div>
+</div>
+<div id="enrichment-analysis" class="section level2">
+<h2>Enrichment Analysis</h2>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## webgestalt R for GO enrichment analysis, see manual https://cran.r-project.org/web/packages/WebGestaltR/WebGestaltR.pdf 
+
+for (l in <span class="dv">1</span>:<span class="kw">nrow</span>(lineages.to.test)){
+
+  for (enrichdb in <span class="kw">c</span>(<span class="st">&quot;geneontology_Biological_Process&quot;</span>, <span class="st">&quot;geneontology_Cellular_Component&quot;</span>,<span class="st">&quot;pathway_Panther&quot;</span>,<span class="st">&quot;pathway_KEGG&quot;</span>,
+                     <span class="st">&quot;pathway_Wikipathway&quot;</span>, <span class="st">&quot;phenotype_Human_Phenotype_Ontology&quot;</span>)){
+
+    <span class="kw">WebGestaltR</span>(<span class="dt">enrichMethod =</span> <span class="st">&quot;ORA&quot;</span>, <span class="dt">organism =</span> <span class="st">&quot;hsapiens&quot;</span>, <span class="dt">enrichDatabase =</span> enrichdb,
+            <span class="dt">enrichDatabaseFile=</span><span class="ot">NULL</span>, <span class="dt">enrichDatabaseType=</span><span class="ot">NULL</span>,
+            <span class="dt">interestGene=</span><span class="kw">filter</span>(<span class="kw">as.data.frame</span>(reconsgenes[[l]]),
+            <span class="kw">eval</span>(<span class="kw">as.symbol</span>(<span class="kw">paste</span>(lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>],<span class="st">&quot;BPPD&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;_&quot;</span>)))&gt;BPPDcutoff)$ensembl_gene_id, 
+            <span class="dt">interestGeneType=</span><span class="st">&quot;ensembl_gene_id&quot;</span>,
+            <span class="dt">collapseMethod=</span><span class="st">&quot;mean&quot;</span>,
+            <span class="dt">referenceGene=</span>reconsgenes[[l]]$ensembl_gene_id,<span class="dt">referenceGeneType=</span><span class="st">&quot;ensembl_gene_id&quot;</span>,
+            <span class="dt">minNum=</span><span class="dv">10</span>, <span class="dt">maxNum=</span><span class="dv">500</span>,
+            <span class="dt">fdrMethod=</span><span class="st">&quot;BH&quot;</span>,<span class="dt">sigMethod=</span><span class="st">&quot;fdr&quot;</span>,<span class="dt">fdrThr=</span><span class="fl">0.05</span>,
+            <span class="dt">topThr=</span><span class="dv">10</span>,<span class="dt">dNum=</span><span class="dv">20</span>,<span class="dt">perNum=</span><span class="dv">1000</span>,
+            <span class="dt">lNum=</span><span class="dv">20</span>,<span class="dt">is.output=</span><span class="ot">TRUE</span>,
+            <span class="dt">outputDirectory=</span><span class="kw">paste</span>(pathResults,<span class="st">&quot;Enrichments&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>),
+            <span class="dt">projectName=</span><span class="kw">paste</span>(<span class="kw">Sys.Date</span>(),lineages.to.test[l,<span class="dv">1</span>],lineages.to.test[l,<span class="dv">2</span>],enrichdb,<span class="dt">sep=</span><span class="st">&quot;-&quot;</span>),
+            <span class="dt">keepGSEAFolder=</span><span class="ot">FALSE</span>, <span class="dt">methodType=</span><span class="st">&quot;R&quot;</span>,<span class="dt">dagColor=</span><span class="st">&quot;binary&quot;</span>,<span class="dt">hostName=</span><span class="st">&quot;http://www.webgestalt.org/&quot;</span>)
+  } 
+  
+}</code></pre></div>
+<div id="results" class="section level3">
+<h3>Results</h3>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## after run ./5_consolidate_enrichments.sh
+sig_enrichments&lt;-<span class="kw">read.csv</span>(<span class="kw">paste</span>(pathResults,<span class="st">&quot;Enrichments/enrichmentresults.txt&quot;</span>,<span class="dt">sep=</span><span class="st">&quot;&quot;</span>), <span class="dt">sep=</span><span class="st">&quot;</span><span class="ch">\t</span><span class="st">&quot;</span>)
+
+<span class="kw">kable</span>(sig_enrichments[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">9</span>)], <span class="dt">caption=</span><span class="st">&quot;sig enrichments&quot;</span>)</code></pre></div>
+<table>
+<caption>sig enrichments</caption>
+<thead>
+<tr class="header">
+<th align="left">geneset</th>
+<th align="left">description</th>
+<th align="left">FDR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">These are the significant enrichments FDR less than 5 percent for ht in all primate lineages</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-09-ancApes-ancGorilla-geneontology_Biological_Process/enrichment_results_2017-08-09-ancApes-ancGorilla-geneontology_Biological_Process.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0016071" class="uri">GO:0016071</a></td>
+<td align="left">mRNA metabolic process</td>
+<td align="left">0.00387645157162164</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0008380" class="uri">GO:0008380</a></td>
+<td align="left">RNA splicing</td>
+<td align="left">0.00387645157162164</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0007064" class="uri">GO:0007064</a></td>
+<td align="left">mitotic sister chromatid cohesion</td>
+<td align="left">0.0089529960364616</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0006397" class="uri">GO:0006397</a></td>
+<td align="left">mRNA processing</td>
+<td align="left">0.0089529960364616</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000375" class="uri">GO:0000375</a></td>
+<td align="left">RNA splicing, via transesterification reactions</td>
+<td align="left">0.0165342583489874</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0006325" class="uri">GO:0006325</a></td>
+<td align="left">chromatin organization</td>
+<td align="left">0.0165342583489874</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0048193" class="uri">GO:0048193</a></td>
+<td align="left">Golgi vesicle transport</td>
+<td align="left">0.0165343730621543</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000819" class="uri">GO:0000819</a></td>
+<td align="left">sister chromatid segregation</td>
+<td align="left">0.0194229136253808</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0007062" class="uri">GO:0007062</a></td>
+<td align="left">sister chromatid cohesion</td>
+<td align="left">0.0194229136253808</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007059" class="uri">GO:0007059</a></td>
+<td align="left">chromosome segregation</td>
+<td align="left">0.0194229136253808</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0022613" class="uri">GO:0022613</a></td>
+<td align="left">ribonucleoprotein complex biogenesis</td>
+<td align="left">0.0194229136253808</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000377" class="uri">GO:0000377</a></td>
+<td align="left">RNA splicing, via transesterification reactions with bulged adenosine as nucleophile</td>
+<td align="left">0.0194229136253808</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000398" class="uri">GO:0000398</a></td>
+<td align="left">mRNA splicing, via spliceosome</td>
+<td align="left">0.0194229136253808</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0016050" class="uri">GO:0016050</a></td>
+<td align="left">vesicle organization</td>
+<td align="left">0.0194229136253808</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0042254" class="uri">GO:0042254</a></td>
+<td align="left">ribosome biogenesis</td>
+<td align="left">0.0203739461600158</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0016569" class="uri">GO:0016569</a></td>
+<td align="left">covalent chromatin modification</td>
+<td align="left">0.020842537292171</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000226" class="uri">GO:0000226</a></td>
+<td align="left">microtubule cytoskeleton organization</td>
+<td align="left">0.020842537292171</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007017" class="uri">GO:0007017</a></td>
+<td align="left">microtubule-based process</td>
+<td align="left">0.0353010339162328</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0098813" class="uri">GO:0098813</a></td>
+<td align="left">nuclear chromosome segregation</td>
+<td align="left">0.0366041747948231</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-09-ancApes-ancGorilla-geneontology_Cellular_Component/enrichment_results_2017-08-09-ancApes-ancGorilla-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005694" class="uri">GO:0005694</a></td>
+<td align="left">chromosome</td>
+<td align="left">3.57247564863883e-12</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044451" class="uri">GO:0044451</a></td>
+<td align="left">nucleoplasm part</td>
+<td align="left">5.47395462291433e-11</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1990234" class="uri">GO:1990234</a></td>
+<td align="left">transferase complex</td>
+<td align="left">2.02901251356025e-10</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098791" class="uri">GO:0098791</a></td>
+<td align="left">Golgi subcompartment</td>
+<td align="left">3.2156026175123e-09</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031984" class="uri">GO:0031984</a></td>
+<td align="left">organelle subcompartment</td>
+<td align="left">8.24718680014769e-09</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044427" class="uri">GO:0044427</a></td>
+<td align="left">chromosomal part</td>
+<td align="left">3.15111174931104e-08</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044431" class="uri">GO:0044431</a></td>
+<td align="left">Golgi apparatus part</td>
+<td align="left">7.64583213884253e-08</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0016604" class="uri">GO:0016604</a></td>
+<td align="left">nuclear body</td>
+<td align="left">8.62879890502673e-08</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000139" class="uri">GO:0000139</a></td>
+<td align="left">Golgi membrane</td>
+<td align="left">8.62879890502673e-08</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000775" class="uri">GO:0000775</a></td>
+<td align="left">chromosome, centromeric region</td>
+<td align="left">9.74974700973519e-08</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005815" class="uri">GO:0005815</a></td>
+<td align="left">microtubule organizing center</td>
+<td align="left">1.45328896068845e-07</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005802" class="uri">GO:0005802</a></td>
+<td align="left">trans-Golgi network</td>
+<td align="left">1.80483044731616e-07</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005813" class="uri">GO:0005813</a></td>
+<td align="left">centrosome</td>
+<td align="left">7.67917354371761e-07</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098687" class="uri">GO:0098687</a></td>
+<td align="left">chromosomal region</td>
+<td align="left">8.38019722996083e-07</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005681" class="uri">GO:0005681</a></td>
+<td align="left">spliceosomal complex</td>
+<td align="left">1.00990794666966e-06</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030529" class="uri">GO:0030529</a></td>
+<td align="left">intracellular ribonucleoprotein complex</td>
+<td align="left">2.01632625158876e-06</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1990904" class="uri">GO:1990904</a></td>
+<td align="left">ribonucleoprotein complex</td>
+<td align="left">2.10254525209893e-06</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044433" class="uri">GO:0044433</a></td>
+<td align="left">cytoplasmic vesicle part</td>
+<td align="left">2.2792067737587e-06</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005801" class="uri">GO:0005801</a></td>
+<td align="left">cis-Golgi network</td>
+<td align="left">4.25773668730288e-05</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000793" class="uri">GO:0000793</a></td>
+<td align="left">condensed chromosome</td>
+<td align="left">6.29265316172356e-05</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0016605" class="uri">GO:0016605</a></td>
+<td align="left">PML body</td>
+<td align="left">0.00040826648706882</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044440" class="uri">GO:0044440</a></td>
+<td align="left">endosomal part</td>
+<td align="left">0.000480769218250395</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0008023" class="uri">GO:0008023</a></td>
+<td align="left">transcription elongation factor complex</td>
+<td align="left">0.000544422827079768</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005795" class="uri">GO:0005795</a></td>
+<td align="left">Golgi stack</td>
+<td align="left">0.000575070014818102</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031252" class="uri">GO:0031252</a></td>
+<td align="left">cell leading edge</td>
+<td align="left">0.000660387800086597</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000151" class="uri">GO:0000151</a></td>
+<td align="left">ubiquitin ligase complex</td>
+<td align="left">0.000671765336487986</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0070161" class="uri">GO:0070161</a></td>
+<td align="left">anchoring junction</td>
+<td align="left">0.000711412292077027</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005912" class="uri">GO:0005912</a></td>
+<td align="left">adherens junction</td>
+<td align="left">0.000784432828778896</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0010008" class="uri">GO:0010008</a></td>
+<td align="left">endosome membrane</td>
+<td align="left">0.000908629064073392</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000785" class="uri">GO:0000785</a></td>
+<td align="left">chromatin</td>
+<td align="left">0.000988970439876846</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000794" class="uri">GO:0000794</a></td>
+<td align="left">condensed nuclear chromosome</td>
+<td align="left">0.0011374440212944</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099568" class="uri">GO:0099568</a></td>
+<td align="left">cytoplasmic region</td>
+<td align="left">0.00153190269405229</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0019898" class="uri">GO:0019898</a></td>
+<td align="left">extrinsic component of membrane</td>
+<td align="left">0.00153190269405229</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031985" class="uri">GO:0031985</a></td>
+<td align="left">Golgi cisterna</td>
+<td align="left">0.00202168995313932</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005768" class="uri">GO:0005768</a></td>
+<td align="left">endosome</td>
+<td align="left">0.00238174765739548</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030141" class="uri">GO:0030141</a></td>
+<td align="left">secretory granule</td>
+<td align="left">0.00238174765739548</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045202" class="uri">GO:0045202</a></td>
+<td align="left">synapse</td>
+<td align="left">0.00259672814874099</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0017053" class="uri">GO:0017053</a></td>
+<td align="left">transcriptional repressor complex</td>
+<td align="left">0.00259805897099398</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0009898" class="uri">GO:0009898</a></td>
+<td align="left">cytoplasmic side of plasma membrane</td>
+<td align="left">0.00262869617625643</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030027" class="uri">GO:0030027</a></td>
+<td align="left">lamellipodium</td>
+<td align="left">0.00304865280372957</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000228" class="uri">GO:0000228</a></td>
+<td align="left">nuclear chromosome</td>
+<td align="left">0.00348574331126534</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000776" class="uri">GO:0000776</a></td>
+<td align="left">kinetochore</td>
+<td align="left">0.00348574331126534</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0019897" class="uri">GO:0019897</a></td>
+<td align="left">extrinsic component of plasma membrane</td>
+<td align="left">0.00401959726706669</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005913" class="uri">GO:0005913</a></td>
+<td align="left">cell-cell adherens junction</td>
+<td align="left">0.00425664671356851</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005876" class="uri">GO:0005876</a></td>
+<td align="left">spindle microtubule</td>
+<td align="left">0.0047002838692212</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099503" class="uri">GO:0099503</a></td>
+<td align="left">secretory vesicle</td>
+<td align="left">0.0049903984384465</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0071011" class="uri">GO:0071011</a></td>
+<td align="left">precatalytic spliceosome</td>
+<td align="left">0.00571212410951158</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005938" class="uri">GO:0005938</a></td>
+<td align="left">cell cortex</td>
+<td align="left">0.00592669299605413</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031965" class="uri">GO:0031965</a></td>
+<td align="left">nuclear membrane</td>
+<td align="left">0.00653655298234453</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0032580" class="uri">GO:0032580</a></td>
+<td align="left">Golgi cisterna membrane</td>
+<td align="left">0.00661689460874598</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044456" class="uri">GO:0044456</a></td>
+<td align="left">synapse part</td>
+<td align="left">0.00661689460874598</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005911" class="uri">GO:0005911</a></td>
+<td align="left">cell-cell junction</td>
+<td align="left">0.0066500291438071</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005635" class="uri">GO:0005635</a></td>
+<td align="left">nuclear envelope</td>
+<td align="left">0.0066500291438071</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0034399" class="uri">GO:0034399</a></td>
+<td align="left">nuclear periphery</td>
+<td align="left">0.00667415714451844</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1902554" class="uri">GO:1902554</a></td>
+<td align="left">serine/threonine protein kinase complex</td>
+<td align="left">0.00700726601944872</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0044463" class="uri">GO:0044463</a></td>
+<td align="left">cell projection part</td>
+<td align="left">0.00827601677736759</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0097223" class="uri">GO:0097223</a></td>
+<td align="left">sperm part</td>
+<td align="left">0.00827601677736759</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098562" class="uri">GO:0098562</a></td>
+<td align="left">cytoplasmic side of membrane</td>
+<td align="left">0.00857919307523898</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0012506" class="uri">GO:0012506</a></td>
+<td align="left">vesicle membrane</td>
+<td align="left">0.00873638008655427</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0016607" class="uri">GO:0016607</a></td>
+<td align="left">nuclear speck</td>
+<td align="left">0.0108301763155704</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0032588" class="uri">GO:0032588</a></td>
+<td align="left">trans-Golgi network membrane</td>
+<td align="left">0.0113060182485003</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098552" class="uri">GO:0098552</a></td>
+<td align="left">side of membrane</td>
+<td align="left">0.0113060182485003</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0061695" class="uri">GO:0061695</a></td>
+<td align="left">transferase complex, transferring phosphorus-containing groups</td>
+<td align="left">0.0120241207098254</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0048471" class="uri">GO:0048471</a></td>
+<td align="left">perinuclear region of cytoplasm</td>
+<td align="left">0.0129528092559652</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030496" class="uri">GO:0030496</a></td>
+<td align="left">midbody</td>
+<td align="left">0.0130260914217216</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0008287" class="uri">GO:0008287</a></td>
+<td align="left">protein serine/threonine phosphatase complex</td>
+<td align="left">0.0150396365001557</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1903293" class="uri">GO:1903293</a></td>
+<td align="left">phosphatase complex</td>
+<td align="left">0.0150396365001557</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005689" class="uri">GO:0005689</a></td>
+<td align="left">U12-type spliceosomal complex</td>
+<td align="left">0.0156736593672141</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030659" class="uri">GO:0030659</a></td>
+<td align="left">cytoplasmic vesicle membrane</td>
+<td align="left">0.0177568796341133</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005798" class="uri">GO:0005798</a></td>
+<td align="left">Golgi-associated vesicle</td>
+<td align="left">0.0177568796341133</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0035861" class="uri">GO:0035861</a></td>
+<td align="left">site of double-strand break</td>
+<td align="left">0.0194996540520717</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0016363" class="uri">GO:0016363</a></td>
+<td align="left">nuclear matrix</td>
+<td align="left">0.0223165641454432</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031901" class="uri">GO:0031901</a></td>
+<td align="left">early endosome membrane</td>
+<td align="left">0.0223165641454432</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1902911" class="uri">GO:1902911</a></td>
+<td align="left">protein kinase complex</td>
+<td align="left">0.0223165641454432</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031248" class="uri">GO:0031248</a></td>
+<td align="left">protein acetyltransferase complex</td>
+<td align="left">0.0251087321685682</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1902493" class="uri">GO:1902493</a></td>
+<td align="left">acetyltransferase complex</td>
+<td align="left">0.0251087321685682</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000123" class="uri">GO:0000123</a></td>
+<td align="left">histone acetyltransferase complex</td>
+<td align="left">0.0270530469167491</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000779" class="uri">GO:0000779</a></td>
+<td align="left">condensed chromosome, centromeric region</td>
+<td align="left">0.0277914914779637</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030684" class="uri">GO:0030684</a></td>
+<td align="left">preribosome</td>
+<td align="left">0.0277914914779637</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099023" class="uri">GO:0099023</a></td>
+<td align="left">tethering complex</td>
+<td align="left">0.0277914914779637</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031461" class="uri">GO:0031461</a></td>
+<td align="left">cullin-RING ubiquitin ligase complex</td>
+<td align="left">0.0287295404241841</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030133" class="uri">GO:0030133</a></td>
+<td align="left">transport vesicle</td>
+<td align="left">0.0290796791302917</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031201" class="uri">GO:0031201</a></td>
+<td align="left">SNARE complex</td>
+<td align="left">0.0320482470322063</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031234" class="uri">GO:0031234</a></td>
+<td align="left">extrinsic component of cytoplasmic side of plasma membrane</td>
+<td align="left">0.0321925258978623</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0032040" class="uri">GO:0032040</a></td>
+<td align="left">small-subunit processome</td>
+<td align="left">0.0321925258978623</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099513" class="uri">GO:0099513</a></td>
+<td align="left">polymeric cytoskeletal fiber</td>
+<td align="left">0.0344379533850418</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0071013" class="uri">GO:0071013</a></td>
+<td align="left">catalytic step 2 spliceosome</td>
+<td align="left">0.0364146295647752</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0000792" class="uri">GO:0000792</a></td>
+<td align="left">heterochromatin</td>
+<td align="left">0.0369979876624906</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044454" class="uri">GO:0044454</a></td>
+<td align="left">nuclear chromosome part</td>
+<td align="left">0.0369979876624906</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098796" class="uri">GO:0098796</a></td>
+<td align="left">membrane protein complex</td>
+<td align="left">0.0379407423617708</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0034708" class="uri">GO:0034708</a></td>
+<td align="left">methyltransferase complex</td>
+<td align="left">0.0383731022267284</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0030532" class="uri">GO:0030532</a></td>
+<td align="left">small nuclear ribonucleoprotein complex</td>
+<td align="left">0.0385879946525539</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0000307" class="uri">GO:0000307</a></td>
+<td align="left">cyclin-dependent protein kinase holoenzyme complex</td>
+<td align="left">0.0385879946525539</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0097525" class="uri">GO:0097525</a></td>
+<td align="left">spliceosomal snRNP complex</td>
+<td align="left">0.0402699012206288</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0098802" class="uri">GO:0098802</a></td>
+<td align="left">plasma membrane receptor complex</td>
+<td align="left">0.0402699012206288</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031514" class="uri">GO:0031514</a></td>
+<td align="left">motile cilium</td>
+<td align="left">0.0412832220902927</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0098590" class="uri">GO:0098590</a></td>
+<td align="left">plasma membrane region</td>
+<td align="left">0.0425090951749262</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098589" class="uri">GO:0098589</a></td>
+<td align="left">membrane region</td>
+<td align="left">0.0425090951749262</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0099512" class="uri">GO:0099512</a></td>
+<td align="left">supramolecular fiber</td>
+<td align="left">0.0440817427894147</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0032154" class="uri">GO:0032154</a></td>
+<td align="left">cleavage furrow</td>
+<td align="left">0.0457731628671669</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0097610" class="uri">GO:0097610</a></td>
+<td align="left">cell surface furrow</td>
+<td align="left">0.0457731628671669</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0001726" class="uri">GO:0001726</a></td>
+<td align="left">ruffle</td>
+<td align="left">0.0458332829703035</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0001669" class="uri">GO:0001669</a></td>
+<td align="left">acrosomal vesicle</td>
+<td align="left">0.0466538366227373</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0015030" class="uri">GO:0015030</a></td>
+<td align="left">Cajal body</td>
+<td align="left">0.0466538366227373</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030667" class="uri">GO:0030667</a></td>
+<td align="left">secretory granule membrane</td>
+<td align="left">0.0466538366227373</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0035097" class="uri">GO:0035097</a></td>
+<td align="left">histone methyltransferase complex</td>
+<td align="left">0.0485277827956095</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0099080" class="uri">GO:0099080</a></td>
+<td align="left">supramolecular complex</td>
+<td align="left">0.0485277827956095</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099081" class="uri">GO:0099081</a></td>
+<td align="left">supramolecular polymer</td>
+<td align="left">0.0485277827956095</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Project_2017-08-09-ancApes-ancGorilla-pathway_Wikipathway/enrichment_results_2017-08-09-ancApes-ancGorilla-pathway_Wikipathway.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="even">
+<td align="left">WP524</td>
+<td align="left">G13 Signaling Pathway</td>
+<td align="left">0.0464572789674492</td>
+</tr>
+<tr class="odd">
+<td align="left">WP51</td>
+<td align="left">Regulation of Actin Cytoskeleton</td>
+<td align="left">0.0464572789674492</td>
+</tr>
+<tr class="even">
+<td align="left">WP3651</td>
+<td align="left">Pathways Affected in Adenoid Cystic Carcinoma</td>
+<td align="left">0.0464572789674492</td>
+</tr>
+<tr class="odd">
+<td align="left">WP35</td>
+<td align="left">G Protein Signaling Pathways</td>
+<td align="left">0.0464572789674492</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-09-ancHominini-ancHomo-geneontology_Cellular_Component/enrichment_results_2017-08-09-ancHominini-ancHomo-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0031012" class="uri">GO:0031012</a></td>
+<td align="left">extracellular matrix</td>
+<td align="left">0.0415070903032762</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0005615" class="uri">GO:0005615</a></td>
+<td align="left">extracellular space</td>
+<td align="left">0.0415070903032762</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0030141" class="uri">GO:0030141</a></td>
+<td align="left">secretory granule</td>
+<td align="left">0.0415070903032762</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0099503" class="uri">GO:0099503</a></td>
+<td align="left">secretory vesicle</td>
+<td align="left">0.0415070903032762</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045111" class="uri">GO:0045111</a></td>
+<td align="left">intermediate filament cytoskeleton</td>
+<td align="left">0.0415070903032762</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-09-ancPan-ancPtr-pathway_Wikipathway/enrichment_results_2017-08-09-ancPan-ancPtr-pathway_Wikipathway.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left">WP2324</td>
+<td align="left">AGE/RAGE pathway</td>
+<td align="left">0.00557895707372813</td>
+</tr>
+<tr class="even">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">Project_2017-08-09-ancPan-ancPtr-phenotype_Human_Phenotype_Ontology/enrichment_results_2017-08-09-ancPan-ancPtr-phenotype_Human_Phenotype_Ontology.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="odd">
+<td align="left">HP:0001363</td>
+<td align="left">Craniosynostosis</td>
+<td align="left">0.0120875324919568</td>
+</tr>
+<tr class="even">
+<td align="left">HP:0004440</td>
+<td align="left">Coronal craniosynostosis</td>
+<td align="left">0.0127958791029062</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Project_2017-08-22-ancHaplorhini-ancOrang-geneontology_Biological_Process/enrichment_results_2017-08-22-ancHaplorhini-ancOrang-geneontology_Biological_Process.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0007266" class="uri">GO:0007266</a></td>
+<td align="left">Rho protein signal transduction</td>
+<td align="left">0.00565645071128884</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="even">
+<td align="left">Project_2017-08-22-ancHaplorhini-ancOrang-geneontology_Cellular_Component/enrichment_results_2017-08-22-ancHaplorhini-ancOrang-geneontology_Cellular_Component.txt has the following enrichments</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+<tr class="odd">
+<td align="left">geneset</td>
+<td align="left">description</td>
+<td align="left">FDR</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0031226" class="uri">GO:0031226</a></td>
+<td align="left">intrinsic component of plasma membrane</td>
+<td align="left">0.00203172840262744</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0005887" class="uri">GO:0005887</a></td>
+<td align="left">integral component of plasma membrane</td>
+<td align="left">0.00203172840262744</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0045202" class="uri">GO:0045202</a></td>
+<td align="left">synapse</td>
+<td align="left">0.00262955232315424</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0044456" class="uri">GO:0044456</a></td>
+<td align="left">synapse part</td>
+<td align="left">0.0130884218211169</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098794" class="uri">GO:0098794</a></td>
+<td align="left">postsynapse</td>
+<td align="left">0.0147699383923301</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:1902495" class="uri">GO:1902495</a></td>
+<td align="left">transmembrane transporter complex</td>
+<td align="left">0.0177071012194097</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0097060" class="uri">GO:0097060</a></td>
+<td align="left">synaptic membrane</td>
+<td align="left">0.0177071012194097</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0045211" class="uri">GO:0045211</a></td>
+<td align="left">postsynaptic membrane</td>
+<td align="left">0.0215206738455084</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:1990351" class="uri">GO:1990351</a></td>
+<td align="left">transporter complex</td>
+<td align="left">0.0215206738455084</td>
+</tr>
+<tr class="odd">
+<td align="left"><a href="GO:0034702" class="uri">GO:0034702</a></td>
+<td align="left">ion channel complex</td>
+<td align="left">0.0315921888197554</td>
+</tr>
+<tr class="even">
+<td align="left"><a href="GO:0098590" class="uri">GO:0098590</a></td>
+<td align="left">plasma membrane region</td>
+<td align="left">0.0315921888197554</td>
+</tr>
+<tr class="odd">
+<td align="left"><sub>~<sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub><sub>~</sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub></sub>~</td>
+<td align="left"></td>
+<td align="left"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<hr>
+<p>
+    This <a href="http://rmarkdown.rstudio.com">R Markdown</a> site was created with <a href="https://github.com/jdblischak/workflowr">workflowr</a>
+</p>
+<hr>
+
+<!-- To enable disqus, uncomment the section below and provide your disqus_shortname -->
+
+<!-- disqus
+  <div id="disqus_thread"></div>
+    <script type="text/javascript">
+        /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+        var disqus_shortname = 'rmarkdown'; // required: replace example with your forum shortname
+
+        /* * * DON'T EDIT BELOW THIS LINE * * */
+        (function() {
+            var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+            dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+        })();
+    </script>
+    <noscript>Please enable JavaScript to view the <a href="http://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    <a href="http://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+-->
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
