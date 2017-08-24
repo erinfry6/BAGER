@@ -671,32 +671,17 @@ nrow(Sample_Info_Second_Elim)==ncol(TPM_noMT_expressed_log_processed)
 # Save processed data as tissue expression files for BAGER
 ```{r save data files}
 ## set directory for files ready for BAGER
-setwd(paste(pathresults,'/BAGERInput',sep=""))
 
 ## first save all processed data
-write.table(TPM_noMT_expressed_log_processed, file= paste(Sys.Date(),"ProcessedExpData.txt"), sep='\t')
+write.table(TPM_noMT_expressed_log_processed, file= paste(pathResults,Sys.Date(),"ProcessedExpData.txt", sep=""), sep='\t')
 
 ## save list of samples to be included in analysis
-write.table(Sample_Info_Second_Elim, file = paste(Sys.Date(),"IncludedSamples.txt"), sep='\t')
+write.table(Sample_Info_Second_Elim, file = paste(pathResults,Sys.Date(),"IncludedSamples.txt"), sep='\t')
 
 ## save expression files by tissue
 for (t in tissue){
-  write.table(t(TPM_noMT_expressed_log_processed[,grep(t,colnames(TPM_noMT_expressed_log_processed))]) , paste(t,"_exp",".txt", sep=""), sep='\t', col.names = FALSE)
+  write.table(t(TPM_noMT_expressed_log_processed[,grep(t,colnames(TPM_noMT_expressed_log_processed))]) , paste(pathResults,Sys.Date(),"_",t,"_exp",".txt", sep=""), sep='\t', col.names = FALSE)
 }
-```
-
-
-```{r, include=FALSE, evaluate=FALSE}
-## create and save trees for BAGER analysis
-setwd(pathBAGER)
-## using divergence times reported in 'Great ape genetic diversity and population history.' Prado-Martinez, Sudmant, Kidd et al 2013.
-
-## make trees and you can check them using APE package
-
-MyTree<-read.nexus(file = "test.tree" )
-plot(MyTree)
-is.ultrametric(MyTree)
-
 ```
 
 
